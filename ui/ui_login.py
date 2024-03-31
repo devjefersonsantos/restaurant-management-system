@@ -57,6 +57,17 @@ class Ui_login(customtkinter.CTk):
         self.password_image = customtkinter.CTkImage(dark_image=self.passwordpil_image,
                                                      light_image=self.passwordpil_image,
                                                      size=(32,32))
+        
+        # https://pixabay.com/vectors/eye-see-viewing-icon-1103592/
+        self.showpasswordpil_image = Image.open("images/login_images/showpassword.png")
+        self.showpassword_image = customtkinter.CTkImage(dark_image=self.showpasswordpil_image,
+                                                         light_image=self.showpasswordpil_image,
+                                                         size=(25,15))
+
+        self.hidepasswordpil_image = Image.open("images/login_images/hidepassword.png")
+        self.hidepassword_image = customtkinter.CTkImage(dark_image=self.hidepasswordpil_image,
+                                                         light_image=self.hidepasswordpil_image,
+                                                         size=(25,15)) 
 
     def ui_widgets(self):
         chef_label = customtkinter.CTkLabel(master=self.frame_one, 
@@ -89,14 +100,26 @@ class Ui_login(customtkinter.CTk):
                                                 image=self.password_image)
         password_label.place(x=27, y=147)
 
-        __password_entry = customtkinter.CTkEntry(master=self.frame_three,
-                                                  width=400, height=40,
-                                                  font=("arial", 17), 
-                                                  fg_color="#EEEEEE", 
-                                                  border_color="#e3e3e3", 
-                                                  border_width=1,
-                                                  show="*")
-        __password_entry.place(x=27, y=197)
+        self.__password_entry = customtkinter.CTkEntry(master=self.frame_three,
+                                                       width=400, height=40,
+                                                       font=("arial", 17), 
+                                                       fg_color="#EEEEEE", 
+                                                       border_color="#e3e3e3", 
+                                                       border_width=1,
+                                                       show="*")
+        self.__password_entry.place(x=27, y=197)
+
+        self.statuspassword_button = customtkinter.CTkButton(master=self.frame_three,
+                                                             width=1, height=1, 
+                                                             image=self.hidepassword_image, 
+                                                             fg_color="#EEEEEE",
+                                                             bg_color="#EEEEEE",
+                                                             hover_color="#EEEEEE", 
+                                                             text=None,
+                                                             command=self.show_password)
+        self.statuspassword_button.place(x=380, y=205)
+
+        self.__hide_password = True
 
         login_button = customtkinter.CTkButton(master=self.frame_three,
                                                width=400, height=40, 
@@ -133,3 +156,13 @@ class Ui_login(customtkinter.CTk):
                                                    text_color="#ffffff", 
                                                    text="Sign up")
         createacc_button.place(x=27, y=141)
+
+    def show_password(self):
+        if self.__hide_password:
+            self.statuspassword_button.configure(image=self.showpassword_image)
+            self.__password_entry.configure(show="")
+            self.__hide_password = False
+        else:
+            self.statuspassword_button.configure(image=self.hidepassword_image)
+            self.__password_entry.configure(show="*")
+            self.__hide_password = True
