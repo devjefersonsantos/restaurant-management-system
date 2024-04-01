@@ -261,7 +261,8 @@ class Ui_login(customtkinter.CTk):
                                                 text_color="#ffffff", 
                                                 text="Go back",
                                                 compound="left",
-                                                image=self.arrow_image)
+                                                image=self.arrow_image,
+                                                command=self.goback_loginscreen)
         goback_button.place(x=27, y=41)
 
     def show_password(self):
@@ -273,3 +274,15 @@ class Ui_login(customtkinter.CTk):
             self.statuspassword_button.configure(image=self.hidepassword_image)
             self.__password_entry.configure(show="*")
             self.__hide_password = True
+
+    def goback_loginscreen(self):
+        clear_frames(self.frame_three)
+        clear_frames(self.frame_four)
+
+        self.after(10, lambda:self.frame_three.configure(width=458, height=350))
+        self.after(10, lambda:self.frame_three.place(x=33, y=20))
+        
+        self.after(10, lambda:self.frame_four.configure(width=458, height=220))
+        self.after(10, lambda:self.frame_four.place(x=33, y=388))
+
+        self.ui_widgets()
