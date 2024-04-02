@@ -1,8 +1,11 @@
 import customtkinter
 from PIL import Image
 from utils.clear_frames import clear_frames
+import json
+from tkinter import messagebox
+from database.connection.db_connection import DbConnection
 
-class Ui_login(customtkinter.CTk):
+class UiLogin(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
@@ -84,7 +87,19 @@ class Ui_login(customtkinter.CTk):
         hidepasswordpil_image = Image.open("images/login_images/hidepassword.png")
         self.hidepassword_image = customtkinter.CTkImage(dark_image=hidepasswordpil_image,
                                                          light_image=hidepasswordpil_image,
-                                                         size=(25,15)) 
+                                                         size=(25,15))
+
+        # https://pixabay.com/vectors/ok-check-to-do-agenda-icon-symbol-1976099/
+        loggedpil_image = Image.open("images/login_images/logged.png")
+        self.logged_image = customtkinter.CTkImage(dark_image=loggedpil_image,
+                                                   light_image=loggedpil_image,
+                                                   size=(45,45))
+        
+        # https://pixabay.com/vectors/false-error-is-missing-absent-x-2061131/
+        loggedoutpil_image = Image.open("images/login_images/loggedout.png")
+        self.loggedout_image = customtkinter.CTkImage(dark_image=loggedoutpil_image,
+                                                      light_image=loggedoutpil_image,
+                                                      size=(45,45)) 
 
     def ui_widgets(self):
         chef_label = customtkinter.CTkLabel(master=self.frame_one, 
@@ -158,7 +173,7 @@ class Ui_login(customtkinter.CTk):
                                                          hover_color="#f5a447", 
                                                          text_color="#ffffff", 
                                                          text="Setup Connection",
-                                                         command=self.ui_setupconnection)
+                                                         command=self.ui_setup_connection)
         setupconnection_button.place(x=27, y=55)
 
         createacc_label = customtkinter.CTkLabel(master=self.frame_four,
@@ -175,7 +190,7 @@ class Ui_login(customtkinter.CTk):
                                                    text="Sign up")
         createacc_button.place(x=27, y=141)
 
-    def ui_setupconnection(self):
+    def ui_setup_connection(self):
         clear_frames(self.frame_three)
         clear_frames(self.frame_four)
 
@@ -185,6 +200,13 @@ class Ui_login(customtkinter.CTk):
         self.after(10, lambda:self.frame_four.configure(width=458, height=120))
         self.after(10, lambda:self.frame_four.place(x=33, y=488))
 
+        if DbConnection().db_logged():
+            self.databasestatus_image = customtkinter.CTkLabel(self.frame_three, text="", image=self.logged_image)
+            self.databasestatus_image.place(x=400, y=10)
+        else:
+            self.databasestatus_image = customtkinter.CTkLabel(self.frame_three, text="", image=self.loggedout_image)
+            self.databasestatus_image.place(x=400, y=10)
+
         host_label = customtkinter.CTkLabel(master=self.frame_three,
                                             font=("arial", 15),
                                             text="  Host:",
@@ -193,13 +215,13 @@ class Ui_login(customtkinter.CTk):
                                             image=self.host_image)
         host_label.place(x=27, y=40)
 
-        __host_entry = customtkinter.CTkEntry(master=self.frame_three,
-                                              width=400, height=40,
-                                              font=("arial", 17), 
-                                              fg_color="#EEEEEE", 
-                                              border_color="#e3e3e3", 
-                                              border_width=1)
-        __host_entry.place(x=27, y=90)
+        self.__host_entry = customtkinter.CTkEntry(master=self.frame_three,
+                                                   width=400, height=40,
+                                                   font=("arial", 17), 
+                                                   fg_color="#EEEEEE", 
+                                                   border_color="#e3e3e3", 
+                                                   border_width=1)
+        self.__host_entry.place(x=27, y=90)
 
         username_label = customtkinter.CTkLabel(master=self.frame_three,
                                                 font=("arial", 15),
@@ -209,13 +231,13 @@ class Ui_login(customtkinter.CTk):
                                                 image=self.user_image)
         username_label.place(x=27, y=147)
 
-        __username_entry = customtkinter.CTkEntry(master=self.frame_three,
-                                                  width=400, height=40,
-                                                  font=("arial", 17), 
-                                                  fg_color="#EEEEEE", 
-                                                  border_color="#e3e3e3", 
-                                                  border_width=1)
-        __username_entry.place(x=27, y=197)
+        self.__username_entry = customtkinter.CTkEntry(master=self.frame_three,
+                                                       width=400, height=40,
+                                                       font=("arial", 17), 
+                                                       fg_color="#EEEEEE", 
+                                                       border_color="#e3e3e3", 
+                                                       border_width=1)
+        self.__username_entry.place(x=27, y=197)
 
         password_label = customtkinter.CTkLabel(master=self.frame_three,
                                                 font=("arial", 15),
@@ -251,7 +273,8 @@ class Ui_login(customtkinter.CTk):
                                                      fg_color="#0077ff", 
                                                      hover_color="#1f88ff",
                                                      text_color="#ffffff", 
-                                                     text="Save Changes")
+                                                     text="Save Changes",
+                                                     command=self.save_connection_settings)
         savechanges_button.place(x=27, y=380)
 
         goback_button = customtkinter.CTkButton(master=self.frame_four, 
@@ -262,8 +285,29 @@ class Ui_login(customtkinter.CTk):
                                                 text="Go back",
                                                 compound="left",
                                                 image=self.arrow_image,
-                                                command=self.goback_loginscreen)
+                                                command=self.go_back_loginscreen)
         goback_button.place(x=27, y=41)
+
+        try:
+            with open("database/connection/config.json") as file:
+                __data = json.load(file)
+                self.__host_entry.configure(placeholder_text=__data["host"])
+                self.__username_entry.configure(placeholder_text=__data["user"])
+                self.__password_entry.configure(placeholder_text= "*" * len(__data["password"]))
+        except:
+            self.__host_entry.configure(placeholder_text="")
+            self.__username_entry.configure(placeholder_text="")
+            self.__password_entry.configure(placeholder_text="")
+            
+            config_messagebox = {"icon": "error","type": "yesno"}
+            modal = messagebox.showerror("database/connection/config.json", "Error in the database configuration file.\nRestore file?", **config_messagebox)
+            
+            if modal == "yes":
+                __data = {"host": "localhost","user": "root","password": ""}
+                with open("database/connection/config.json", "w") as __file:
+                    json.dump(__data, __file, indent=4)
+                    __file.write("\n")
+                self.ui_setup_connection()
 
     def show_password(self):
         if self.__hide_password:
@@ -275,7 +319,26 @@ class Ui_login(customtkinter.CTk):
             self.__password_entry.configure(show="*")
             self.__hide_password = True
 
-    def goback_loginscreen(self):
+    def save_connection_settings(self):
+        if self.__username_entry.get() != "": 
+            try: 
+                with open("database/connection/config.json") as __file:
+                    __data = json.load(__file)
+                    __data["host"] = self.__host_entry.get()
+                    __data["user"] = self.__username_entry.get()
+                    __data["password"] = self.__password_entry.get()
+
+                with open("database/connection/config.json", "w") as __file:
+                    json.dump(__data, __file, indent=4)
+                    __file.write("\n")
+            except FileNotFoundError as error:
+                messagebox.showerror("Error!", f"file or directory does not exist:\ndatabase/connection/config.json\n {error}")
+            except Exception as error:
+                messagebox.showerror("Error!", error)
+            else:
+                self.ui_setup_connection()
+
+    def go_back_loginscreen(self):
         clear_frames(self.frame_three)
         clear_frames(self.frame_four)
 
