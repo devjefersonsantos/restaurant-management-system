@@ -67,6 +67,11 @@ class UiLogin(customtkinter.CTk):
                                                  light_image=hostpil_image,
                                                  size=(32,32))
         
+        emailpil_image = Image.open("images/login_images/email.png")
+        self.email_image = customtkinter.CTkImage(dark_image=emailpil_image,
+                                                  light_image=emailpil_image,
+                                                  size=(33,33))
+        
         keypasswordpil_image = Image.open("images/login_images/keypassword.png")
         self.keypassword_image = customtkinter.CTkImage(dark_image=keypasswordpil_image,
                                                         light_image=keypasswordpil_image,
@@ -187,7 +192,8 @@ class UiLogin(customtkinter.CTk):
                                                    fg_color="#4bb34b", 
                                                    hover_color="#61bc61",
                                                    text_color="#ffffff", 
-                                                   text="Sign up")
+                                                   text="Sign up",
+                                                   command=self.ui_signup)
         createacc_button.place(x=27, y=141)
 
     def ui_setup_connection(self):
@@ -308,6 +314,96 @@ class UiLogin(customtkinter.CTk):
                     json.dump(__data, __file, indent=4)
                     __file.write("\n")
                 self.ui_setup_connection()
+
+    def ui_signup(self):
+        clear_frames(self.frame_three)
+        clear_frames(self.frame_four)
+
+        self.after(10, lambda:self.frame_three.configure(width=458, height=450))
+        self.after(10, lambda:self.frame_three.place(x=33, y=20))
+        
+        self.after(10, lambda:self.frame_four.configure(width=458, height=120))
+        self.after(10, lambda:self.frame_four.place(x=33, y=488))
+
+        user_label = customtkinter.CTkLabel(master=self.frame_three,
+                                            font=("arial", 15),
+                                            text="  Username:",
+                                            compound="left",
+                                            text_color="#2e2e2e",
+                                            image=self.user_image)
+        user_label.place(x=27, y=40)
+        
+        __username_entry = customtkinter.CTkEntry(master=self.frame_three,
+                                                  width=400, height=40,
+                                                  font=("arial", 17), 
+                                                  fg_color="#EEEEEE", 
+                                                  border_color="#e3e3e3", 
+                                                  border_width=1)
+        __username_entry.place(x=27, y=90)
+        
+        password_label = customtkinter.CTkLabel(master=self.frame_three,
+                                                font=("arial", 15),
+                                                text="  Password:",
+                                                compound="left",
+                                                text_color="#2e2e2e",
+                                                image=self.keypassword_image)
+        password_label.place(x=27, y=147)
+
+        self.__password_entry = customtkinter.CTkEntry(master=self.frame_three, 
+                                                       width=400, height=40,
+                                                       font=("arial", 17), 
+                                                       fg_color="#EEEEEE", 
+                                                       border_color="#e3e3e3", 
+                                                       border_width=1,
+                                                       show="*")
+        self.__password_entry.place(x=27, y=197)
+
+        self.__hide_password = True
+
+        self.statuspassword_button = customtkinter.CTkButton(master=self.frame_three,
+                                                             width=1, height=1, 
+                                                             image=self.hidepassword_image, 
+                                                             fg_color="#EEEEEE",
+                                                             bg_color="#EEEEEE",
+                                                             hover_color="#EEEEEE", 
+                                                             text="",
+                                                             command=self.show_password)
+        self.statuspassword_button.place(x=380, y=205)
+   
+        email_label = customtkinter.CTkLabel(master=self.frame_three,
+                                             font=("arial", 15),
+                                             text="  Email:",
+                                             compound="left",
+                                             text_color="#2e2e2e",
+                                             image=self.email_image)
+        email_label.place(x=27, y=254)
+
+        __email_entry = customtkinter.CTkEntry(master=self.frame_three,
+                                               width=400, height=40,
+                                               font=("arial", 17), 
+                                               fg_color="#EEEEEE", 
+                                               border_color="#e3e3e3", 
+                                               border_width=1)
+        __email_entry.place(x=27, y=304)
+
+        signup_button = customtkinter.CTkButton(master=self.frame_three, 
+                                                width=400, height=40,
+                                                fg_color="#0077ff", 
+                                                hover_color="#1f88ff",
+                                                text_color="#ffffff",
+                                                text="Sign up")
+        signup_button.place(x=27, y=380)
+
+        goback_button = customtkinter.CTkButton(master=self.frame_four,
+                                                width=400, height=40, 
+                                                fg_color="#5c5c5c",
+                                                hover_color="#6e6e6e", 
+                                                text_color="#ffffff",
+                                                text="Go back",
+                                                compound="left",
+                                                image=self.arrow_image,
+                                                command=self.go_back_loginscreen)
+        goback_button.place(x=27, y=41)
 
     def show_password(self):
         if self.__hide_password:
