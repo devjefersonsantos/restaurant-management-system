@@ -3,7 +3,7 @@ from PIL import Image
 from utils.clear_frames import clear_frames
 import json
 from tkinter import messagebox
-from database.connection.db_connection import DbConnection
+from database.database import Database
 
 class UiLogin(customtkinter.CTk):
     def __init__(self):
@@ -206,7 +206,7 @@ class UiLogin(customtkinter.CTk):
         self.after(10, lambda:self.frame_four.configure(width=458, height=120))
         self.after(10, lambda:self.frame_four.place(x=33, y=488))
 
-        if DbConnection().db_logged():
+        if Database().db_logged():
             self.databasestatus_image = customtkinter.CTkLabel(self.frame_three, text="", image=self.logged_image)
             self.databasestatus_image.place(x=400, y=10)
         else:
@@ -295,7 +295,7 @@ class UiLogin(customtkinter.CTk):
         goback_button.place(x=27, y=41)
 
         try:
-            with open("database/connection/config.json") as file:
+            with open("database/config.json") as file:
                 __data = json.load(file)
                 self.__host_entry.configure(placeholder_text=__data["host"])
                 self.__username_entry.configure(placeholder_text=__data["user"])
@@ -306,11 +306,11 @@ class UiLogin(customtkinter.CTk):
             self.__password_entry.configure(placeholder_text="")
             
             config_messagebox = {"icon": "error","type": "yesno"}
-            modal = messagebox.showerror("database/connection/config.json", "Error in the database configuration file.\nRestore file?", **config_messagebox)
+            modal = messagebox.showerror("database/config.json", "Error in the database configuration file.\nRestore file?", **config_messagebox)
             
             if modal == "yes":
                 __data = {"host": "localhost","user": "root","password": ""}
-                with open("database/connection/config.json", "w") as __file:
+                with open("database/config.json", "w") as __file:
                     json.dump(__data, __file, indent=4)
                     __file.write("\n")
                 self.ui_setup_connection()
@@ -418,17 +418,17 @@ class UiLogin(customtkinter.CTk):
     def save_connection_settings(self):
         if self.__username_entry.get() != "": 
             try: 
-                with open("database/connection/config.json") as __file:
+                with open("database/config.json") as __file:
                     __data = json.load(__file)
                     __data["host"] = self.__host_entry.get()
                     __data["user"] = self.__username_entry.get()
                     __data["password"] = self.__password_entry.get()
 
-                with open("database/connection/config.json", "w") as __file:
+                with open("database/config.json", "w") as __file:
                     json.dump(__data, __file, indent=4)
                     __file.write("\n")
             except FileNotFoundError as error:
-                messagebox.showerror("Error!", f"file or directory does not exist:\ndatabase/connection/config.json\n {error}")
+                messagebox.showerror("Error!", f"file or directory does not exist:\ndatabase/config.json\n {error}")
             except Exception as error:
                 messagebox.showerror("Error!", error)
             else:
