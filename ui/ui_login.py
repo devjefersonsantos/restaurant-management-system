@@ -4,6 +4,7 @@ from utils.clear_frames import clear_frames
 import json
 from tkinter import messagebox
 from database.database import Database
+from database.db_signup import DbSignup
 
 class UiLogin(customtkinter.CTk):
     def __init__(self):
@@ -206,7 +207,7 @@ class UiLogin(customtkinter.CTk):
         self.after(10, lambda:self.frame_four.configure(width=458, height=120))
         self.after(10, lambda:self.frame_four.place(x=33, y=488))
 
-        if Database().db_logged():
+        if Database.db_status():
             self.databasestatus_image = customtkinter.CTkLabel(self.frame_three, text="", image=self.logged_image)
             self.databasestatus_image.place(x=400, y=10)
         else:
@@ -391,7 +392,10 @@ class UiLogin(customtkinter.CTk):
                                                 fg_color="#0077ff", 
                                                 hover_color="#1f88ff",
                                                 text_color="#ffffff",
-                                                text="Sign up")
+                                                text="Sign up",
+                                                command=lambda:DbSignup(username=__username_entry.get(),
+                                                                        password=self.__password_entry.get(),
+                                                                        email=__email_entry.get()))
         signup_button.place(x=27, y=380)
 
         goback_button = customtkinter.CTkButton(master=self.frame_four,
@@ -404,6 +408,15 @@ class UiLogin(customtkinter.CTk):
                                                 image=self.arrow_image,
                                                 command=self.go_back_loginscreen)
         goback_button.place(x=27, y=41)
+
+        if not Database.db_status():
+            __username_entry.configure(state="readonly", fg_color="#e3e3e3", border_color="#ffffff")
+            self.__password_entry.configure(state="readonly", fg_color="#e3e3e3", border_color="#ffffff")
+            __email_entry.configure(state="readonly", fg_color="#e3e3e3", border_color="#ffffff")
+            signup_button.configure(state="disabled", fg_color="#429aff")
+            self.statuspassword_button.destroy()
+            
+            messagebox.showerror("Connection", "Can't register. Database connection failed.")
 
     def show_password(self):
         if self.__hide_password:
@@ -433,6 +446,7 @@ class UiLogin(customtkinter.CTk):
                 messagebox.showerror("Error!", error)
             else:
                 self.ui_setup_connection()
+                Database().connect_to_database()
 
     def go_back_loginscreen(self):
         clear_frames(self.frame_three)
