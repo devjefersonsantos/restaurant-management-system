@@ -5,6 +5,8 @@ import json
 from tkinter import messagebox
 from database.database import Database
 from database.db_signup import DbSignup
+from database.db_login import DbLogin
+from ui.ui_panel import Ui_panel
 
 class UiLogin(customtkinter.CTk):
     def __init__(self):
@@ -43,7 +45,7 @@ class UiLogin(customtkinter.CTk):
         self.frame_four.place(x=33, y=388)
 
         self.ui_images()
-        self.ui_widgets()
+        self.ui_login()
     
     def ui_images(self):
         # https://pixabay.com/illustrations/chef-food-kitchen-restaurant-adult-2410818/
@@ -107,7 +109,7 @@ class UiLogin(customtkinter.CTk):
                                                       light_image=loggedoutpil_image,
                                                       size=(45,45)) 
 
-    def ui_widgets(self):
+    def ui_login(self):
         chef_label = customtkinter.CTkLabel(master=self.frame_one, 
                                             corner_radius=0,
                                             text="", 
@@ -164,7 +166,9 @@ class UiLogin(customtkinter.CTk):
                                                fg_color="#2b8dfc", 
                                                hover_color="#4da0ff",
                                                text_color="#ffffff",
-                                               text="Log in")
+                                               text="Log in",
+                                               command=lambda:self.login(username=__username_entry.get(), 
+                                                                         password=self.__password_entry.get()))
         login_button.place(x=27, y=275)
 
         setupconnection_label = customtkinter.CTkLabel(master=self.frame_four,
@@ -441,12 +445,16 @@ class UiLogin(customtkinter.CTk):
                     json.dump(__data, __file, indent=4)
                     __file.write("\n")
             except FileNotFoundError as error:
-                messagebox.showerror("Error!", f"file or directory does not exist:\ndatabase/config.json\n {error}")
+                messagebox.showerror("Error!", f"file or directory does not exist:\ndatabase/config.json\n{error}")
             except Exception as error:
                 messagebox.showerror("Error!", error)
             else:
                 self.ui_setup_connection()
                 Database().connect_to_database()
+
+    def login(self, username, password):
+        if DbLogin(username=username, password=password).check_login():
+            Ui_panel(root=self)
 
     def go_back_loginscreen(self):
         clear_frames(self.frame_three)
@@ -458,4 +466,4 @@ class UiLogin(customtkinter.CTk):
         self.after(10, lambda:self.frame_four.configure(width=458, height=220))
         self.after(10, lambda:self.frame_four.place(x=33, y=388))
 
-        self.ui_widgets()
+        self.ui_login()
