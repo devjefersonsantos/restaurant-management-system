@@ -16,8 +16,8 @@ class DbSignup(Database):
         if not empty_entries(**__entry_items):
             if self.connect_to_database():
                 try:
-                    self.cursor.execute("""INSERT INTO ACCOUNT (username, password, email)
-                                        VALUES (%s, md5(%s), %s);""", (self.__username, self.__password, self.__email))
+                    self.cursor.execute("""INSERT INTO account (username, password, email)
+                                        VALUES (%s, SHA2(%s, 256), %s);""", (self.__username, self.__password, self.__email))
                     self.mysql_connection.commit()
                 except Exception as error:
                     messagebox.showerror(title=None, message=error)

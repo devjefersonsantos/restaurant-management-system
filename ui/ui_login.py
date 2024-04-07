@@ -206,12 +206,12 @@ class UiLogin(customtkinter.CTk):
         clear_frames(self.frame_four)
 
         self.after(10, lambda:self.frame_three.configure(width=458, height=450))
-        self.after(10, lambda:self.frame_three.place(x=33, y=20))
+        self.after(10, lambda:self.frame_three.place(x=33, y=18))
 
         self.after(10, lambda:self.frame_four.configure(width=458, height=120))
         self.after(10, lambda:self.frame_four.place(x=33, y=488))
 
-        if Database.db_status():
+        if Database.database_status():
             self.databasestatus_image = customtkinter.CTkLabel(self.frame_three, text="", image=self.logged_image)
             self.databasestatus_image.place(x=400, y=10)
         else:
@@ -325,7 +325,7 @@ class UiLogin(customtkinter.CTk):
         clear_frames(self.frame_four)
 
         self.after(10, lambda:self.frame_three.configure(width=458, height=450))
-        self.after(10, lambda:self.frame_three.place(x=33, y=20))
+        self.after(10, lambda:self.frame_three.place(x=33, y=18))
         
         self.after(10, lambda:self.frame_four.configure(width=458, height=120))
         self.after(10, lambda:self.frame_four.place(x=33, y=488))
@@ -413,7 +413,7 @@ class UiLogin(customtkinter.CTk):
                                                 command=self.go_back_loginscreen)
         goback_button.place(x=27, y=41)
 
-        if not Database.db_status():
+        if not Database.database_status():
             __username_entry.configure(state="readonly", fg_color="#e3e3e3", border_color="#ffffff")
             self.__password_entry.configure(state="readonly", fg_color="#e3e3e3", border_color="#ffffff")
             __email_entry.configure(state="readonly", fg_color="#e3e3e3", border_color="#ffffff")
@@ -453,15 +453,15 @@ class UiLogin(customtkinter.CTk):
                 Database().connect_to_database()
 
     def login(self, username, password):
-        if DbLogin(username=username, password=password).check_login():
-            Ui_panel(root=self)
+        if __token := DbLogin(username=username, password=password).create_access_token():
+            Ui_panel(root=self, token=__token)
 
     def go_back_loginscreen(self):
         clear_frames(self.frame_three)
         clear_frames(self.frame_four)
 
         self.after(10, lambda:self.frame_three.configure(width=458, height=350))
-        self.after(10, lambda:self.frame_three.place(x=33, y=20))
+        self.after(10, lambda:self.frame_three.place(x=33, y=18))
         
         self.after(10, lambda:self.frame_four.configure(width=458, height=220))
         self.after(10, lambda:self.frame_four.place(x=33, y=388))
