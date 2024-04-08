@@ -6,7 +6,7 @@ from tkinter import messagebox
 from database.database import Database
 from database.db_signup import DbSignup
 from database.db_login import DbLogin
-from ui.ui_panel import Ui_panel
+from ui.ui_panel import UiPanel
 
 class UiLogin(customtkinter.CTk):
     def __init__(self):
@@ -50,7 +50,7 @@ class UiLogin(customtkinter.CTk):
         # INSERT INTO account (username, password, email)
         # VALUES ('dev', SHA2('dev', 256), 'dev');
         if __token := DbLogin(username="dev", password="dev").create_access_token():
-            Ui_panel(root=self, token=__token)
+            UiPanel(root=self, token=__token)
     
     def ui_images(self):
         # https://pixabay.com/illustrations/chef-food-kitchen-restaurant-adult-2410818/
@@ -459,7 +459,7 @@ class UiLogin(customtkinter.CTk):
 
     def login(self, username, password):
         if __token := DbLogin(username=username, password=password).create_access_token():
-            Ui_panel(root=self, token=__token)
+            UiPanel(root=self, token=__token)
 
     def go_back_loginscreen(self):
         clear_frames(self.frame_three)
