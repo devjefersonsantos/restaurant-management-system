@@ -1,6 +1,8 @@
 import customtkinter
 from utils.clear_frames import clear_frames
 from database.db_login import DbLogin
+from ui.ui_home import UiHome
+from ui.ui_customer import UiCustomer
 from PIL import Image
 
 class UiPanel:
@@ -38,6 +40,10 @@ class UiPanel:
         self.ui_images()
         self.ui_panel()
 
+        self.current_button: customtkinter.CTkButton = self.home_button
+        self.button_selected(target_button=self.home_button)
+        UiHome(root=self.root, square_frame=self.square_frame, token=self.__token)
+
     def ui_images(self):
         # https://pixabay.com/vectors/shop-supermarket-bakery-store-2891677/
         restaurantpil_image = Image.open("images/global_images/restaurant.png")
@@ -56,23 +62,25 @@ class UiPanel:
                                                   image=self.restaurant_image)
         restaurant_label.place(x=80, y=12)
 
-        home_button = customtkinter.CTkButton(master=self.sidebar_frame,
-                                              width=242, height=37,
-                                              corner_radius=0, 
-                                              fg_color="#313338",
-                                              hover_color="#21222c",
-                                              text="Home",
-                                              font=("arial", 17))
-        home_button.place(x=0, y=8)
+        self.home_button = customtkinter.CTkButton(master=self.sidebar_frame,
+                                                   width=242, height=37,
+                                                   corner_radius=0, 
+                                                   fg_color="#313338",
+                                                   hover_color="#21222c",
+                                                   text="Home",
+                                                   font=("arial", 17),
+                                                   command=self.home_interface)
+        self.home_button.place(x=0, y=8)
 
-        customer_button = customtkinter.CTkButton(master=self.sidebar_frame,
-                                                  width=242, height=37,
-                                                  corner_radius=0, 
-                                                  fg_color="#313338",
-                                                  hover_color="#21222c",
-                                                  text="Customer",
-                                                  font=("arial", 17))
-        customer_button.place(x=0, y=65)
+        self.customer_button = customtkinter.CTkButton(master=self.sidebar_frame,
+                                                       width=242, height=37,
+                                                       corner_radius=0, 
+                                                       fg_color="#313338",
+                                                       hover_color="#21222c",
+                                                       text="Customer",
+                                                       font=("arial", 17),
+                                                       command=self.customer_interface)
+        self.customer_button.place(x=0, y=65)
 
         waiter_button = customtkinter.CTkButton(master=self.sidebar_frame,
                                                 width=242, height=37,
@@ -118,3 +126,16 @@ class UiPanel:
                                                  text="Account",
                                                  font=("arial", 17))
         account_button.place(x=0, y=858)
+
+    def home_interface(self):
+        UiHome(root=self.root, square_frame=self.square_frame, token=self.__token)
+        self.button_selected(target_button=self.home_button)
+
+    def customer_interface(self):
+        UiCustomer(root=self.root, square_frame=self.square_frame, token=self.__token)
+        self.button_selected(target_button=self.customer_button)
+
+    def button_selected(self, target_button:customtkinter.CTkButton):
+        self.current_button.configure(fg_color="#313338")
+        self.current_button = target_button
+        self.current_button.configure(fg_color="#292a33")
