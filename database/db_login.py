@@ -45,17 +45,20 @@ class DbLogin(Database):
                     self.cursor.close()
     
     @staticmethod
-    def verify_token(token: str):
-        __database = Database()
-        if __database.connect_to_database():
-            try:
-                cursor = __database.mysql_connection.cursor()
-                cursor.execute("""SELECT * FROM account
-                               WHERE access_token = %s""", (token,))
-                if not cursor.fetchone():
-                    restart_program()
-            except Exception as error:
-                messagebox.showerror(title=None, message=error)
-            finally:
-                __database.mysql_connection.close()
-                cursor.close()
+    def verify_token(func):
+        def wrapper(*args, **kwargs):
+            __database = Database()
+            if __database.connect_to_database():
+                try:
+                    cursor = __database.mysql_connection.cursor()
+                    cursor.execute("""SELECT * FROM account
+                                WHERE access_token = %s""", (kwargs["token"],))
+                    if not cursor.fetchone():
+                        restart_program()
+                except Exception as error:
+                    messagebox.showerror(title=None, message=error)
+                finally:
+                    __database.mysql_connection.close()
+                    cursor.close()
+            return func(*args, **kwargs)
+        return wrapper

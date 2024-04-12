@@ -1,13 +1,13 @@
 import customtkinter
-from database.db_login import DbLogin
 from utils.clear_frames import clear_frames
+from database.db_login import DbLogin
 
 class UiHome:
+    @DbLogin.verify_token
     def __init__(self, root: customtkinter.CTk, square_frame: customtkinter.CTk, token: str):
         self.root = root
         self.square_frame = square_frame
         self.__token = token
-        DbLogin.verify_token(self.__token)
 
         clear_frames(self.square_frame)
         self.ui_home()
