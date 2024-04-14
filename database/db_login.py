@@ -34,7 +34,7 @@ class DbLogin(Database):
             if self.connect_to_database():
                 try:
                     __token = secrets.token_hex(32)
-                    self.cursor.execute("""UPDATE account SET access_token = %s 
+                    self.cursor.execute("""UPDATE account SET access_token = SHA2(%s, 256) 
                                         WHERE username = %s AND password = SHA2(%s, 256);""", (__token, self.__username, self.__password))
                     self.mysql_connection.commit()
                     return __token
@@ -52,7 +52,7 @@ class DbLogin(Database):
                 try:
                     cursor = __database.mysql_connection.cursor()
                     cursor.execute("""SELECT * FROM account
-                                WHERE access_token = %s""", (kwargs["token"],))
+                                   WHERE access_token = SHA2(%s, 256);""", (kwargs["token"],))
                     if not cursor.fetchone():
                         restart_program()
                 except Exception as error:
@@ -62,3 +62,23 @@ class DbLogin(Database):
                     cursor.close()
             return func(*args, **kwargs)
         return wrapper
+
+    @staticmethod
+    def token_to_id_account(token) -> int:
+        __database = Database()
+        if __database.connect_to_database():
+            try:
+                cursor = __database.mysql_connection.cursor()
+                cursor.execute("""SELECT id_account FROM account
+                               WHERE access_token = SHA2(%s, 256);""", (token,))
+                result = cursor.fetchone()
+                
+                if not result:
+                    restart_program()
+            except Exception as error:
+                messagebox.showerror(title=None, message=error)
+            else:
+                return result[0]
+            finally:
+                __database.mysql_connection.close()
+                cursor.close()

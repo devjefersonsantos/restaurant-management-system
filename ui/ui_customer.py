@@ -2,6 +2,7 @@ import customtkinter
 from utils.clear_frames import clear_frames
 from database.db_login import DbLogin
 import tkinter
+from database.db_customer import DbCustomer
 
 class UiCustomer:
     @DbLogin.verify_token
@@ -130,13 +131,13 @@ class UiCustomer:
                                             text="Name:")
         name_label.place(x=25, y=25)
 
-        name_entry = customtkinter.CTkEntry(master=frame_one,
-                                            width=1618, height=35,
-                                            corner_radius=3, 
-                                            font=("arial", 17), 
-                                            border_color="#e3e3e3", 
-                                            border_width=1)
-        name_entry.place(x=25, y=62)
+        self.name_entry = customtkinter.CTkEntry(master=frame_one,
+                                                 width=1618, height=35,
+                                                 corner_radius=3, 
+                                                 font=("arial", 17), 
+                                                 border_color="#e3e3e3", 
+                                                 border_width=1)
+        self.name_entry.place(x=25, y=62)
 
         address_label = customtkinter.CTkLabel(master=frame_one,
                                                font=("arial bold", 17),
@@ -144,13 +145,13 @@ class UiCustomer:
                                                text="Address:")
         address_label.place(x=25, y=120)
 
-        address_entry = customtkinter.CTkEntry(master=frame_one,
-                                               width=1618, height=35,
-                                               corner_radius=3, 
-                                               font=("arial", 17), 
-                                               border_color="#e3e3e3", 
-                                               border_width=1)
-        address_entry.place(x=25, y=160)
+        self.address_entry = customtkinter.CTkEntry(master=frame_one,
+                                                    width=1618, height=35,
+                                                    corner_radius=3, 
+                                                    font=("arial", 17), 
+                                                    border_color="#e3e3e3", 
+                                                    border_width=1)
+        self.address_entry.place(x=25, y=160)
 
         cellphone_label = customtkinter.CTkLabel(master=frame_one,
                                                  font=("arial bold", 17),
@@ -158,13 +159,13 @@ class UiCustomer:
                                                  text="Cell Phone:")
         cellphone_label.place(x=25, y=215)
 
-        cellphone_entry = customtkinter.CTkEntry(master=frame_one,
-                                                 width=1618, height=35,
-                                                 corner_radius=3, 
-                                                 font=("arial", 17),
-                                                 border_color="#e3e3e3", 
-                                                 border_width=1)
-        cellphone_entry.place(x=25, y=255)
+        self.cellphone_entry = customtkinter.CTkEntry(master=frame_one,
+                                                      width=1618, height=35,
+                                                      corner_radius=3, 
+                                                      font=("arial", 17),
+                                                      border_color="#e3e3e3", 
+                                                      border_width=1)
+        self.cellphone_entry.place(x=25, y=255)
 
         email_label = customtkinter.CTkLabel(master=frame_one,
                                              font=("arial bold", 17),
@@ -172,13 +173,13 @@ class UiCustomer:
                                              text="Email:")
         email_label.place(x=25, y=310)
 
-        email_entry = customtkinter.CTkEntry(master=frame_one,
-                                             width=1618, height=35,                                                  
-                                             corner_radius=3,
-                                             font=("arial", 17),
-                                             border_color="#e3e3e3", 
-                                             border_width=1)
-        email_entry.place(x=25, y=350)
+        self.email_entry = customtkinter.CTkEntry(master=frame_one,
+                                                  width=1618, height=35,                                                  
+                                                  corner_radius=3,
+                                                  font=("arial", 17),
+                                                  border_color="#e3e3e3", 
+                                                  border_width=1)
+        self.email_entry.place(x=25, y=350)
 
         divider_frame = tkinter.Frame(master=self.square_frame, 
                                       height=1, width=1678, 
@@ -192,7 +193,8 @@ class UiCustomer:
                                                      text_color="#ffffff",
                                                      text="Add Customer",
                                                      fg_color="#4bb34b", 
-                                                     hover_color="#7ebf7e")
+                                                     hover_color="#7ebf7e",
+                                                     command=self.fn_create_customer)
         addcustomer_button.place(x=1165, y=868)
     
         cancel_button = customtkinter.CTkButton(master=self.square_frame,
@@ -205,6 +207,13 @@ class UiCustomer:
                                                 hover_color="#6e6e6e",
                                                 command=self.go_back)
         cancel_button.place(x=1425, y=868)
+
+    def fn_create_customer(self): 
+        if DbCustomer(token=self.__token).create_customer(name=self.name_entry.get(), 
+                                                          address=self.address_entry.get(), 
+                                                          cellphone=self.cellphone_entry.get(), 
+                                                          email=self.email_entry.get()):
+            self.ui_createcustomer()
 
     def go_back(self):
         clear_frames(self.square_frame)

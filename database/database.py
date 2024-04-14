@@ -25,6 +25,22 @@ class Database:
                                     username VARCHAR(50) NOT NULL UNIQUE, 
                                     password VARCHAR(255) NOT NULL,
                                     email VARCHAR(255) NOT NULL);""")
+                
+                self.cursor.execute("""CREATE TABLE IF NOT EXISTS customer (
+                                    id_customer INT NOT NULL AUTO_INCREMENT,
+                                    `name` VARCHAR(255) NOT NULL,
+                                    address VARCHAR(255) NOT NULL,
+                                    cell_phone VARCHAR(13) NOT NULL,
+                                    email VARCHAR(255),
+                                    registration_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                    account_id_account INT NOT NULL,
+                                    PRIMARY KEY (id_customer),
+                                    INDEX fk_customer_account_idx (account_id_account),
+                                    CONSTRAINT fk_customer_account
+                                      FOREIGN KEY (account_id_account)
+                                      REFERENCES `account` (id_account)
+                                    );""")
+
                 self.mysql_connection.commit()
             except Exception as error:
                 messagebox.showerror(title=None, message=error)
