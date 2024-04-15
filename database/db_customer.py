@@ -19,11 +19,11 @@ class DbCustomer(Database):
                     if email is None:
                         self.cursor.execute("""INSERT INTO customer (name, address, cell_phone, account_id_account)
                                             VALUES (%s, %s, %s, %s);""", (name, address, cellphone, __id_account))
-                        self.mysql_connection.commit()
+                        self.connection.commit()
                     else:
                         self.cursor.execute("""INSERT INTO customer (name, address, cell_phone, email, account_id_account)
                                             VALUES (%s, %s, %s, %s, %s);""", (name, address, cellphone, email, __id_account))
-                        self.mysql_connection.commit()
+                        self.connection.commit()
                 except Exception as error:
                     messagebox.showerror(title=None, message=error)
                 else:
@@ -31,4 +31,4 @@ class DbCustomer(Database):
                     return True
                 finally:
                     self.cursor.close()
-                    self.mysql_connection.close()
+                    self.connection.close()

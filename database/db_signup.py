@@ -1,6 +1,7 @@
 from database.database import Database
 from utils.empty_entries import empty_entries
 from tkinter import messagebox
+from utils.convert_to_sha3_256 import convert_to_sha3_256
 
 class DbSignup(Database):
     def __init__(self, username: str, password: str, email: str):
@@ -17,12 +18,12 @@ class DbSignup(Database):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""INSERT INTO account (username, password, email)
-                                        VALUES (%s, SHA2(%s, 256), %s);""", (self.__username, self.__password, self.__email))
-                    self.mysql_connection.commit()
+                                        VALUES (%s, %s, %s);""", (self.__username, convert_to_sha3_256(self.__password), self.__email))
+                    self.connection.commit()
                 except Exception as error:
                     messagebox.showerror(title=None, message=error)
                 else:
                     messagebox.showinfo(title=None, message="Congratulations! Your account\nhas been successfully created.")
                 finally:
                     self.cursor.close()
-                    self.mysql_connection.close()
+                    self.connection.close()

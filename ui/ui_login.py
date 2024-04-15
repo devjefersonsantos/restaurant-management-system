@@ -48,7 +48,7 @@ class UiLogin(customtkinter.CTk):
         self.ui_login()
 
         # INSERT INTO account (username, password, email)
-        # VALUES ('dev', SHA2('dev', 256), 'dev');
+        # VALUES ('dev', 'daeed6308874de11ec5ba896aff636aee60821b397f88164be3eae5cf6d276d8', 'dev');
         if __token := DbLogin(username="dev", password="dev").create_access_token():
             UiPanel(root=self, token=__token)
     
@@ -84,6 +84,11 @@ class UiLogin(customtkinter.CTk):
         self.keypassword_image = customtkinter.CTkImage(dark_image=keypasswordpil_image,
                                                         light_image=keypasswordpil_image,
                                                         size=(32,32))
+        
+        portpil_image = Image.open("images/login_images/port.png")
+        self.port_image = customtkinter.CTkImage(dark_image=portpil_image,
+                                                 light_image=portpil_image,
+                                                 size=(32,32))
         
         # https://pixabay.com/vectors/arrow-left-gray-back-computer-23255/
         arrowpil_image = Image.open("images/login_images/arrow.png")
@@ -127,7 +132,7 @@ class UiLogin(customtkinter.CTk):
                                                 compound="left",
                                                 text_color="#2e2e2e",
                                                 image=self.user_image)
-        username_label.place(x=27, y=40)
+        username_label.place(x=27, y=35)
 
         __username_entry = customtkinter.CTkEntry(master=self.frame_three, 
                                                   width=400, height=40,
@@ -135,7 +140,7 @@ class UiLogin(customtkinter.CTk):
                                                   fg_color="#EEEEEE",
                                                   border_color="#e3e3e3",
                                                   border_width=1)
-        __username_entry.place(x=27, y=90)
+        __username_entry.place(x=27, y=85)
 
         password_label = customtkinter.CTkLabel(master=self.frame_three,
                                                 font=("arial", 15),
@@ -143,7 +148,7 @@ class UiLogin(customtkinter.CTk):
                                                 compound="left",
                                                 text_color="#2e2e2e",
                                                 image=self.password_image)
-        password_label.place(x=27, y=147)
+        password_label.place(x=27, y=142)
 
         self.__password_entry = customtkinter.CTkEntry(master=self.frame_three,
                                                        width=400, height=40,
@@ -152,7 +157,7 @@ class UiLogin(customtkinter.CTk):
                                                        border_color="#e3e3e3", 
                                                        border_width=1,
                                                        show="*")
-        self.__password_entry.place(x=27, y=197)
+        self.__password_entry.place(x=27, y=192)
 
         self.statuspassword_button = customtkinter.CTkButton(master=self.frame_three,
                                                              width=1, height=1, 
@@ -162,7 +167,7 @@ class UiLogin(customtkinter.CTk):
                                                              hover_color="#EEEEEE", 
                                                              text=None,
                                                              command=self.show_password)
-        self.statuspassword_button.place(x=380, y=205)
+        self.statuspassword_button.place(x=380, y=200)
 
         self.__hide_password = True
 
@@ -174,11 +179,11 @@ class UiLogin(customtkinter.CTk):
                                                text="Log in",
                                                command=lambda:self.login(username=__username_entry.get(), 
                                                                          password=self.__password_entry.get()))
-        login_button.place(x=27, y=275)
+        login_button.place(x=27, y=270)
 
         setupconnection_label = customtkinter.CTkLabel(master=self.frame_four,
                                                        font=("arial", 15),
-                                                       text="MySQL Connection:",
+                                                       text="PostgreSQL Connection:",
                                                        text_color="#2e2e2e")
         setupconnection_label.place(x=27, y=20)
 
@@ -210,11 +215,11 @@ class UiLogin(customtkinter.CTk):
         clear_frames(self.frame_three)
         clear_frames(self.frame_four)
 
-        self.after(10, lambda:self.frame_three.configure(width=458, height=450))
+        self.after(10, lambda:self.frame_three.configure(width=458, height=488))
         self.after(10, lambda:self.frame_three.place(x=33, y=18))
-
-        self.after(10, lambda:self.frame_four.configure(width=458, height=120))
-        self.after(10, lambda:self.frame_four.place(x=33, y=488))
+        
+        self.after(10, lambda:self.frame_four.configure(width=458, height=84))
+        self.after(10, lambda:self.frame_four.place(x=33, y=524))
 
         if Database.database_status():
             self.databasestatus_image = customtkinter.CTkLabel(self.frame_three, text="", image=self.logged_image)
@@ -223,45 +228,29 @@ class UiLogin(customtkinter.CTk):
             self.databasestatus_image = customtkinter.CTkLabel(self.frame_three, text="", image=self.loggedout_image)
             self.databasestatus_image.place(x=400, y=10)
 
-        host_label = customtkinter.CTkLabel(master=self.frame_three,
-                                            font=("arial", 15),
-                                            text="  Host:",
-                                            compound="left",
-                                            text_color="#2e2e2e",
-                                            image=self.host_image)
-        host_label.place(x=27, y=40)
-
-        self.__host_entry = customtkinter.CTkEntry(master=self.frame_three,
-                                                   width=400, height=40,
-                                                   font=("arial", 17), 
-                                                   fg_color="#EEEEEE", 
-                                                   border_color="#e3e3e3", 
-                                                   border_width=1)
-        self.__host_entry.place(x=27, y=90)
-
         username_label = customtkinter.CTkLabel(master=self.frame_three,
                                                 font=("arial", 15),
                                                 text="  User:",
                                                 compound="left",
                                                 text_color="#2e2e2e",
                                                 image=self.user_image)
-        username_label.place(x=27, y=147)
+        username_label.place(x=27, y=35)
 
-        self.__username_entry = customtkinter.CTkEntry(master=self.frame_three,
-                                                       width=400, height=40,
-                                                       font=("arial", 17), 
-                                                       fg_color="#EEEEEE", 
-                                                       border_color="#e3e3e3", 
-                                                       border_width=1)
-        self.__username_entry.place(x=27, y=197)
+        self.__user_entry = customtkinter.CTkEntry(master=self.frame_three, 
+                                                   width=400, height=40,
+                                                   font=("arial", 17),
+                                                   fg_color="#EEEEEE",
+                                                   border_color="#e3e3e3",
+                                                   border_width=1)
+        self.__user_entry.place(x=27, y=85)
 
         password_label = customtkinter.CTkLabel(master=self.frame_three,
                                                 font=("arial", 15),
                                                 text="  Password:",
                                                 compound="left",
                                                 text_color="#2e2e2e",
-                                                image=self.keypassword_image)
-        password_label.place(x=27, y=254)
+                                                image=self.password_image)
+        password_label.place(x=27, y=142)
 
         self.__password_entry = customtkinter.CTkEntry(master=self.frame_three,
                                                        width=400, height=40,
@@ -270,7 +259,7 @@ class UiLogin(customtkinter.CTk):
                                                        border_color="#e3e3e3", 
                                                        border_width=1,
                                                        show="*")
-        self.__password_entry.place(x=27, y=304)
+        self.__password_entry.place(x=27, y=192)
 
         self.__hide_password = True
 
@@ -282,19 +271,53 @@ class UiLogin(customtkinter.CTk):
                                                              hover_color="#EEEEEE", 
                                                              text="",
                                                              command=self.show_password)
-        self.statuspassword_button.place(x=380, y=312)
+        self.statuspassword_button.place(x=380, y=200)
 
-        savechanges_button = customtkinter.CTkButton(master=self.frame_three,
-                                                     width=400, height=40, 
+        host_label = customtkinter.CTkLabel(master=self.frame_three,
+                                            font=("arial", 15),
+                                            text="  Host:",
+                                            compound="left",
+                                            text_color="#2e2e2e",
+                                            image=self.host_image)
+        host_label.place(x=27, y=249)
+
+        self.__host_entry = customtkinter.CTkEntry(master=self.frame_three,
+                                                   width=400, height=40,
+                                                   font=("arial", 17), 
+                                                   fg_color="#EEEEEE", 
+                                                   border_color="#e3e3e3", 
+                                                   border_width=1)
+        self.__host_entry.place(x=27, y=299)
+
+        port_label = customtkinter.CTkLabel(master=self.frame_three,
+                                            font=("arial", 15),
+                                            text="  Port:",
+                                            compound="left",
+                                            text_color="#2e2e2e",
+                                            image=self.port_image)
+        port_label.place(x=27, y=356)
+
+        self.__port_entry = customtkinter.CTkEntry(master=self.frame_three,
+                                                   width=400, height=40,
+                                                   font=("arial", 17), 
+                                                   fg_color="#EEEEEE", 
+                                                   border_color="#e3e3e3", 
+                                                   border_width=1)
+        self.__port_entry.place(x=27, y=406)
+
+        savechanges_button = customtkinter.CTkButton(master=self.frame_four,
+                                                     corner_radius=10,
+                                                     width=192, height=40, 
                                                      fg_color="#0077ff", 
                                                      hover_color="#1f88ff",
                                                      text_color="#ffffff", 
                                                      text="Save Changes",
                                                      command=self.save_connection_settings)
-        savechanges_button.place(x=27, y=380)
+        savechanges_button.place(x=27, y=22)
 
-        goback_button = customtkinter.CTkButton(master=self.frame_four, 
-                                                width=400, height=40,
+        goback_button = customtkinter.CTkButton(master=self.frame_four,
+                                                corner_radius=10, 
+                                                width=192, height=40,
                                                 fg_color="#5c5c5c",
                                                 hover_color="#6e6e6e", 
                                                 text_color="#ffffff", 
@@ -302,24 +325,26 @@ class UiLogin(customtkinter.CTk):
                                                 compound="left",
                                                 image=self.arrow_image,
                                                 command=self.go_back_loginscreen)
-        goback_button.place(x=27, y=41)
+        goback_button.place(x=236, y=22)
 
         try:
             with open("database/config.json") as file:
                 __data = json.load(file)
                 self.__host_entry.configure(placeholder_text=__data["host"])
-                self.__username_entry.configure(placeholder_text=__data["user"])
+                self.__user_entry.configure(placeholder_text=__data["user"])
                 self.__password_entry.configure(placeholder_text= "*" * len(__data["password"]))
+                self.__port_entry.configure(placeholder_text=__data["port"])
         except:
             self.__host_entry.configure(placeholder_text="")
-            self.__username_entry.configure(placeholder_text="")
+            self.__user_entry.configure(placeholder_text="")
             self.__password_entry.configure(placeholder_text="")
+            self.__port_entry.configure(placeholder_text="")
             
             config_messagebox = {"icon": "error","type": "yesno"}
             modal = messagebox.showerror("database/config.json", "Error in the database configuration file.\nRestore file?", **config_messagebox)
             
             if modal == "yes":
-                __data = {"host": "localhost","user": "root","password": ""}
+                __data = {"user": "postgres", "password": "admin", "host": "localhost", "port": "5432"}
                 with open("database/config.json", "w") as __file:
                     json.dump(__data, __file, indent=4)
                     __file.write("\n")
@@ -335,13 +360,13 @@ class UiLogin(customtkinter.CTk):
         self.after(10, lambda:self.frame_four.configure(width=458, height=120))
         self.after(10, lambda:self.frame_four.place(x=33, y=488))
 
-        user_label = customtkinter.CTkLabel(master=self.frame_three,
-                                            font=("arial", 15),
-                                            text="  Username:",
-                                            compound="left",
-                                            text_color="#2e2e2e",
-                                            image=self.user_image)
-        user_label.place(x=27, y=40)
+        username_label = customtkinter.CTkLabel(master=self.frame_three,
+                                                font=("arial", 15),
+                                                text="  Username:",
+                                                compound="left",
+                                                text_color="#2e2e2e",
+                                                image=self.user_image)
+        username_label.place(x=27, y=35)
         
         __username_entry = customtkinter.CTkEntry(master=self.frame_three,
                                                   width=400, height=40,
@@ -349,7 +374,7 @@ class UiLogin(customtkinter.CTk):
                                                   fg_color="#EEEEEE", 
                                                   border_color="#e3e3e3", 
                                                   border_width=1)
-        __username_entry.place(x=27, y=90)
+        __username_entry.place(x=27, y=85)
         
         password_label = customtkinter.CTkLabel(master=self.frame_three,
                                                 font=("arial", 15),
@@ -357,7 +382,7 @@ class UiLogin(customtkinter.CTk):
                                                 compound="left",
                                                 text_color="#2e2e2e",
                                                 image=self.keypassword_image)
-        password_label.place(x=27, y=147)
+        password_label.place(x=27, y=142)
 
         self.__password_entry = customtkinter.CTkEntry(master=self.frame_three, 
                                                        width=400, height=40,
@@ -366,7 +391,7 @@ class UiLogin(customtkinter.CTk):
                                                        border_color="#e3e3e3", 
                                                        border_width=1,
                                                        show="*")
-        self.__password_entry.place(x=27, y=197)
+        self.__password_entry.place(x=27, y=192)
 
         self.__hide_password = True
 
@@ -378,7 +403,7 @@ class UiLogin(customtkinter.CTk):
                                                              hover_color="#EEEEEE", 
                                                              text="",
                                                              command=self.show_password)
-        self.statuspassword_button.place(x=380, y=205)
+        self.statuspassword_button.place(x=380, y=200)
    
         email_label = customtkinter.CTkLabel(master=self.frame_three,
                                              font=("arial", 15),
@@ -386,7 +411,7 @@ class UiLogin(customtkinter.CTk):
                                              compound="left",
                                              text_color="#2e2e2e",
                                              image=self.email_image)
-        email_label.place(x=27, y=254)
+        email_label.place(x=27, y=249)
 
         __email_entry = customtkinter.CTkEntry(master=self.frame_three,
                                                width=400, height=40,
@@ -394,7 +419,7 @@ class UiLogin(customtkinter.CTk):
                                                fg_color="#EEEEEE", 
                                                border_color="#e3e3e3", 
                                                border_width=1)
-        __email_entry.place(x=27, y=304)
+        __email_entry.place(x=27, y=299)
 
         signup_button = customtkinter.CTkButton(master=self.frame_three, 
                                                 width=400, height=40,
@@ -438,13 +463,14 @@ class UiLogin(customtkinter.CTk):
             self.__hide_password = True
 
     def save_connection_settings(self):
-        if self.__username_entry.get() != "": 
+        if self.__user_entry.get() != "": 
             try: 
                 with open("database/config.json") as __file:
                     __data = json.load(__file)
-                    __data["host"] = self.__host_entry.get()
-                    __data["user"] = self.__username_entry.get()
+                    __data["user"] = self.__user_entry.get()
                     __data["password"] = self.__password_entry.get()
+                    __data["host"] = self.__host_entry.get()
+                    __data["port"] = self.__port_entry.get()
 
                 with open("database/config.json", "w") as __file:
                     json.dump(__data, __file, indent=4)
@@ -455,7 +481,7 @@ class UiLogin(customtkinter.CTk):
                 messagebox.showerror("Error!", error)
             else:
                 self.ui_setup_connection()
-                Database().connect_to_database()
+                Database().connect_to_database(database=None)
 
     def login(self, username, password):
         if __token := DbLogin(username=username, password=password).create_access_token():

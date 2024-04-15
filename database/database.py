@@ -1,51 +1,72 @@
-import mysql.connector
+import psycopg2
 import json
 from tkinter import messagebox
 
 class Database:
     def connect_to_database(self, database: str | None = "restaurant_management_system") -> True:
         try:
-            with open("database/config.json", "r") as file:
-                config = json.load(file)
-            self.mysql_connection = mysql.connector.connect(**config, database=database)
-            self.cursor = self.mysql_connection.cursor()
+            with open("database/config.json", "r") as __file:
+                __data = json.load(__file)
+                __user = __data["user"]
+                __password = __data["password"]
+                __host = __data["host"]
+                __port = __data["port"]
+
+            self.connection = psycopg2.connect(user=__user,
+                                               password=__password,
+                                               host=__host,
+                                               port=__port,
+                                               database=database)
+            self.cursor = self.connection.cursor()
+
             return True
+        except UnicodeDecodeError as error:
+            if database:
+                messagebox.showerror(title=None, message="First, set up the connection\nand then create an account.")
+            else:
+                messagebox.showerror(title=None, message=error)
         except Exception as error:
             messagebox.showerror(title=None, message=error)
     
     def create_database(self):
+        # https://stackoverflow.com/questions/44511958/python-postgresql-create-database-if-not-exists-is-error
         if self.connect_to_database(database=None):
             try:
-                self.cursor.execute("CREATE DATABASE IF NOT EXISTS restaurant_management_system;")
-                self.cursor.execute("USE restaurant_management_system;")
+                try:
+                    self.connection.autocommit = True
+                    self.cursor.execute("CREATE DATABASE restaurant_management_system;")
+                except:
+                    pass
+                finally:
+                    self.connection.close()
+                    self.cursor.close()
+                
+                self.connect_to_database()
 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS account (
-                                    id_account INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                    id_account SERIAL PRIMARY KEY,
                                     access_token VARCHAR(255), 
-                                    username VARCHAR(50) NOT NULL UNIQUE, 
+                                    username VARCHAR(10) NOT NULL UNIQUE, 
                                     password VARCHAR(255) NOT NULL,
                                     email VARCHAR(255) NOT NULL);""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS customer (
-                                    id_customer INT NOT NULL AUTO_INCREMENT,
-                                    `name` VARCHAR(255) NOT NULL,
+                                    id_customer SERIAL PRIMARY KEY,
+                                    name VARCHAR(255) NOT NULL,
                                     address VARCHAR(255) NOT NULL,
                                     cell_phone VARCHAR(13) NOT NULL,
                                     email VARCHAR(255),
-                                    registration_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                    registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                     account_id_account INT NOT NULL,
-                                    PRIMARY KEY (id_customer),
-                                    INDEX fk_customer_account_idx (account_id_account),
                                     CONSTRAINT fk_customer_account
-                                      FOREIGN KEY (account_id_account)
-                                      REFERENCES `account` (id_account)
-                                    );""")
+                                        FOREIGN KEY (account_id_account)
+                                        REFERENCES account (id_account));""")
 
-                self.mysql_connection.commit()
+                self.connection.commit()
             except Exception as error:
                 messagebox.showerror(title=None, message=error)
             else:
-                self.mysql_connection.close()
+                self.connection.close()
                 self.cursor.close()
 
     @staticmethod
@@ -53,9 +74,9 @@ class Database:
         try:
             with open("database/config.json", "r") as file:
                 config = json.load(file)
-            mysql_connection = mysql.connector.connect(**config)
+            connection = psycopg2.connect(**config, database=None)
         except:
             return False
         else:
-            mysql_connection.close()
+            connection.close()
             return True
