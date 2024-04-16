@@ -76,14 +76,20 @@ class UiCustomer:
         self.customer_treeview.column("#5", minwidth=150, width=300, anchor="center")
         self.customer_treeview.column("#6", minwidth=262, width=262, anchor="center")
 
+        divider_frame = tkinter.Frame(master=self.square_frame, 
+                                      height=55, width=1678, 
+                                      bg="#b4b5b8")
+        divider_frame.place(x=0, y=860)
+
         delcustomer_button = customtkinter.CTkButton(master=self.square_frame,
                                                      width=230, height=32,
                                                      corner_radius=3,
                                                      font=("arial", 15),
                                                      text_color="#ffffff",
                                                      text="Delete Customer",
-                                                     fg_color="#d54a49", 
-                                                     hover_color="#d1706f")
+                                                     fg_color="#d93030",
+                                                     bg_color= "#b4b5b8",
+                                                     hover_color="#f03535")
         delcustomer_button.place(x=905, y=868)
 
         updatecustomer_button = customtkinter.CTkButton(master=self.square_frame,
@@ -92,8 +98,9 @@ class UiCustomer:
                                                         font=("arial", 15),
                                                         text_color="#ffffff",
                                                         text="Update Customer",
-                                                        fg_color="#ec971f", 
-                                                        hover_color="#f0b35d")
+                                                        fg_color="#f29818",
+                                                        bg_color= "#b4b5b8", 
+                                                        hover_color="#ffa626")
         updatecustomer_button.place(x=1165, y=868)
 
         createcustomer_button = customtkinter.CTkButton(master=self.square_frame,
@@ -102,12 +109,14 @@ class UiCustomer:
                                                         font=("arial", 15),
                                                         text_color="#ffffff",
                                                         text="Add Customer",
-                                                        fg_color="#4bb34b", 
-                                                        hover_color="#7ebf7e",
+                                                        fg_color="#37b837",
+                                                        bg_color= "#b4b5b8", 
+                                                        hover_color="#3bc43b",
                                                         command=self.ui_createcustomer)
         createcustomer_button.place(x=1425, y=868)
 
-        treeview_scrollbar = tkinter.Scrollbar(self.square_frame, orient=tkinter.VERTICAL)
+        treeview_scrollbar = tkinter.Scrollbar(self.square_frame, orient=tkinter.VERTICAL, command=self.customer_treeview.yview)
+        self.customer_treeview.configure(yscroll=treeview_scrollbar.set)
         treeview_scrollbar.place(x=1660, y=50, height=808)
 
         self.fn_read_customers()
@@ -184,9 +193,9 @@ class UiCustomer:
         self.email_entry.place(x=25, y=350)
 
         divider_frame = tkinter.Frame(master=self.square_frame, 
-                                      height=1, width=1678, 
-                                      bg="#dbdbdb")
-        divider_frame.place(x=0, y=855)
+                                      height=55, width=1678, 
+                                      bg="#b4b5b8")
+        divider_frame.place(x=0, y=860)
 
         addcustomer_button = customtkinter.CTkButton(master=self.square_frame,
                                                      width=230, height=32,
@@ -194,8 +203,9 @@ class UiCustomer:
                                                      font=("arial", 15),
                                                      text_color="#ffffff",
                                                      text="Add Customer",
-                                                     fg_color="#4bb34b", 
-                                                     hover_color="#7ebf7e",
+                                                     fg_color="#37b837",
+                                                     bg_color= "#b4b5b8", 
+                                                     hover_color="#3bc43b",
                                                      command=self.fn_create_customer)
         addcustomer_button.place(x=1165, y=868)
     
@@ -205,7 +215,8 @@ class UiCustomer:
                                                      font=("arial", 15),
                                                      text_color="#ffffff",
                                                      text="Cancel",
-                                                     fg_color="#5c5c5c", 
+                                                     fg_color="#5c5c5c",
+                                                     bg_color= "#b4b5b8", 
                                                      hover_color="#6e6e6e",
                                                      command=self.go_back)
         self.cancel_button.place(x=1425, y=868)
