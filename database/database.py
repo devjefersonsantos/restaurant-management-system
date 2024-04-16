@@ -22,11 +22,11 @@ class Database:
             return True
         except UnicodeDecodeError as error:
             if database:
-                messagebox.showerror(title=None, message="First, set up the connection\nand then create an account.")
+                messagebox.showerror(title="Login Error", message="First, set up the connection\nand then create an account.")
             else:
-                messagebox.showerror(title=None, message=error)
+                messagebox.showerror(title="Database Error", message=error)
         except Exception as error:
-            messagebox.showerror(title=None, message=error)
+            messagebox.showerror(title="Database Error", message=error)
     
     def create_database(self):
         # https://stackoverflow.com/questions/44511958/python-postgresql-create-database-if-not-exists-is-error
@@ -64,7 +64,7 @@ class Database:
 
                 self.connection.commit()
             except Exception as error:
-                messagebox.showerror(title=None, message=error)
+                messagebox.showerror(title="Database Error", message=error)
             else:
                 self.connection.close()
                 self.cursor.close()

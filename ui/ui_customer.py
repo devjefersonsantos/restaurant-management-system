@@ -54,27 +54,27 @@ class UiCustomer:
         style.configure("Treeview.Heading", font=("Arial", 13), foreground="#1c1c1c")
         style.configure("Treeview", font=("Arial", 13), foreground="#1c1c1c", rowheight=28)
 
-        customer_treeview = tkinter.ttk.Treeview(master=self.square_frame,
-                                                 height=28,
-                                                 style="style_treeview.Treeview",
-                                                 columns=("id customer", "name", "address", 
-                                                          "cell phone", "email", "registration date"),
-                                                 show="headings")
-        customer_treeview.place(x=0, y=50)
+        self.customer_treeview = tkinter.ttk.Treeview(master=self.square_frame,
+                                                      height=28,
+                                                      style="style_treeview.Treeview",
+                                                      columns=("id customer", "name", "address", 
+                                                               "cell phone", "email", "registration date"),
+                                                      show="headings")
+        self.customer_treeview.place(x=0, y=50)
 
-        customer_treeview.heading("#1", text="id customer", anchor="center")
-        customer_treeview.heading("#2", text="name", anchor="center")
-        customer_treeview.heading("#3", text="address", anchor="center")
-        customer_treeview.heading("#4", text="cell phone", anchor="center")
-        customer_treeview.heading("#5", text="email", anchor="center")
-        customer_treeview.heading("#6", text="registration date", anchor="center")
+        self.customer_treeview.heading("#1", text="id customer", anchor="center")
+        self.customer_treeview.heading("#2", text="name", anchor="center")
+        self.customer_treeview.heading("#3", text="address", anchor="center")
+        self.customer_treeview.heading("#4", text="cell phone", anchor="center")
+        self.customer_treeview.heading("#5", text="email", anchor="center")
+        self.customer_treeview.heading("#6", text="registration date", anchor="center")
 
-        customer_treeview.column("#1", minwidth=150, width=200, anchor="center")
-        customer_treeview.column("#2", minwidth=150, width=300, anchor="center")
-        customer_treeview.column("#3", minwidth=150, width=300, anchor="center")
-        customer_treeview.column("#4", minwidth=150, width=300, anchor="center")
-        customer_treeview.column("#5", minwidth=150, width=300, anchor="center")
-        customer_treeview.column("#6", minwidth=262, width=262, anchor="center")
+        self.customer_treeview.column("#1", minwidth=150, width=200, anchor="center")
+        self.customer_treeview.column("#2", minwidth=150, width=300, anchor="center")
+        self.customer_treeview.column("#3", minwidth=150, width=300, anchor="center")
+        self.customer_treeview.column("#4", minwidth=150, width=300, anchor="center")
+        self.customer_treeview.column("#5", minwidth=150, width=300, anchor="center")
+        self.customer_treeview.column("#6", minwidth=262, width=262, anchor="center")
 
         delcustomer_button = customtkinter.CTkButton(master=self.square_frame,
                                                      width=230, height=32,
@@ -109,6 +109,8 @@ class UiCustomer:
 
         treeview_scrollbar = tkinter.Scrollbar(self.square_frame, orient=tkinter.VERTICAL)
         treeview_scrollbar.place(x=1660, y=50, height=808)
+
+        self.fn_read_customers()
 
     def ui_createcustomer(self):
         clear_frames(self.square_frame)
@@ -197,16 +199,16 @@ class UiCustomer:
                                                      command=self.fn_create_customer)
         addcustomer_button.place(x=1165, y=868)
     
-        cancel_button = customtkinter.CTkButton(master=self.square_frame,
-                                                width=230, height=32,
-                                                corner_radius=3,
-                                                font=("arial", 15),
-                                                text_color="#ffffff",
-                                                text="Cancel",
-                                                fg_color="#5c5c5c", 
-                                                hover_color="#6e6e6e",
-                                                command=self.go_back)
-        cancel_button.place(x=1425, y=868)
+        self.cancel_button = customtkinter.CTkButton(master=self.square_frame,
+                                                     width=230, height=32,
+                                                     corner_radius=3,
+                                                     font=("arial", 15),
+                                                     text_color="#ffffff",
+                                                     text="Cancel",
+                                                     fg_color="#5c5c5c", 
+                                                     hover_color="#6e6e6e",
+                                                     command=self.go_back)
+        self.cancel_button.place(x=1425, y=868)
 
     def fn_create_customer(self): 
         if DbCustomer(token=self.__token).create_customer(name=self.name_entry.get(), 
@@ -214,6 +216,21 @@ class UiCustomer:
                                                           cellphone=self.cellphone_entry.get(), 
                                                           email=self.email_entry.get()):
             self.ui_createcustomer()
+            self.cancel_button.configure(text="Back")
+
+    def fn_read_customers(self):
+        self.customer_treeview.delete(*self.customer_treeview.get_children())
+
+        __all_customers = [(i[0], i[1], i[2], i[3], i[4], i[5].replace(microsecond=0)) 
+                           for i in DbCustomer(token=self.__token).read_customers()]
+
+        self.customer_treeview.tag_configure("hexgray", background="#ededed")
+        self.customer_treeview.tag_configure("hexwhite", background="#fafbfc")
+        
+        tag = "hexwhite"
+        for i in __all_customers:
+            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            self.customer_treeview.insert("", "end", values=i, tags=tag)
 
     def go_back(self):
         clear_frames(self.square_frame)

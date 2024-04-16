@@ -24,9 +24,9 @@ class DbLogin(Database):
                     if self.cursor.fetchone():
                         return True
                     else:
-                        messagebox.showerror(title=None, message="Incorrect username or password\nplease try again.")
+                        messagebox.showerror(title="Login Error", message="Incorrect username or password\nplease try again.")
                 except Exception as error:
-                    messagebox.showerror(title=None, message=error)
+                    messagebox.showerror(title="Login Error", message=error)
                 finally:
                     self.connection.close()
                     self.cursor.close()
@@ -43,7 +43,7 @@ class DbLogin(Database):
                     self.connection.commit()
                     return __token
                 except Exception as error:
-                    messagebox.showerror(title=None, message=error)
+                    messagebox.showerror(title="Authentication Failed", message=error)
                 finally:
                     self.connection.close()
                     self.cursor.close()
@@ -60,7 +60,7 @@ class DbLogin(Database):
                     if not cursor.fetchone():
                         raise Exception("Authentication Failed")
                 except Exception as error:
-                    messagebox.showerror(title=None, message=error)
+                    messagebox.showerror(title="System User Error", message=error)
                     restart_program()
                 finally:
                     __database.connection.close()
@@ -81,7 +81,7 @@ class DbLogin(Database):
                 if not result:
                     Exception("Authentication Failed")
             except Exception as error:
-                messagebox.showerror(title=None, message=error)
+                messagebox.showerror(title="System User Error", message=error)
                 restart_program()
             else:
                 return result[0]

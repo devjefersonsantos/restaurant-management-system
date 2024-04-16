@@ -21,9 +21,9 @@ class DbSignup(Database):
                                         VALUES (%s, %s, %s);""", (self.__username, convert_to_sha3_256(self.__password), self.__email))
                     self.connection.commit()
                 except Exception as error:
-                    messagebox.showerror(title=None, message=error)
+                    messagebox.showerror(title="Sign Up Error", message=error)
                 else:
-                    messagebox.showinfo(title=None, message="Congratulations! Your account\nhas been successfully created.")
+                    messagebox.showinfo(title="Sign Up", message="Congratulations! Your account\nhas been successfully created.")
                 finally:
                     self.cursor.close()
                     self.connection.close()

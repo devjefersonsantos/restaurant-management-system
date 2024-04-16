@@ -4,8 +4,10 @@ def empty_entries(**kwargs) -> bool:
     total_emptyentries = [key for key, value in kwargs.items() if not value]
     
     if len(total_emptyentries) == 1:
-        messagebox.showerror(title=None, message=f"These fields are required: {', '.join(total_emptyentries)}.")
-        return True
+        messagebox.showerror(title="Required Field", message=f"Please fill out this field: {total_emptyentries[0]}.")
+
     elif total_emptyentries:
-        messagebox.showerror(title=None, message=f"Please fill out all required\nfields: {', '.join(total_emptyentries)}.")
+        messagebox.showerror(title="Required Fields", message=f"Please fill in all required\nfields: {', '.join(total_emptyentries)}.")
+
+    if total_emptyentries:
         return True
