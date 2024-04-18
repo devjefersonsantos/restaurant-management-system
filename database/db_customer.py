@@ -1,7 +1,7 @@
 from database.database import Database
 from utils.empty_entries import empty_entries
-import tkinter
 from database.db_login import DbLogin
+from tkinter import messagebox
 
 class DbCustomer(Database):
     def __init__(self, token):
@@ -24,9 +24,9 @@ class DbCustomer(Database):
                                             VALUES (%s, %s, %s, %s, %s);""", (name, address, cellphone, email, __id_account))
                         self.connection.commit()
                 except Exception as error:
-                    tkinter.messagebox.showerror(title="Create Customer Error", message=error)
+                    messagebox.showerror(title="Create Customer Error", message=error)
                 else:
-                    tkinter.messagebox.showinfo(title="Create Customer", message=f"Customer: {name}, successfully registered.")
+                    messagebox.showinfo(title="Create Customer", message=f"Customer: {name}, successfully registered.")
                     return True
                 finally:
                     self.cursor.close()
@@ -39,7 +39,7 @@ class DbCustomer(Database):
                                     ORDER BY id_customer""")
                 self.result = self.cursor.fetchall()
             except Exception as error:
-                tkinter.messagebox.showerror(title="Read Customers Error", message=error)
+                messagebox.showerror(title="Read Customers Error", message=error)
             else:
                 return self.result
             finally:
@@ -59,10 +59,22 @@ class DbCustomer(Database):
 
                     self.connection.commit()
                 except Exception as error:
-                    tkinter.messagebox.showerror(title="Update Customer Error", message=error)
+                    messagebox.showerror(title="Update Customer Error", message=error)
                 else:
-                    tkinter.messagebox.showinfo(title="Update Customer", message=f"Customer: {name}, updated successfully!")
+                    messagebox.showinfo(title="Update Customer", message=f"Customer: {name}, updated successfully!")
                     return True
                 finally:
                     self.cursor.close()
                     self.connection.close()
+    
+    def delete_customer(self, id_customer: int):
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""DELETE FROM customer
+                                    WHERE id_customer = %s""", (id_customer,))
+                self.connection.commit()
+            except Exception as error:
+                messagebox.showerror(title="Delete Customer Error", message=error)
+            finally:
+                self.cursor.close()
+                self.connection.close()

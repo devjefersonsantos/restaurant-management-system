@@ -2,6 +2,7 @@ import customtkinter
 from utils.clear_frames import clear_frames
 from database.db_login import DbLogin
 import tkinter
+import tkinter.messagebox
 from database.db_customer import DbCustomer
 
 class UiCustomer:
@@ -89,7 +90,8 @@ class UiCustomer:
                                                       text="Delete Customer",
                                                       fg_color="#d93030",
                                                       bg_color= "#b4b5b8",
-                                                      hover_color="#f03535")
+                                                      hover_color="#f03535",
+                                                      command=self.fn_delete_customer)
         del_customer_button.place(x=905, y=868)
 
         update_customer_button = customtkinter.CTkButton(master=self.square_frame,
@@ -368,6 +370,18 @@ class UiCustomer:
                                                           cellphone=self.cellphone_entry.get(),
                                                           email=self.email_entry.get()):
             self.to_back()
+
+    def fn_delete_customer(self):
+        self.data = self.selected_row()
+        if not self.data:
+            return
+          
+        message = f"Are you sure you want to delete\nthis customer? {self.data[1]}."
+        if tkinter.messagebox.askyesno(title="Delete Customer", 
+                                       message=message, 
+                                       icon=tkinter.messagebox.WARNING) == True:
+            DbCustomer(self.__token).delete_customer(id_customer=self.data[0])
+            self.fn_read_customers()
 
     def customer_data(self):
         list_entries = [self.id_entry, self.name_entry, self.address_entry, self.cellphone_entry, self.email_entry]
