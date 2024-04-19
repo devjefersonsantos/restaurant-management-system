@@ -43,7 +43,8 @@ class UiCustomer:
                                                                font=("arial", 15), 
                                                                text="Search",
                                                                fg_color="#407ecf", 
-                                                               hover_color="#6996d1")
+                                                               hover_color="#6996d1",
+                                                               command=lambda:self.fn_search_customer(self.search_customers_entry.get()))
         self.search_customers_button.place(x=1425, y=9)
 
     def ui_customer(self):
@@ -382,6 +383,16 @@ class UiCustomer:
                                        icon=tkinter.messagebox.WARNING) == True:
             DbCustomer(self.__token).delete_customer(id_customer=self.data[0])
             self.fn_read_customers()
+
+    def fn_search_customer(self, typed: str):
+        self.customer_treeview.delete(*self.customer_treeview.get_children())
+
+        customer = DbCustomer(self.__token).search_customer(typed=typed)
+
+        tag = "hexwhite"
+        for i in customer:
+            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            self.customer_treeview.insert("", "end", values=i, tags=tag)
 
     def customer_data(self):
         list_entries = [self.id_entry, self.name_entry, self.address_entry, self.cellphone_entry, self.email_entry]

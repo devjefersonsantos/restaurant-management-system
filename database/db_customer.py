@@ -78,3 +78,17 @@ class DbCustomer(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def search_customer(self, typed: str) -> str:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT * FROM customer 
+                                    WHERE name LIKE %s""", ("%" + typed + "%",))
+                self.result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Search Customer Error", message=error)
+            else:
+                return self.result
+            finally:
+                self.cursor.close()
+                self.connection.close()
