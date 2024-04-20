@@ -1,9 +1,10 @@
 import customtkinter
+from PIL import Image
 from utils.clear_frames import clear_frames
+from database.db_login import DbLogin
 from ui.ui_home import UiHome
 from ui.ui_customer import UiCustomer
-from PIL import Image
-from database.db_login import DbLogin
+from ui.ui_waiter import UiWaiter
 
 class UiPanel:
     @DbLogin.verify_token
@@ -82,14 +83,15 @@ class UiPanel:
                                                        command=self.customer_interface)
         self.customer_button.place(x=0, y=65)
 
-        waiter_button = customtkinter.CTkButton(master=self.sidebar_frame,
-                                                width=242, height=37,
-                                                corner_radius=0,
-                                                fg_color="#313338",
-                                                hover_color="#21222c",
-                                                text="Waiter",
-                                                font=("arial", 17))
-        waiter_button.place(x=0, y=122)
+        self.waiter_button = customtkinter.CTkButton(master=self.sidebar_frame,
+                                                     width=242, height=37,
+                                                     corner_radius=0,
+                                                     fg_color="#313338",
+                                                     hover_color="#21222c",
+                                                     text="Waiter",
+                                                     font=("arial", 17),
+                                                     command=self.waiter_interface)
+        self.waiter_button.place(x=0, y=122)
 
         category_button = customtkinter.CTkButton(master=self.sidebar_frame,
                                                   width=242, height=37,
@@ -134,6 +136,10 @@ class UiPanel:
     def customer_interface(self):
         UiCustomer(root=self.root, square_frame=self.square_frame, token=self.__token)
         self.button_selected(target_button=self.customer_button)
+
+    def waiter_interface(self):
+        UiWaiter(root=self.root, square_frame=self.square_frame, token=self.__token)
+        self.button_selected(target_button=self.waiter_button)
 
     def button_selected(self, target_button:customtkinter.CTkButton):
         self.current_button.configure(fg_color="#313338")
