@@ -342,12 +342,14 @@ class UiCustomer:
 
         self.customer_data()
 
-    def fn_create_customer(self): 
+    def fn_create_customer(self):
         if DbCustomer(token=self.__token).create_customer(name=self.name_entry.get(), 
                                                           address=self.address_entry.get(), 
                                                           cellphone=self.cellphone_entry.get(), 
                                                           email=self.email_entry.get()):
-            self.ui_create_customer()
+            for i in [self.name_entry, self.address_entry, self.cellphone_entry, self.email_entry]:
+                i.delete(0, "end")
+            self.root.focus()
             self.cancel_button.configure(text="Back")
 
     def fn_read_customers(self):
