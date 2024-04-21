@@ -25,3 +25,17 @@ class DbWaiter(Database):
                 finally:
                     self.cursor.close()
                     self.connection.close()
+
+    def read_waiters(self) -> list[tuple]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT * FROM waiter
+                                    ORDER BY id_waiter""")
+                self.result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Read Waiters Error", message=error)
+            else:
+                return self.result
+            finally:
+                self.cursor.close()
+                self.connection.close()

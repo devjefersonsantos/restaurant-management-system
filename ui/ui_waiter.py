@@ -144,26 +144,28 @@ class UiWaiter:
         style.configure("Treeview.Heading", font=("Arial", 13), foreground="#1c1c1c")
         style.configure("Treeview", font=("Arial", 13), foreground="#1c1c1c", rowheight=28)
 
-        waiter_treeview = tkinter.ttk.Treeview(master=self.square_frame,
-                                               height=29,
-                                               style="style_treeview.Treeview",
-                                               columns=("ID", "name", "cell phone", "registration date"),
-                                               show="headings")
-        waiter_treeview.place(x=370, y=58)
+        self.waiter_treeview = tkinter.ttk.Treeview(master=self.square_frame,
+                                                    height=29,
+                                                    style="style_treeview.Treeview",
+                                                    columns=("ID", "name", "cell phone", "registration date"),
+                                                    show="headings")
+        self.waiter_treeview.place(x=370, y=58)
 
-        waiter_treeview.heading("#1", text="  ID", anchor="w")
-        waiter_treeview.heading("#2", text=" name", anchor="w")
-        waiter_treeview.heading("#3", text=" cell phone", anchor="w")
-        waiter_treeview.heading("#4", text=" registration date", anchor="w")
+        self.waiter_treeview.heading("#1", text="  ID", anchor="w")
+        self.waiter_treeview.heading("#2", text=" name", anchor="w")
+        self.waiter_treeview.heading("#3", text=" cell phone", anchor="w")
+        self.waiter_treeview.heading("#4", text=" registration date", anchor="w")
 
-        waiter_treeview.column("#1", minwidth=100, width=150, anchor="center")
-        waiter_treeview.column("#2", minwidth=200, width=350, anchor="w")
-        waiter_treeview.column("#3", minwidth=250, width=375, anchor="w")
-        waiter_treeview.column("#4", minwidth=300, width=425, anchor="w")
+        self.waiter_treeview.column("#1", minwidth=100, width=150, anchor="center")
+        self.waiter_treeview.column("#2", minwidth=200, width=350, anchor="w")
+        self.waiter_treeview.column("#3", minwidth=250, width=375, anchor="w")
+        self.waiter_treeview.column("#4", minwidth=300, width=425, anchor="w")
 
-        treeview_scrollbar = tkinter.Scrollbar(self.square_frame, orient=tkinter.VERTICAL, command=waiter_treeview.yview)
-        waiter_treeview.configure(yscroll=treeview_scrollbar.set)
+        treeview_scrollbar = tkinter.Scrollbar(self.square_frame, orient=tkinter.VERTICAL, command=self.waiter_treeview.yview)
+        self.waiter_treeview.configure(yscroll=treeview_scrollbar.set)
         treeview_scrollbar.place(x=1660, y=58, height=837)
+
+        self.fn_read_waiters()
 
     def fn_create_waiter(self):
         if DbWaiter(token=self.__token).create_waiter(name=self.waiter_name_entry.get(),
@@ -171,3 +173,18 @@ class UiWaiter:
             self.waiter_name_entry.delete(0, "end")
             self.waiter_cellphone_entry.delete(0, "end")
             self.root.focus()
+            self.fn_read_waiters()
+
+    def fn_read_waiters(self):
+        self.waiter_treeview.delete(*self.waiter_treeview.get_children())
+
+        __all_waiters = [(i[0], i[1], i[2], i[3].replace(microsecond=0))
+                         for i in DbWaiter(token=self.__token).read_waiters()]
+
+        self.waiter_treeview.tag_configure("hexgray", background="#ededed")
+        self.waiter_treeview.tag_configure("hexwhite", background="#fafbfc")
+        
+        tag = "hexwhite"
+        for i in __all_waiters:
+            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            self.waiter_treeview.insert("", "end", values=i, tags=tag)
