@@ -2,6 +2,7 @@ import customtkinter
 from database.db_login import DbLogin
 from utils.clear_frames import clear_frames
 import tkinter
+from database.db_waiter import DbWaiter
 
 class UiWaiter:
     @DbLogin.verify_token
@@ -50,7 +51,7 @@ class UiWaiter:
         self.topbar()
 
         create_waiter_frame = customtkinter.CTkFrame(master=self.square_frame,
-                                                     width=350, height=260,
+                                                     width=350, height=240,
                                                      corner_radius=10,
                                                      fg_color="#ffffff")
         create_waiter_frame.place(x=10, y=58)
@@ -61,13 +62,13 @@ class UiWaiter:
                                                    text="Name:")
         waiter_name_label.place(x=10, y=10)
 
-        waiter_name_entry = customtkinter.CTkEntry(master=create_waiter_frame,
-                                                   width=330, height=35,
-                                                   corner_radius=3, 
-                                                   font=("arial", 17), 
-                                                   border_color="#e3e3e3", 
-                                                   border_width=1)
-        waiter_name_entry.place(x=10, y=45)
+        self.waiter_name_entry = customtkinter.CTkEntry(master=create_waiter_frame,
+                                                        width=330, height=35,
+                                                        corner_radius=3, 
+                                                        font=("arial", 17), 
+                                                        border_color="#e3e3e3", 
+                                                        border_width=1)
+        self.waiter_name_entry.place(x=10, y=45)
 
         waiter_cellphone_label = customtkinter.CTkLabel(master=create_waiter_frame, 
                                                         font=("arial", 17), 
@@ -75,13 +76,13 @@ class UiWaiter:
                                                         text="Cell Phone:")
         waiter_cellphone_label.place(x=10, y=90)
 
-        waiter_cellphone_entry = customtkinter.CTkEntry(master=create_waiter_frame,
-                                                        width=330, height=35,
-                                                        corner_radius=3, 
-                                                        font=("arial", 17), 
-                                                        border_color="#e3e3e3", 
-                                                        border_width=1)
-        waiter_cellphone_entry.place(x=10, y=135)
+        self.waiter_cellphone_entry = customtkinter.CTkEntry(master=create_waiter_frame,
+                                                             width=330, height=35,
+                                                             corner_radius=3, 
+                                                             font=("arial", 17), 
+                                                             border_color="#e3e3e3", 
+                                                             border_width=1)
+        self.waiter_cellphone_entry.place(x=10, y=125)
 
         create_waiter_button = customtkinter.CTkButton(master=create_waiter_frame,
                                                        width=330, height=35,
@@ -90,8 +91,9 @@ class UiWaiter:
                                                        text_color="#ffffff",
                                                        text="Add Waiter",
                                                        fg_color="#4bb34b", 
-                                                       hover_color="#7ebf7e")
-        create_waiter_button.place(x=10, y=200)
+                                                       hover_color="#7ebf7e",
+                                                       command=self.fn_create_waiter)
+        create_waiter_button.place(x=10, y=185)
 
         update_waiter_frame = customtkinter.CTkFrame(master=self.square_frame,
                                                      width=350, height=100,
@@ -145,18 +147,27 @@ class UiWaiter:
         waiter_treeview = tkinter.ttk.Treeview(master=self.square_frame,
                                                height=29,
                                                style="style_treeview.Treeview",
-                                               columns=("ID", "name", "cell phone"),
+                                               columns=("ID", "name", "cell phone", "registration date"),
                                                show="headings")
         waiter_treeview.place(x=370, y=58)
 
         waiter_treeview.heading("#1", text="  ID", anchor="w")
         waiter_treeview.heading("#2", text=" name", anchor="w")
         waiter_treeview.heading("#3", text=" cell phone", anchor="w")
+        waiter_treeview.heading("#4", text=" registration date", anchor="w")
 
         waiter_treeview.column("#1", minwidth=100, width=150, anchor="center")
-        waiter_treeview.column("#2", minwidth=250, width=400, anchor="w")
-        waiter_treeview.column("#3", minwidth=500, width=750, anchor="w")
+        waiter_treeview.column("#2", minwidth=200, width=350, anchor="w")
+        waiter_treeview.column("#3", minwidth=250, width=375, anchor="w")
+        waiter_treeview.column("#4", minwidth=300, width=425, anchor="w")
 
         treeview_scrollbar = tkinter.Scrollbar(self.square_frame, orient=tkinter.VERTICAL, command=waiter_treeview.yview)
         waiter_treeview.configure(yscroll=treeview_scrollbar.set)
         treeview_scrollbar.place(x=1660, y=58, height=837)
+
+    def fn_create_waiter(self):
+        if DbWaiter(token=self.__token).create_waiter(name=self.waiter_name_entry.get(),
+                                                      cellphone=self.waiter_cellphone_entry.get()):
+            self.waiter_name_entry.delete(0, "end")
+            self.waiter_cellphone_entry.delete(0, "end")
+            self.root.focus()

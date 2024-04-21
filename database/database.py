@@ -61,7 +61,13 @@ class Database:
                                     CONSTRAINT fk_customer_account
                                         FOREIGN KEY (account_id_account)
                                         REFERENCES account (id_account));""")
-
+                
+                self.cursor.execute("""CREATE TABLE IF NOT EXISTS waiter (
+                                    id_waiter SERIAL PRIMARY KEY,
+                                    name VARCHAR(255) NOT NULL,
+                                    cell_phone VARCHAR(13) NOT NULL,
+                                    registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);""")
+                
                 self.connection.commit()
             except Exception as error:
                 messagebox.showerror(title="Database Error", message=error)
