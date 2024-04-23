@@ -8,92 +8,92 @@ from ui.ui_waiter import UiWaiter
 
 class UiPanel:
     @DbLogin.verify_token
-    def __init__(self, root: customtkinter.CTk, token: str):
-        self.root = root
+    def __init__(self, root: customtkinter.CTk, token: str) -> None:
+        self._root = root
         self.__token = token
 
-        clear_frames(self.root)        
-        self.root.geometry("1920x1012-8-2")
+        clear_frames(self._root)        
+        self._root.geometry("1920x1012-8-2")
 
-        self.main_frame = customtkinter.CTkFrame(master=self.root, 
-                                                 width=1920, height=1012,
-                                                 corner_radius=0)
-        self.main_frame.grid(row=0, column=0)
+        self._main_frame = customtkinter.CTkFrame(master=self._root, 
+                                                  width=1920, height=1012,
+                                                  corner_radius=0)
+        self._main_frame.grid(row=0, column=0)
 
-        self.banner_frame = customtkinter.CTkFrame(master=self.main_frame, 
-                                                   width=1920, height=100,
-                                                   corner_radius=0,
-                                                   fg_color="#ffc83d")
-        self.banner_frame.grid(row=0, column=0, columnspan=2)
-
-        self.sidebar_frame = customtkinter.CTkFrame(master=self.main_frame,
-                                                    width=242, height=1012, 
+        self._banner_frame = customtkinter.CTkFrame(master=self._main_frame, 
+                                                    width=1920, height=100,
                                                     corner_radius=0,
-                                                    fg_color="#313338")
-        self.sidebar_frame.grid(row=1, column=0, sticky="w")
+                                                    fg_color="#ffc83d")
+        self._banner_frame.grid(row=0, column=0, columnspan=2)
 
-        self.square_frame = customtkinter.CTkFrame(master=self.main_frame,
-                                                   width=1678, height=1012,
-                                                   corner_radius=0,
-                                                   fg_color="#edeef0")
-        self.square_frame.place(x=242, y=100)
+        self._sidebar_frame = customtkinter.CTkFrame(master=self._main_frame,
+                                                     width=242, height=1012, 
+                                                     corner_radius=0,
+                                                     fg_color="#313338")
+        self._sidebar_frame.grid(row=1, column=0, sticky="w")
 
-        self.ui_images()
-        self.ui_panel()
+        self._square_frame = customtkinter.CTkFrame(master=self._main_frame,
+                                                    width=1678, height=1012,
+                                                    corner_radius=0,
+                                                    fg_color="#edeef0")
+        self._square_frame.place(x=242, y=100)
 
-        self.current_button: customtkinter.CTkButton = self.home_button
-        self.button_selected(target_button=self.home_button)
-        UiHome(root=self.root, square_frame=self.square_frame, token=self.__token)
+        self._ui_images()
+        self._ui_panel()
 
-    def ui_images(self):
+        self._current_button: customtkinter.CTkButton = self._home_button
+        self._button_selected(target_button=self._home_button)
+        UiHome(root=self._root, square_frame=self._square_frame, token=self.__token)
+
+    def _ui_images(self) -> None:
         # https://pixabay.com/vectors/shop-supermarket-bakery-store-2891677/
         restaurantpil_image = Image.open("images/global_images/restaurant.png")
-        self.restaurant_image = customtkinter.CTkImage(dark_image=restaurantpil_image,
-                                                       light_image=restaurantpil_image, 
-                                                       size=(85, 75))
+        self._restaurant_image = customtkinter.CTkImage(dark_image=restaurantpil_image,
+                                                        light_image=restaurantpil_image, 
+                                                        size=(85, 75))
 
-    def ui_panel(self):
-        restaurant_label = customtkinter.CTkLabel(master=self.banner_frame, 
+    def _ui_panel(self) -> None:
+        restaurant_label = customtkinter.CTkLabel(master=self._banner_frame, 
                                                   text=None, 
-                                                  image=self.restaurant_image)
+                                                  image=self._restaurant_image)
         restaurant_label.place(x=80, y=12)
 
-        restaurant_label = customtkinter.CTkLabel(master=self.banner_frame, 
+        restaurant_label = customtkinter.CTkLabel(master=self._banner_frame, 
                                                   text=None, 
-                                                  image=self.restaurant_image)
+                                                  image=self._restaurant_image)
         restaurant_label.place(x=80, y=12)
 
-        self.home_button = customtkinter.CTkButton(master=self.sidebar_frame,
-                                                   width=242, height=37,
-                                                   corner_radius=0, 
-                                                   fg_color="#313338",
-                                                   hover_color="#21222c",
-                                                   text="Home",
-                                                   font=("arial", 17),
-                                                   command=self.home_interface)
-        self.home_button.place(x=0, y=8)
+        self._home_button = customtkinter.CTkButton(master=self._sidebar_frame,
+                                                    width=242, height=37,
+                                                    corner_radius=0, 
+                                                    fg_color="#313338",
+                                                    hover_color="#21222c",
+                                                    text="Home",
+                                                    font=("arial", 17),
+                                                    command=self._home_interface)
+        self._home_button.place(x=0, y=8)
 
-        self.customer_button = customtkinter.CTkButton(master=self.sidebar_frame,
-                                                       width=242, height=37,
-                                                       corner_radius=0, 
-                                                       fg_color="#313338",
-                                                       hover_color="#21222c",
-                                                       text="Customer",
-                                                       font=("arial", 17),
-                                                       command=self.customer_interface)
-        self.customer_button.place(x=0, y=65)
+        self._customer_button = customtkinter.CTkButton(master=self._sidebar_frame,
+                                                        width=242, height=37,
+                                                        corner_radius=0, 
+                                                        fg_color="#313338",
+                                                        hover_color="#21222c",
+                                                        text="Customer",
+                                                        font=("arial", 17),
+                                                        command=self._customer_interface)
+        self._customer_button.place(x=0, y=65)
 
-        self.waiter_button = customtkinter.CTkButton(master=self.sidebar_frame,
-                                                     width=242, height=37,
-                                                     corner_radius=0,
-                                                     fg_color="#313338",
-                                                     hover_color="#21222c",
-                                                     text="Waiter",
-                                                     font=("arial", 17),
-                                                     command=self.waiter_interface)
-        self.waiter_button.place(x=0, y=122)
+        self._waiter_button = customtkinter.CTkButton(master=self._sidebar_frame,
+                                                      width=242, height=37,
+                                                      corner_radius=0,
+                                                      fg_color="#313338",
+                                                      hover_color="#21222c",
+                                                      text="Waiter",
+                                                      font=("arial", 17),
+                                                      command=self._waiter_interface)
+        self._waiter_button.place(x=0, y=122)
 
-        category_button = customtkinter.CTkButton(master=self.sidebar_frame,
+        category_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                   width=242, height=37,
                                                   corner_radius=0, 
                                                   fg_color="#313338",
@@ -102,7 +102,7 @@ class UiPanel:
                                                   font=("arial", 17))
         category_button.place(x=0, y=179)
 
-        meal_button = customtkinter.CTkButton(master=self.sidebar_frame,
+        meal_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                               width=242, height=37,
                                               corner_radius=0, 
                                               fg_color="#313338",
@@ -111,7 +111,7 @@ class UiPanel:
                                               font=("arial", 17))
         meal_button.place(x=0, y=236)
 
-        tables_button = customtkinter.CTkButton(master=self.sidebar_frame,
+        tables_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                 width=242, height=37,
                                                 corner_radius=0,
                                                 fg_color="#313338",
@@ -120,7 +120,7 @@ class UiPanel:
                                                 font=("arial", 17))
         tables_button.place(x=0, y=293)
 
-        account_button = customtkinter.CTkButton(master=self.sidebar_frame,
+        account_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                  width=242, height=37,
                                                  corner_radius=0,
                                                  fg_color="#313338",
@@ -129,19 +129,19 @@ class UiPanel:
                                                  font=("arial", 17))
         account_button.place(x=0, y=858)
 
-    def home_interface(self):
-        UiHome(root=self.root, square_frame=self.square_frame, token=self.__token)
-        self.button_selected(target_button=self.home_button)
+    def _home_interface(self) -> None:
+        UiHome(root=self._root, square_frame=self._square_frame, token=self.__token)
+        self._button_selected(target_button=self._home_button)
 
-    def customer_interface(self):
-        UiCustomer(root=self.root, square_frame=self.square_frame, token=self.__token)
-        self.button_selected(target_button=self.customer_button)
+    def _customer_interface(self) -> None:
+        UiCustomer(root=self._root, square_frame=self._square_frame, token=self.__token)
+        self._button_selected(target_button=self._customer_button)
 
-    def waiter_interface(self):
-        UiWaiter(root=self.root, square_frame=self.square_frame, token=self.__token)
-        self.button_selected(target_button=self.waiter_button)
+    def _waiter_interface(self) -> None:
+        UiWaiter(root=self._root, square_frame=self._square_frame, token=self.__token)
+        self._button_selected(target_button=self._waiter_button)
 
-    def button_selected(self, target_button:customtkinter.CTkButton):
-        self.current_button.configure(fg_color="#313338")
-        self.current_button = target_button
-        self.current_button.configure(fg_color="#292a33")
+    def _button_selected(self, target_button:customtkinter.CTkButton) -> None:
+        self._current_button.configure(fg_color="#313338")
+        self._current_button = target_button
+        self._current_button.configure(fg_color="#292a33")
