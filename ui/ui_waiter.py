@@ -44,7 +44,8 @@ class UiWaiter:
                                                               font=("arial", 15), 
                                                               text="Search",
                                                               fg_color="#407ecf", 
-                                                              hover_color="#6996d1")
+                                                              hover_color="#6996d1",
+                                                              command=lambda:self.__fn_search_waiter(self._search_waiters_entry.get()))
         self._search_waiters_button.place(x=1425, y=9)
 
     def _ui_waiter(self) -> None:
@@ -247,6 +248,16 @@ class UiWaiter:
                                        icon=tkinter.messagebox.WARNING) == True:
             DbWaiter(self.__token).delete_waiter(id_waiter=self.__data[0])
             self.__fn_read_waiters()
+    
+    def __fn_search_waiter(self, typed: str) -> None:
+        self.__waiter_treeview.delete(*self.__waiter_treeview.get_children())
+
+        __waiter = DbWaiter(self.__token).search_waiter(typed=typed)
+
+        tag = "hexwhite"
+        for i in __waiter:
+            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            self.__waiter_treeview.insert("", "end", values=i, tags=tag)
 
     def __selected_row(self) -> tuple:
         try:

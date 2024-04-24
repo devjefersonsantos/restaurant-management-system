@@ -72,3 +72,17 @@ class DbWaiter(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def search_waiter(self, typed: str) -> str:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT * FROM waiter 
+                                    WHERE name LIKE %s""", ("%" + typed + "%",))
+                self.result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Search Waiter Error", message=error)
+            else:
+                return self.result
+            finally:
+                self.cursor.close()
+                self.connection.close()

@@ -49,8 +49,8 @@ class UiLogin(customtkinter.CTk):
 
         # INSERT INTO account (username, password, email)
         # VALUES ('dev', 'daeed6308874de11ec5ba896aff636aee60821b397f88164be3eae5cf6d276d8', 'dev');
-        # if __token := DbLogin(username="dev", password="dev").create_access_token():
-        #     UiPanel(root=self, token=__token)
+        if __token := DbLogin(username="dev", password="dev").create_access_token():
+            UiPanel(root=self, token=__token)
     
     def _ui_images(self) -> None:
         # https://pixabay.com/illustrations/chef-food-kitchen-restaurant-adult-2410818/
