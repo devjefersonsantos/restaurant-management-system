@@ -3,8 +3,9 @@ from utils.empty_entries import empty_entries
 from tkinter import messagebox
 import secrets
 from database.database import Database
-from utils.restart_program import restart_program
+from utils.restart_software import restart_software
 from utils.convert_to_sha3_256 import convert_to_sha3_256
+from logs.events import *
 
 class DbLogin(Database):
     def __init__(self, username: str, password: str):
@@ -12,18 +13,20 @@ class DbLogin(Database):
         self.__username = username
         self.__password = password
 
-    def verify_credentials(self) -> True:
+    def verify_credentials(self) -> int:
         __entry_items = {"username":self.__username, "password":self.__password}
 
         if not empty_entries(**__entry_items):
             if self.connect_to_database():
                 try:
-                    self.cursor.execute("""SELECT * FROM ACCOUNT 
+                    self.cursor.execute("""SELECT id_account FROM ACCOUNT 
                                         WHERE username = %s AND password = %s;""", (self.__username, 
                                                                                     convert_to_sha3_256(self.__password)))
-                    if self.cursor.fetchone():
-                        return True
+                    if id_account := self.cursor.fetchone()[0]:
+                        log_info(f"Successful authentication for user with id: {id_account}.")
+                        return id_account
                     else:
+                        log_error("Authentication failed.")
                         messagebox.showerror(title="Login Error", message="Incorrect username or password\nplease try again.")
                 except Exception as error:
                     messagebox.showerror(title="Login Error", message=error)
@@ -32,7 +35,7 @@ class DbLogin(Database):
                     self.cursor.close()
     
     def create_access_token(self) -> str:
-        if self.verify_credentials():
+        if id_account := self.verify_credentials():
             if self.connect_to_database():
                 try:
                     __token = secrets.token_hex(32)
@@ -41,9 +44,12 @@ class DbLogin(Database):
                                                                                     self.__username, 
                                                                                     convert_to_sha3_256(self.__password)))
                     self.connection.commit()
-                    return __token
                 except Exception as error:
+                    log_error(f"Create access token failed for user with id: {id_account}.")
                     messagebox.showerror(title="Authentication Failed", message=error)
+                else:
+                    log_info(f"Access token created for user with id: {id_account}.")
+                    return __token
                 finally:
                     self.connection.close()
                     self.cursor.close()
@@ -60,8 +66,9 @@ class DbLogin(Database):
                     if not cursor.fetchone():
                         raise Exception("Authentication Failed")
                 except Exception as error:
+                    log_error(f"Software closed because an error occurred during token verification.")
                     messagebox.showerror(title="System User Error", message=error)
-                    restart_program()
+                    restart_software()
                 finally:
                     __database.connection.close()
                     cursor.close()
@@ -82,7 +89,7 @@ class DbLogin(Database):
                     Exception("Authentication Failed")
             except Exception as error:
                 messagebox.showerror(title="System User Error", message=error)
-                restart_program()
+                restart_software()
             else:
                 return result[0]
             finally:

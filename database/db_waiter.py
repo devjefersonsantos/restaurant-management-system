@@ -2,11 +2,12 @@ from database.database import Database
 from utils.empty_entries import empty_entries
 from tkinter import messagebox
 from database.db_login import DbLogin
+from logs.events import *
 
 class DbWaiter(Database):
     def __init__(self, token):
         super().__init__()
-        self.__token = token
+        self.__id_account = DbLogin.token_to_id_account(token)
 
     def create_waiter(self, name: str, cellphone: str) -> True:
         __entry_items = {"name": name, "cellphone ": cellphone}
@@ -15,12 +16,15 @@ class DbWaiter(Database):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""INSERT INTO waiter (name, cell_phone)
-                                        VALUES (%s, %s);""", (name, cellphone))
+                                        VALUES (%s, %s) RETURNING id_waiter;""", (name, cellphone))
                     self.connection.commit()
+                    __id_waiter = self.cursor.fetchone()[0]
 
                 except Exception as error:
+                    log_error(f"System user id: {self.__id_account}. An error occurred while creating a waiter.")
                     messagebox.showerror(title="Create Waiter Error", message=error)
                 else:
+                    log_info(f"System user id: {self.__id_account}. Create waiter with id: {__id_waiter}.")
                     messagebox.showinfo(title="Create Waiter", message=f"Waiter: {name}, successfully registered.")
                     return True
                 finally:
@@ -53,8 +57,10 @@ class DbWaiter(Database):
 
                     self.connection.commit()
                 except Exception as error:
+                    log_error(f"System user id: {self.__id_account}. An error occurred while updating a waiter.")
                     messagebox.showerror(title="Update Waiter Error", message=error)
                 else:
+                    log_info(f"System user id: {self.__id_account}. Waiter id: {id_waiter} has been updated.")
                     messagebox.showinfo(title="Update Waiter", message=f"Waiter: {new_name}, updated successfully!")
                     return True
                 finally:
@@ -68,7 +74,10 @@ class DbWaiter(Database):
                                     WHERE id_waiter = %s""", (id_waiter,))
                 self.connection.commit()
             except Exception as error:
+                log_error(f"System user id: {self.__id_account}. An error occurred while deleting a waiter.")
                 messagebox.showerror(title="Delete Waiter Error", message=error)
+            else:
+                log_warning(f"System user id: {self.__id_account}. Waiter id: {id_waiter} was deleted.")
             finally:
                 self.cursor.close()
                 self.connection.close()
