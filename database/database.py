@@ -68,6 +68,11 @@ class Database:
                                     cell_phone VARCHAR(13) NOT NULL,
                                     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);""")
                 
+                self.cursor.execute("""CREATE TABLE IF NOT EXISTS category (
+                                    id_category SERIAL PRIMARY KEY,
+                                    name VARCHAR(255) NOT NULL,
+                                    description VARCHAR(300));;""")
+                
                 self.connection.commit()
             except Exception as error:
                 messagebox.showerror(title="Database Error", message=error)
