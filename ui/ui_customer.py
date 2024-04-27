@@ -74,12 +74,12 @@ class UiCustomer:
         self.__customer_treeview.heading("#5", text="email", anchor="center")
         self.__customer_treeview.heading("#6", text="registration date", anchor="center")
 
-        self.__customer_treeview.column("#1", minwidth=150, width=200, anchor="center")
+        self.__customer_treeview.column("#1", minwidth=100, width=225, anchor="center")
         self.__customer_treeview.column("#2", minwidth=150, width=300, anchor="center")
         self.__customer_treeview.column("#3", minwidth=150, width=300, anchor="center")
         self.__customer_treeview.column("#4", minwidth=150, width=300, anchor="center")
         self.__customer_treeview.column("#5", minwidth=150, width=300, anchor="center")
-        self.__customer_treeview.column("#6", minwidth=262, width=262, anchor="center")
+        self.__customer_treeview.column("#6", minwidth=262, width=237, anchor="center")
 
         divider_frame = tkinter.Frame(master=self._square_frame, 
                                       height=55, width=1678, 

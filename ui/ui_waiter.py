@@ -152,19 +152,19 @@ class UiWaiter:
         self.__waiter_treeview = tkinter.ttk.Treeview(master=self._square_frame,
                                                       height=29,
                                                       style="style_treeview.Treeview",
-                                                      columns=("ID", "name", "cell phone", "registration date"),
+                                                      columns=("id waiter", "name", "cell phone", "registration date"),
                                                       show="headings")
         self.__waiter_treeview.place(x=370, y=58)
 
-        self.__waiter_treeview.heading("#1", text="ID", anchor="center")
+        self.__waiter_treeview.heading("#1", text="id waiter", anchor="center")
         self.__waiter_treeview.heading("#2", text="name", anchor="center")
         self.__waiter_treeview.heading("#3", text="cell phone", anchor="center")
         self.__waiter_treeview.heading("#4", text="registration date", anchor="center")
 
-        self.__waiter_treeview.column("#1", minwidth=100, width=150, anchor="center")
+        self.__waiter_treeview.column("#1", minwidth=100, width=225, anchor="center")
         self.__waiter_treeview.column("#2", minwidth=200, width=350, anchor="center")
         self.__waiter_treeview.column("#3", minwidth=250, width=375, anchor="center")
-        self.__waiter_treeview.column("#4", minwidth=300, width=425, anchor="center")
+        self.__waiter_treeview.column("#4", minwidth=300, width=350, anchor="center")
 
         _treeview_scrollbar = tkinter.Scrollbar(self._square_frame, orient=tkinter.VERTICAL, command=self.__waiter_treeview.yview)
         self.__waiter_treeview.configure(yscroll=_treeview_scrollbar.set)
