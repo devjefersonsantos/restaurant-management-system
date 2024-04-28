@@ -2,10 +2,13 @@ import customtkinter
 from database.db_login import DbLogin
 from utils.clear_frames import clear_frames
 import tkinter
+from tkinter import ttk
+from database.db_category import DbCategory
 
 class UiCategory:
     @DbLogin.verify_token
-    def __init__(self, root: customtkinter.CTk, 
+    def __init__(self, 
+                 root: customtkinter.CTk, 
                  square_frame: customtkinter.CTk, 
                  token: str) -> None:
         self._root = root
@@ -92,7 +95,8 @@ class UiCategory:
                                                                 text_color="#ffffff",
                                                                 text="Add Category",
                                                                 fg_color="#4bb34b", 
-                                                                hover_color="#7ebf7e")
+                                                                hover_color="#7ebf7e",
+                                                                command=self.__fn_create_category)
         self.__create_category_button.place(x=10, y=260)
 
         self._update_category_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -139,26 +143,52 @@ class UiCategory:
                                                            hover_color="#d1706f")
         __delete_category_button.place(x=10, y=45)
 
-        style = tkinter.ttk.Style()
+        style = ttk.Style()
         style.layout("style_treeview.Treeview", [("style_treeview.Treeview.treearea", {"sticky": "nswe"})])
         style.configure("Treeview.Heading", font=("Arial", 13), foreground="#1c1c1c")
         style.configure("Treeview", font=("Arial", 13), foreground="#1c1c1c", rowheight=28)
 
-        self.__category_treeview = tkinter.ttk.Treeview(master=self._square_frame,
-                                                        height=29,
-                                                        style="style_treeview.Treeview",
-                                                        columns=("id category", "category name", "description"),
-                                                        show="headings")
+        self.__category_treeview = ttk.Treeview(master=self._square_frame,
+                                                height=29,
+                                                style="style_treeview.Treeview",
+                                                columns=("id category", "category name", "description"),
+                                                show="headings")
         self.__category_treeview.place(x=370, y=58)
 
         self.__category_treeview.heading("#1", text="id category", anchor="center")
         self.__category_treeview.heading("#2", text="category name", anchor="center")
-        self.__category_treeview.heading("#3", text="description", anchor="center")
+        self.__category_treeview.heading("#3", text="  description", anchor="w")
 
         self.__category_treeview.column("#1", minwidth=150, width=225, anchor="center")
         self.__category_treeview.column("#2", minwidth=150, width=375, anchor="center")
-        self.__category_treeview.column("#3", minwidth=150, width=700, anchor="center")
+        self.__category_treeview.column("#3", minwidth=150, width=700, anchor="w")
 
         _treeview_scrollbar = tkinter.Scrollbar(self._square_frame, orient=tkinter.VERTICAL, command=self.__category_treeview.yview)
         self.__category_treeview.configure(yscroll=_treeview_scrollbar.set)
         _treeview_scrollbar.place(x=1660, y=58, height=837)
+
+        self.__fn_read_categories()
+
+    def __fn_create_category(self) -> None:
+        if DbCategory(token=self.__token).create_category(name=self.__category_name_entry.get(),
+                                                          description=self.__description_textbox.get("1.0","end").strip()):
+            self._clear_entries()
+            self.__fn_read_categories()
+
+    def __fn_read_categories(self) -> None:
+        self.__category_treeview.delete(*self.__category_treeview.get_children())
+
+        __all_categories = [i for i in DbCategory(token=self.__token).read_categories()]
+
+        self.__category_treeview.tag_configure("hexgray", background="#ededed")
+        self.__category_treeview.tag_configure("hexwhite", background="#fafbfc")
+        
+        tag = "hexwhite"
+        for i in __all_categories:
+            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            self.__category_treeview.insert("", "end", values=i, tags=tag)
+
+    def _clear_entries(self) -> None:
+        self.__category_name_entry.delete(0, "end")
+        self.__description_textbox.delete("1.0","end")
+        self._root.focus()

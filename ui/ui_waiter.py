@@ -6,7 +6,8 @@ from database.db_waiter import DbWaiter
 
 class UiWaiter:
     @DbLogin.verify_token
-    def __init__(self, root: customtkinter.CTk, 
+    def __init__(self, 
+                 root: customtkinter.CTk, 
                  square_frame: customtkinter.CTk, 
                  token: str) -> None:
         self._root = root
