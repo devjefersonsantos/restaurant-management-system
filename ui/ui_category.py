@@ -46,7 +46,8 @@ class UiCategory:
                                                                  font=("arial", 15), 
                                                                  text="Search",
                                                                  fg_color="#407ecf", 
-                                                                 hover_color="#6996d1")
+                                                                 hover_color="#6996d1",
+                                                                 command=lambda:self.__fn_search_category(self._search_categories_entry.get()))
         self._search_categories_button.place(x=1425, y=9)
 
     def _ui_category(self) -> None:
@@ -118,7 +119,8 @@ class UiCategory:
                                                          text_color="#ffffff",
                                                          text="Update Category",
                                                          fg_color="#ec971f", 
-                                                         hover_color="#f0b35d")
+                                                         hover_color="#f0b35d",
+                                                         command=self._ui_update_category)
         update_category_button.place(x=10, y=45)
 
         self._delete_category_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -140,7 +142,8 @@ class UiCategory:
                                                            text_color="#ffffff",
                                                            text="Delete Category",
                                                            fg_color="#d54a49", 
-                                                           hover_color="#d1706f")
+                                                           hover_color="#d1706f",
+                                                           command=self.__fn_delete_category)
         __delete_category_button.place(x=10, y=45)
 
         style = ttk.Style()
@@ -169,6 +172,39 @@ class UiCategory:
 
         self.__fn_read_categories()
 
+    def _ui_update_category(self) -> None:
+        self.__data = self.__selected_row()
+        if not self.__data:
+            return
+        
+        self._topbar_label.configure(text="Update Category")
+        self._search_categories_entry.destroy()
+        self._search_categories_button.destroy()
+        
+        self._update_category_frame.destroy()
+        self._delete_category_frame.destroy()
+
+        self.__category_name_entry.delete(0, "end")
+        self.__description_textbox.delete("1.0", "end")
+
+        self._create_category_frame.configure(height=365)
+        self.__create_category_button.configure(text="Save Changes",
+                                                command=self.__fn_update_category)
+
+        self._cancel_button = customtkinter.CTkButton(master=self._create_category_frame,
+                                                      width=330, height=35,
+                                                      corner_radius=3,
+                                                      font=("arial", 15),
+                                                      text_color="#ffffff",
+                                                      text="Cancel",
+                                                      fg_color="#5c5c5c", 
+                                                      hover_color="#6e6e6e",
+                                                      command=self._ui_category)
+        self._cancel_button.place(x=10, y=310)
+
+        self.__category_name_entry.insert(0, self.__data[1])
+        self.__description_textbox.insert("0.0", self.__data[2])
+
     def __fn_create_category(self) -> None:
         if DbCategory(token=self.__token).create_category(name=self.__category_name_entry.get(),
                                                           description=self.__description_textbox.get("1.0","end").strip()):
@@ -187,6 +223,47 @@ class UiCategory:
         for i in __all_categories:
             tag = "hexgray" if tag == "hexwhite" else "hexwhite"
             self.__category_treeview.insert("", "end", values=i, tags=tag)
+    
+    def __fn_update_category(self) -> None:
+        self.__data = self.__selected_row()
+        if not self.__data:
+            return
+        
+        updated_category = DbCategory(self.__token).update_category(new_name=self.__category_name_entry.get(),
+                                                                    new_description=self.__description_textbox.get("1.0", "end").strip(),
+                                                                    id_category=self.__data[0])
+        
+        if updated_category:
+            self._ui_category()
+
+    def __fn_delete_category(self) -> None:
+        self.__data = self.__selected_row()
+        if not self.__data:
+            return
+        
+        message = f"Are you sure you want to delete\nthis category? {self.__data[1]}."
+        if tkinter.messagebox.askyesno(title="Delete Category", 
+                                       message=message, 
+                                       icon=tkinter.messagebox.WARNING) == True:
+            DbCategory(self.__token).delete_category(id_category=self.__data[0])
+            self.__fn_read_categories()
+
+    def __fn_search_category(self, typed: str) -> None:
+        self.__category_treeview.delete(*self.__category_treeview.get_children())
+
+        __category = DbCategory(self.__token).search_category(typed=typed)
+
+        tag = "hexwhite"
+        for i in __category:
+            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            self.__category_treeview.insert("", "end", values=i, tags=tag)
+
+    def __selected_row(self) -> tuple:
+        try:
+            selected_category = self.__category_treeview.item(self.__category_treeview.selection()[0], "values")
+            return selected_category
+        except IndexError:
+            tkinter.messagebox.showerror(title=None, message="Please select a category")
 
     def _clear_entries(self) -> None:
         self.__category_name_entry.delete(0, "end")
