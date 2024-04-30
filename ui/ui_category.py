@@ -146,6 +146,7 @@ class UiCategory:
                                                            command=self.__fn_delete_category)
         __delete_category_button.place(x=10, y=45)
 
+        # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
         style = ttk.Style()
         style.layout("style_treeview.Treeview", [("style_treeview.Treeview.treearea", {"sticky": "nswe"})])
         style.configure("Treeview.Heading", font=("Arial", 13), foreground="#1c1c1c")

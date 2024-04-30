@@ -6,6 +6,7 @@ from ui.ui_home import UiHome
 from ui.ui_customer import UiCustomer
 from ui.ui_waiter import UiWaiter
 from ui.ui_category import UiCategory
+from ui.ui_meal import UiMeal
 
 class UiPanel:
     @DbLogin.verify_token
@@ -104,14 +105,15 @@ class UiPanel:
                                                         command=self._category_interface)
         self._category_button.place(x=0, y=179)
 
-        meal_button = customtkinter.CTkButton(master=self._sidebar_frame,
-                                              width=242, height=37,
-                                              corner_radius=0, 
-                                              fg_color="#313338",
-                                              hover_color="#21222c",
-                                              text="Meal",
-                                              font=("arial", 17))
-        meal_button.place(x=0, y=236)
+        self._meal_button = customtkinter.CTkButton(master=self._sidebar_frame,
+                                                    width=242, height=37,
+                                                    corner_radius=0, 
+                                                    fg_color="#313338",
+                                                    hover_color="#21222c",
+                                                    text="Meal",
+                                                    font=("arial", 17),
+                                                    command=self._meal_interface)
+        self._meal_button.place(x=0, y=236)
 
         tables_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                 width=242, height=37,
@@ -146,6 +148,10 @@ class UiPanel:
     def _category_interface(self) -> None:
         UiCategory(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._category_button)
+
+    def _meal_interface(self) -> None:
+        UiMeal(root=self._root, square_frame=self._square_frame, token=self.__token)
+        self._button_selected(target_button=self._meal_button)
 
     def _button_selected(self, target_button:customtkinter.CTkButton) -> None:
         self._current_button.configure(fg_color="#313338")
