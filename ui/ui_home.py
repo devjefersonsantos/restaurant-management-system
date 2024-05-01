@@ -1,6 +1,6 @@
+from database import DbLogin
+from utils import clear_frames
 import customtkinter
-from utils.clear_frames import clear_frames
-from database.db_login import DbLogin
 
 class UiHome:
     @DbLogin.verify_token

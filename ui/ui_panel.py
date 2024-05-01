@@ -1,12 +1,12 @@
-import customtkinter
+from database import DbLogin
+from ui import UiHome
+from ui import UiCustomer
+from ui import UiWaiter
+from ui import UiCategory
+from ui import UiMeal
 from PIL import Image
-from utils.clear_frames import clear_frames
-from database.db_login import DbLogin
-from ui.ui_home import UiHome
-from ui.ui_customer import UiCustomer
-from ui.ui_waiter import UiWaiter
-from ui.ui_category import UiCategory
-from ui.ui_meal import UiMeal
+from utils import clear_frames
+import customtkinter
 
 class UiPanel:
     @DbLogin.verify_token

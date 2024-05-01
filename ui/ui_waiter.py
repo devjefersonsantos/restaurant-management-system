@@ -1,8 +1,8 @@
-import customtkinter
-from database.db_login import DbLogin
-from utils.clear_frames import clear_frames
+from database import DbLogin
+from database import DbWaiter
+from utils import clear_frames
 import tkinter
-from database.db_waiter import DbWaiter
+import customtkinter
 
 class UiWaiter:
     @DbLogin.verify_token

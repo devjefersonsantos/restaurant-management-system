@@ -1,11 +1,10 @@
-from database.database import Database
-from utils.empty_entries import empty_entries
+from database import Database
+from utils import empty_entries
+from utils import restart_software
+from utils import convert_to_sha3_256
 from tkinter import messagebox
 import secrets
-from database.database import Database
-from utils.restart_software import restart_software
-from utils.convert_to_sha3_256 import convert_to_sha3_256
-from logs.events import *
+from logs import *
 
 class DbLogin(Database):
     def __init__(self, username: str, password: str):

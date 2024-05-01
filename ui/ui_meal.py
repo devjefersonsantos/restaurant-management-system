@@ -1,8 +1,8 @@
-import customtkinter
-from database.db_login import DbLogin
-from utils.clear_frames import clear_frames
+from database import DbLogin
+from utils import clear_frames
 import tkinter
 from tkinter import ttk
+import customtkinter
 
 class UiMeal:
     @DbLogin.verify_token

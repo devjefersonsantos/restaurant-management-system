@@ -1,9 +1,9 @@
-import customtkinter
-from database.db_login import DbLogin
-from utils.clear_frames import clear_frames
-import tkinter
+from database import DbLogin
+from database import DbCategory
+from utils import clear_frames
 from tkinter import ttk
-from database.db_category import DbCategory
+import tkinter
+import customtkinter
 
 class UiCategory:
     @DbLogin.verify_token

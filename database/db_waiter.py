@@ -1,8 +1,8 @@
-from database.database import Database
+from database import Database
+from database import DbLogin
 from utils.empty_entries import empty_entries
 from tkinter import messagebox
-from database.db_login import DbLogin
-from logs.events import *
+from logs import *
 
 class DbWaiter(Database):
     def __init__(self, token):

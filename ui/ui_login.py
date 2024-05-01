@@ -1,12 +1,12 @@
-import customtkinter
+from database import Database
+from database import DbSignup
+from database import DbLogin
+from ui import UiPanel
+from utils import clear_frames
 from PIL import Image
-from utils.clear_frames import clear_frames
 import json
 from tkinter import messagebox
-from database.database import Database
-from database.db_signup import DbSignup
-from database.db_login import DbLogin
-from ui.ui_panel import UiPanel
+import customtkinter
 
 class UiLogin(customtkinter.CTk):
     def __init__(self) -> None:

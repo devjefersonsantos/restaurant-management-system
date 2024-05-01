@@ -1,8 +1,8 @@
-from database.database import Database
-from utils.empty_entries import empty_entries
-from database.db_login import DbLogin
+from database import Database
+from database import DbLogin
+from utils import empty_entries
 from tkinter import messagebox
-from logs.events import *
+from logs import *
 
 class DbCustomer(Database):
     def __init__(self, token):

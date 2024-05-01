@@ -1,9 +1,9 @@
-import customtkinter
-from utils.clear_frames import clear_frames
-from database.db_login import DbLogin
-import tkinter
+from database import DbLogin
+from database import DbCustomer
+from utils import clear_frames
 import tkinter.messagebox
-from database.db_customer import DbCustomer
+import tkinter
+import customtkinter
 
 class UiCustomer:
     @DbLogin.verify_token
