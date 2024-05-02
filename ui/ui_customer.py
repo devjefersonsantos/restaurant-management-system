@@ -139,19 +139,19 @@ class UiCustomer:
         self._search_customers_entry.destroy()
         self._search_customers_button.destroy()
 
-        frame_one = customtkinter.CTkFrame(master=self._square_frame,
-                                           width=1668, height=440,
-                                           corner_radius=10, 
-                                           fg_color="#ffffff")
-        frame_one.place(x=5, y=55)
+        add_customer_frame = customtkinter.CTkFrame(master=self._square_frame,
+                                                    width=1668, height=440,
+                                                    corner_radius=10, 
+                                                    fg_color="#ffffff")
+        add_customer_frame.place(x=5, y=55)
 
-        name_label = customtkinter.CTkLabel(master=frame_one,
+        name_label = customtkinter.CTkLabel(master=add_customer_frame,
                                             font=("arial bold", 17),
                                             text_color="#2e2e2e",
                                             text="Name:")
         name_label.place(x=25, y=25)
 
-        self.__name_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__name_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                    width=1618, height=35,
                                                    corner_radius=3, 
                                                    font=("arial", 17), 
@@ -159,13 +159,13 @@ class UiCustomer:
                                                    border_width=1)
         self.__name_entry.place(x=25, y=62)
 
-        address_label = customtkinter.CTkLabel(master=frame_one,
+        address_label = customtkinter.CTkLabel(master=add_customer_frame,
                                                font=("arial bold", 17),
                                                text_color="#2e2e2e",
                                                text="Address:")
         address_label.place(x=25, y=120)
 
-        self.__address_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__address_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                       width=1618, height=35,
                                                       corner_radius=3, 
                                                       font=("arial", 17), 
@@ -173,13 +173,13 @@ class UiCustomer:
                                                       border_width=1)
         self.__address_entry.place(x=25, y=160)
 
-        cellphone_label = customtkinter.CTkLabel(master=frame_one,
+        cellphone_label = customtkinter.CTkLabel(master=add_customer_frame,
                                                  font=("arial bold", 17),
                                                  text_color="#2e2e2e",
                                                  text="Cell Phone:")
         cellphone_label.place(x=25, y=215)
 
-        self.__cellphone_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__cellphone_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                         width=1618, height=35,
                                                         corner_radius=3, 
                                                         font=("arial", 17),
@@ -187,13 +187,13 @@ class UiCustomer:
                                                         border_width=1)
         self.__cellphone_entry.place(x=25, y=255)
 
-        email_label = customtkinter.CTkLabel(master=frame_one,
+        email_label = customtkinter.CTkLabel(master=add_customer_frame,
                                              font=("arial bold", 17),
                                              text_color="#2e2e2e",
                                              text="Email:")
         email_label.place(x=25, y=310)
 
-        self.__email_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__email_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                     width=1618, height=35,                                                  
                                                     corner_radius=3,
                                                     font=("arial", 17),
@@ -242,19 +242,19 @@ class UiCustomer:
         self._search_customers_entry.destroy()
         self._search_customers_button.destroy()
 
-        frame_one = customtkinter.CTkFrame(master=self._square_frame,
-                                           width=1668, height=537,
-                                           corner_radius=10, 
-                                           fg_color="#ffffff")
-        frame_one.place(x=5, y=55)
+        update_customer_frame = customtkinter.CTkFrame(master=self._square_frame,
+                                                       width=1668, height=537,
+                                                       corner_radius=10, 
+                                                       fg_color="#ffffff")
+        update_customer_frame.place(x=5, y=55)
 
-        id_label = customtkinter.CTkLabel(master=frame_one,
+        id_label = customtkinter.CTkLabel(master=update_customer_frame,
                                           font=("arial bold", 17),
                                           text_color="#2e2e2e",
                                           text="ID:")
         id_label.place(x=25, y=25)
 
-        self.__id_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__id_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                  width=1618, height=35,
                                                  corner_radius=3, 
                                                  font=("arial", 17), 
@@ -262,13 +262,13 @@ class UiCustomer:
                                                  border_width=1)
         self.__id_entry.place(x=25, y=62)
 
-        name_label = customtkinter.CTkLabel(master=frame_one,
+        name_label = customtkinter.CTkLabel(master=update_customer_frame,
                                             font=("arial bold", 17),
                                             text_color="#2e2e2e",
                                             text="Name:")
         name_label.place(x=25, y=120)
 
-        self.__name_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__name_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                    width=1618, height=35,
                                                    corner_radius=3, 
                                                    font=("arial", 17), 
@@ -276,13 +276,13 @@ class UiCustomer:
                                                    border_width=1)
         self.__name_entry.place(x=25, y=160)
 
-        address_label = customtkinter.CTkLabel(master=frame_one,
+        address_label = customtkinter.CTkLabel(master=update_customer_frame,
                                                font=("arial bold", 17),
                                                text_color="#2e2e2e",
                                                text="Address:")
         address_label.place(x=25, y=215)
 
-        self.__address_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__address_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                       width=1618, height=35,
                                                       corner_radius=3, 
                                                       font=("arial", 17),
@@ -290,13 +290,13 @@ class UiCustomer:
                                                       border_width=1)
         self.__address_entry.place(x=25, y=255)
 
-        cellphone_label = customtkinter.CTkLabel(master=frame_one,
+        cellphone_label = customtkinter.CTkLabel(master=update_customer_frame,
                                                  font=("arial bold", 17),
                                                  text_color="#2e2e2e",
                                                  text="Cell Phone:")
         cellphone_label.place(x=25, y=310)
 
-        self.__cellphone_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__cellphone_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                         width=1618, height=35,
                                                         corner_radius=3, 
                                                         font=("arial", 17), 
@@ -304,13 +304,13 @@ class UiCustomer:
                                                         border_width=1)
         self.__cellphone_entry.place(x=25, y=350)
 
-        email_label = customtkinter.CTkLabel(master=frame_one,
+        email_label = customtkinter.CTkLabel(master=update_customer_frame,
                                              font=("arial bold", 17),
                                              text_color="#2e2e2e",
                                              text="Email:")
         email_label.place(x=25, y=405)
 
-        self.__email_entry = customtkinter.CTkEntry(master=frame_one,
+        self.__email_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                     width=1618, height=35,
                                                     corner_radius=3, 
                                                     font=("arial", 17),
