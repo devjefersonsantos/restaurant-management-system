@@ -71,7 +71,17 @@ class Database:
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS category (
                                     id_category SERIAL PRIMARY KEY,
                                     name VARCHAR(255) NOT NULL,
-                                    description VARCHAR(300));;""")
+                                    description VARCHAR(300));""")
+
+                self.cursor.execute("""CREATE TABLE IF NOT EXISTS meal (
+                                    id_meal SERIAL PRIMARY KEY,
+                                    meal_name VARCHAR(255) NOT NULL,
+                                    sale_price DECIMAL(10,2) NOT NULL,
+                                    category_id_category INT NOT NULL,
+                                    status VARCHAR(10) CHECK (status IN ('Disabled', 'Enabled')) NOT NULL,
+                                    CONSTRAINT fk_meal_category
+                                        FOREIGN KEY (category_id_category)
+                                        REFERENCES category (id_category));""")
                 
                 self.connection.commit()
             except Exception as error:
