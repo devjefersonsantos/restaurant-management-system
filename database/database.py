@@ -28,7 +28,7 @@ class Database:
         except Exception as error:
             messagebox.showerror(title="Database Error", message=error)
     
-    def create_database(self):
+    def create_database(self) -> None:
         # https://stackoverflow.com/questions/44511958/python-postgresql-create-database-if-not-exists-is-error
         if self.connect_to_database(database=None):
             try:
@@ -75,7 +75,7 @@ class Database:
 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS meal (
                                     id_meal SERIAL PRIMARY KEY,
-                                    meal_name VARCHAR(255) NOT NULL,
+                                    meal_name VARCHAR(255) NOT NULL UNIQUE,
                                     sale_price DECIMAL(10,2) NOT NULL,
                                     category_id_category INT NOT NULL,
                                     status VARCHAR(10) CHECK (status IN ('Disabled', 'Enabled')) NOT NULL,

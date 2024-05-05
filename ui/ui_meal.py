@@ -1,4 +1,6 @@
 from database import DbLogin
+from database import DbCategory
+from database import DbMeal
 from utils import clear_frames
 import tkinter
 from tkinter import ttk
@@ -216,9 +218,11 @@ class UiMeal:
                                                          corner_radius=3, 
                                                          font=("arial", 17), 
                                                          border_color="#e3e3e3", 
-                                                         border_width=1)
+                                                         border_width=1,
+                                                         placeholder_text="0.00",
+                                                         placeholder_text_color="#000000")
         self.__sale_price_entry.place(x=25, y=160)
-
+        
         category_label = customtkinter.CTkLabel(master=add_meal_frame,
                                                 font=("arial bold", 17),
                                                 text_color="#2e2e2e",
@@ -234,7 +238,7 @@ class UiMeal:
                                                                  dropdown_font=("arial", 15),
                                                                  button_color="#818285",
                                                                  button_hover_color="#636466",
-                                                                 values=[""])
+                                                                 values=self._list_of_categories())
         self.__category_optionmenu.place(x=25, y=255)
 
         status_label = customtkinter.CTkLabel(master=add_meal_frame,
@@ -269,7 +273,8 @@ class UiMeal:
                                                     text="Add Meal",
                                                     fg_color="#37b837",
                                                     bg_color= "#b4b5b8", 
-                                                    hover_color="#3bc43b")
+                                                    hover_color="#3bc43b",
+                                                    command=self._fn_create_meal)
         __add_meal_button.place(x=1165, y=868)
     
         self._cancel_button = customtkinter.CTkButton(master=self._square_frame,
@@ -406,6 +411,17 @@ class UiMeal:
                                                       command=self._to_back)
         self._cancel_button.place(x=1425, y=868)
 
+    def _fn_create_meal(self) -> None:
+        if DbMeal(self.__token).create_meal(meal_name=self.__meal_name_entry.get(),
+                                            sale_price=self.__sale_price_entry.get(),
+                                            category_id_category=DbCategory(self.__token).get_category_id(self.__category_optionmenu.get()),
+                                            status=self.__status_optionmenu.get()):
+               self._to_back()
+
+    def _list_of_categories(self) -> list[str]:
+        __categories = DbCategory(self.__token).read_categories()
+        return [i[1] for i in __categories]
+    
     def _to_back(self) -> None:
         clear_frames(self._square_frame)
         self._ui_meal()

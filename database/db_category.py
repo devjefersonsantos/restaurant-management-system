@@ -94,3 +94,18 @@ class DbCategory(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def get_category_id(self, category_name) -> tuple[int]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT id_category FROM category 
+                                    WHERE name = %s""", (category_name,))
+                result = self.cursor.fetchone()
+            except Exception as error:
+                messagebox.showerror(title="Search Category Error", message=error)
+            else:
+                print(result)
+                return result
+            finally:
+                self.cursor.close()
+                self.connection.close()
