@@ -39,11 +39,11 @@ class DbCustomer(Database):
             try:
                 self.cursor.execute("""SELECT * FROM customer
                                     ORDER BY id_customer""")
-                self.result = self.cursor.fetchall()
+                result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Read Customers Error", message=error)
             else:
-                return self.result
+                return result
             finally:
                 self.cursor.close()
                 self.connection.close()
@@ -89,11 +89,11 @@ class DbCustomer(Database):
             try:
                 self.cursor.execute("""SELECT * FROM customer 
                                     WHERE name LIKE %s""", ("%" + typed + "%",))
-                self.result = self.cursor.fetchall()
+                result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Search Customer Error", message=error)
             else:
-                return self.result
+                return result
             finally:
                 self.cursor.close()
                 self.connection.close()

@@ -36,11 +36,11 @@ class DbCategory(Database):
             try:
                 self.cursor.execute("""SELECT * FROM category
                                     ORDER BY id_category""")
-                self.result = self.cursor.fetchall()
+                result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Read Categories Error", message=error)
             else:
-                return self.result
+                return result
             finally:
                 self.cursor.close()
                 self.connection.close()
@@ -86,11 +86,11 @@ class DbCategory(Database):
             try:
                 self.cursor.execute("""SELECT * FROM category 
                                     WHERE name LIKE %s""", ("%" + typed + "%",))
-                self.result = self.cursor.fetchall()
+                result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Search Category Error", message=error)
             else:
-                return self.result
+                return result
             finally:
                 self.cursor.close()
                 self.connection.close()

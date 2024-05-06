@@ -42,11 +42,11 @@ class DbMeal(Database):
                 self.cursor.execute("""SELECT me.id_meal, me.meal_name, me.sale_price, ca.name, me.status
                                     FROM meal me
                                     LEFT JOIN category ca ON ca.id_category = me.category_id_category;""")
-                self.result = self.cursor.fetchall()
+                result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Read Meals Error", message=error)
             else:
-                return self.result
+                return result
             finally:
                 self.cursor.close()
                 self.connection.close()

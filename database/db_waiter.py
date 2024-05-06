@@ -36,11 +36,11 @@ class DbWaiter(Database):
             try:
                 self.cursor.execute("""SELECT * FROM waiter
                                     ORDER BY id_waiter""")
-                self.result = self.cursor.fetchall()
+                result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Read Waiters Error", message=error)
             else:
-                return self.result
+                return result
             finally:
                 self.cursor.close()
                 self.connection.close()
@@ -87,11 +87,11 @@ class DbWaiter(Database):
             try:
                 self.cursor.execute("""SELECT * FROM waiter 
                                     WHERE name LIKE %s""", ("%" + typed + "%",))
-                self.result = self.cursor.fetchall()
+                result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Search Waiter Error", message=error)
             else:
-                return self.result
+                return result
             finally:
                 self.cursor.close()
                 self.connection.close()
