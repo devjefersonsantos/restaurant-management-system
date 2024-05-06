@@ -104,7 +104,6 @@ class DbCategory(Database):
             except Exception as error:
                 messagebox.showerror(title="Search Category Error", message=error)
             else:
-                print(result)
                 return result
             finally:
                 self.cursor.close()

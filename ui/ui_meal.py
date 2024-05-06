@@ -178,6 +178,8 @@ class UiMeal:
         self.__meal_treeview.configure(yscroll=treeview_scrollbar.set)
         treeview_scrollbar.place(x=1660, y=50, height=808)
 
+        self.__fn_read_meal()
+
     def __ui_create_meal(self) -> None:
         clear_frames(self._square_frame)
         
@@ -417,6 +419,19 @@ class UiMeal:
                                             category_id_category=DbCategory(self.__token).get_category_id(self.__category_optionmenu.get()),
                                             status=self.__status_optionmenu.get()):
                self._to_back()
+    
+    def __fn_read_meal(self) -> None:
+        self.__meal_treeview.delete(*self.__meal_treeview.get_children())
+
+        __all_meals = [i for i in DbMeal(token=self.__token).read_meals()]
+
+        self.__meal_treeview.tag_configure("hexgray", background="#ededed")
+        self.__meal_treeview.tag_configure("hexwhite", background="#fafbfc")
+        
+        tag = "hexwhite"
+        for i in __all_meals:
+            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
     def _list_of_categories(self) -> list[str]:
         __categories = DbCategory(self.__token).read_categories()
