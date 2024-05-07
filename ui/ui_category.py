@@ -1,9 +1,12 @@
-from database import DbLogin
-from database import DbCategory
-from utils import clear_frames
-from tkinter import ttk
 import tkinter
+from tkinter import ttk
+
 import customtkinter
+
+from .colors import *
+from database import DbCategory
+from database import DbLogin
+from utils import clear_frames
 
 class UiCategory:
     @DbLogin.verify_token
@@ -26,27 +29,27 @@ class UiCategory:
         
         self._topbar_label = customtkinter.CTkLabel(master=topbar_frame, 
                                                     font=("arial black", 25),
-                                                    text_color="#ffffff", 
+                                                    text_color=WHITE_COLOR, 
                                                     text="Category")
         self._topbar_label.place(x=20, y=5)
 
         self._search_categories_entry = customtkinter.CTkEntry(master=topbar_frame,
                                                                width=1227, height=35,
+                                                               fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                               border_color=LIGHT_GRAY_COLOR, 
                                                                placeholder_text="Search by category name",
-                                                               font=("arial", 17), 
-                                                               fg_color="#EEEEEE", 
-                                                               border_color="#e3e3e3", 
+                                                               font=("arial", 17),
                                                                border_width=1)
         self._search_categories_entry.place(x=174, y=8)
 
         self._search_categories_button = customtkinter.CTkButton(master=topbar_frame,
                                                                  width=230, height=32,
+                                                                 text_color=WHITE_COLOR,
+                                                                 fg_color=LIGHT_BLUE_COLOR,
+                                                                 hover_color=LIGHT_BLUE_HOVER_COLOR,
                                                                  corner_radius=4,
-                                                                 text_color="#ffffff",
-                                                                 font=("arial", 15), 
+                                                                 font=("arial", 15),
                                                                  text="Search",
-                                                                 fg_color="#407ecf", 
-                                                                 hover_color="#6996d1",
                                                                  command=lambda:self.__fn_search_category(self._search_categories_entry.get()))
         self._search_categories_button.place(x=1425, y=9)
 
@@ -57,100 +60,100 @@ class UiCategory:
 
         self._create_category_frame = customtkinter.CTkFrame(master=self._square_frame,
                                                              width=350, height=316,
-                                                             corner_radius=10,
-                                                             fg_color="#ffffff")
+                                                             fg_color=WHITE_COLOR,
+                                                             corner_radius=10)
         self._create_category_frame.place(x=10, y=58)
 
         category_name_label = customtkinter.CTkLabel(master=self._create_category_frame, 
+                                                     text_color=GRAY_TEXT_COLOR, 
                                                      font=("arial", 17), 
-                                                     text_color="#383838", 
                                                      text="Category name:")
         category_name_label.place(x=10, y=10)
 
         self.__category_name_entry = customtkinter.CTkEntry(master=self._create_category_frame,
                                                             width=330, height=35,
+                                                            border_color=LIGHT_GRAY_COLOR, 
                                                             corner_radius=3, 
                                                             font=("arial", 17), 
-                                                            border_color="#e3e3e3", 
                                                             border_width=1)
         self.__category_name_entry.place(x=10, y=45)
 
         description_label = customtkinter.CTkLabel(master=self._create_category_frame, 
                                                    font=("arial", 17), 
-                                                   text_color="#383838", 
+                                                   text_color=GRAY_TEXT_COLOR, 
                                                    text="Description:")
         description_label.place(x=10, y=90)
 
         self.__description_textbox = customtkinter.CTkTextbox(master=self._create_category_frame,
                                                               width=330, height=110,
+                                                              border_color=LIGHT_GRAY_COLOR, 
                                                               corner_radius=3, 
                                                               font=("arial", 17), 
-                                                              border_color="#e3e3e3", 
                                                               border_width=1)
         self.__description_textbox.place(x=10, y=125)
 
         self.__create_category_button = customtkinter.CTkButton(master=self._create_category_frame,
                                                                 width=330, height=35,
+                                                                text_color=WHITE_COLOR,
+                                                                fg_color=GREEN_COLOR,
+                                                                hover_color=GREEN_HOVER_COLOR,
                                                                 corner_radius=3,
                                                                 font=("arial", 15),
-                                                                text_color="#ffffff",
                                                                 text="Add Category",
-                                                                fg_color="#4bb34b", 
-                                                                hover_color="#7ebf7e",
                                                                 command=self.__fn_create_category)
         self.__create_category_button.place(x=10, y=260)
 
         self._update_category_frame = customtkinter.CTkFrame(master=self._square_frame,
                                                              width=350, height=100,
-                                                             corner_radius=10,
-                                                             fg_color="#ffffff")
+                                                             fg_color=WHITE_COLOR,
+                                                             corner_radius=10)
         self._update_category_frame.place(x=10, y=680)
 
         update_category_label = customtkinter.CTkLabel(master=self._update_category_frame, 
+                                                       text_color=GRAY_TEXT_COLOR, 
                                                        font=("arial", 17), 
-                                                       text_color="#383838", 
                                                        text="Update selected category:")
         update_category_label.place(x=10, y=10)
 
         update_category_button = customtkinter.CTkButton(master=self._update_category_frame,
                                                          width=330, height=35,
+                                                         text_color=WHITE_COLOR,
+                                                         fg_color= ORANGE_COLOR,
+                                                         hover_color=ORANGE_HOVER_COLOR,
                                                          corner_radius=3,
                                                          font=("arial", 15),
-                                                         text_color="#ffffff",
                                                          text="Update Category",
-                                                         fg_color="#ec971f", 
-                                                         hover_color="#f0b35d",
                                                          command=self._ui_update_category)
         update_category_button.place(x=10, y=45)
 
         self._delete_category_frame = customtkinter.CTkFrame(master=self._square_frame,
                                                              width=350, height=100,
-                                                             corner_radius=10,
-                                                             fg_color="#ffffff")
+                                                             fg_color=WHITE_COLOR,
+                                                             corner_radius=10)
         self._delete_category_frame.place(x=10, y=795)
 
         delete_category_label = customtkinter.CTkLabel(master=self._delete_category_frame, 
+                                                       text_color=GRAY_TEXT_COLOR, 
                                                        font=("arial", 17), 
-                                                       text_color="#383838", 
                                                        text="Delete selected category:")
         delete_category_label.place(x=10, y=10)
 
         __delete_category_button = customtkinter.CTkButton(master=self._delete_category_frame,
                                                            width=330, height=35,
+                                                           fg_color=RED_COLOR, 
+                                                           hover_color=RED_HOVER_COLOR,
+                                                           text_color=WHITE_COLOR,
                                                            corner_radius=3,
                                                            font=("arial", 15),
-                                                           text_color="#ffffff",
                                                            text="Delete Category",
-                                                           fg_color="#d54a49", 
-                                                           hover_color="#d1706f",
                                                            command=self.__fn_delete_category)
         __delete_category_button.place(x=10, y=45)
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
         style = ttk.Style()
         style.layout("style_treeview.Treeview", [("style_treeview.Treeview.treearea", {"sticky": "nswe"})])
-        style.configure("Treeview.Heading", font=("Arial", 13), foreground="#1c1c1c")
-        style.configure("Treeview", font=("Arial", 13), foreground="#1c1c1c", rowheight=28)
+        style.configure("Treeview.Heading", font=("Arial", 13), foreground=BLACK_GRAY_COLOR)
+        style.configure("Treeview", font=("Arial", 13), foreground=BLACK_GRAY_COLOR, rowheight=28)
 
         self.__category_treeview = ttk.Treeview(master=self._square_frame,
                                                 height=29,
@@ -194,12 +197,12 @@ class UiCategory:
 
         self._cancel_button = customtkinter.CTkButton(master=self._create_category_frame,
                                                       width=330, height=35,
+                                                      fg_color=GRAY_COLOR, 
+                                                      hover_color=GRAY_HOVER_COLOR,
+                                                      text_color=WHITE_COLOR,
                                                       corner_radius=3,
                                                       font=("arial", 15),
-                                                      text_color="#ffffff",
                                                       text="Cancel",
-                                                      fg_color="#5c5c5c", 
-                                                      hover_color="#6e6e6e",
                                                       command=self._ui_category)
         self._cancel_button.place(x=10, y=310)
 
@@ -217,12 +220,12 @@ class UiCategory:
 
         __all_categories = [i for i in DbCategory(token=self.__token).read_categories()]
 
-        self.__category_treeview.tag_configure("hexgray", background="#ededed")
-        self.__category_treeview.tag_configure("hexwhite", background="#fafbfc")
+        self.__category_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
+        self.__category_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
         
-        tag = "hexwhite"
+        tag = "even_row"
         for i in __all_categories:
-            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__category_treeview.insert("", "end", values=i, tags=tag)
     
     def __fn_update_category(self) -> None:
@@ -254,9 +257,9 @@ class UiCategory:
 
         __category = DbCategory(self.__token).search_category(typed=typed)
 
-        tag = "hexwhite"
+        tag = "even_row"
         for i in __category:
-            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__category_treeview.insert("", "end", values=i, tags=tag)
 
     def __selected_row(self) -> tuple:

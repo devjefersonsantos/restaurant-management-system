@@ -1,8 +1,9 @@
+from tkinter import messagebox
+
 from database import Database
 from database import DbLogin
-from utils import empty_entries
-from tkinter import messagebox
 from logs import *
+from utils import empty_entries
 
 class DbMeal(Database):
     def __init__(self, token):

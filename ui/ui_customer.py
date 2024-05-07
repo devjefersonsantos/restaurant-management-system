@@ -1,9 +1,13 @@
-from database import DbLogin
-from database import DbCustomer
-from utils import clear_frames
-import tkinter.messagebox
 import tkinter
+import tkinter.messagebox
+from tkinter import ttk
+
 import customtkinter
+
+from .colors import *
+from database import DbCustomer
+from database import DbLogin
+from utils import clear_frames
 
 class UiCustomer:
     @DbLogin.verify_token
@@ -25,28 +29,28 @@ class UiCustomer:
         topbar_frame.place(x=0, y=0)
         
         self._topbar_label = customtkinter.CTkLabel(master=topbar_frame, 
-                                                   font=("arial black", 25),
-                                                   text_color="#ffffff", 
-                                                   text="Customer")
+                                                    text_color=WHITE_COLOR, 
+                                                    font=("arial black", 25),
+                                                    text="Customer")
         self._topbar_label.place(x=20, y=5)
 
         self._search_customers_entry = customtkinter.CTkEntry(master=topbar_frame,
-                                                             width=1227, height=35,
-                                                             placeholder_text="Search by name",
-                                                             font=("arial", 17), 
-                                                             fg_color="#EEEEEE", 
-                                                             border_color="#e3e3e3", 
-                                                             border_width=1)
+                                                              width=1227, height=35,
+                                                              fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                              border_color=LIGHT_GRAY_COLOR, 
+                                                              placeholder_text="Search by customer name",
+                                                              font=("arial", 17),
+                                                              border_width=1)
         self._search_customers_entry.place(x=174, y=8)
 
         self._search_customers_button = customtkinter.CTkButton(master=topbar_frame,
                                                                width=230, height=32,
                                                                corner_radius=4,
-                                                               text_color="#ffffff",
+                                                               text_color=WHITE_COLOR,
                                                                font=("arial", 15), 
                                                                text="Search",
-                                                               fg_color="#407ecf", 
-                                                               hover_color="#6996d1",
+                                                               fg_color=LIGHT_BLUE_COLOR, 
+                                                               hover_color=LIGHT_BLUE_HOVER_COLOR,
                                                                command=lambda:self.__fn_search_customer(self._search_customers_entry.get()))
         self._search_customers_button.place(x=1425, y=9)
 
@@ -54,17 +58,17 @@ class UiCustomer:
         self._topbar()
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
-        style = tkinter.ttk.Style()
+        style = ttk.Style()
         style.layout("style_treeview.Treeview", [("style_treeview.Treeview.treearea", {"sticky": "nswe"})])
-        style.configure("Treeview.Heading", font=("Arial", 13), foreground="#1c1c1c")
-        style.configure("Treeview", font=("Arial", 13), foreground="#1c1c1c", rowheight=28)
+        style.configure("Treeview.Heading", font=("Arial", 13), foreground=BLACK_GRAY_COLOR)
+        style.configure("Treeview", font=("Arial", 13), foreground=BLACK_GRAY_COLOR, rowheight=28)
 
-        self.__customer_treeview = tkinter.ttk.Treeview(master=self._square_frame,
-                                                        height=28,
-                                                        style="style_treeview.Treeview",
-                                                        columns=("id customer", "name", "address", 
-                                                                 "cell phone", "email", "registration date"),
-                                                        show="headings")
+        self.__customer_treeview = ttk.Treeview(master=self._square_frame,
+                                                height=28,
+                                                style="style_treeview.Treeview",
+                                                columns=("id customer", "name", "address", 
+                                                            "cell phone", "email", "registration date"),
+                                                show="headings")
         self.__customer_treeview.place(x=0, y=50)
 
         self.__customer_treeview.heading("#1", text="id customer", anchor="center")
@@ -83,42 +87,42 @@ class UiCustomer:
 
         divider_frame = tkinter.Frame(master=self._square_frame, 
                                       height=55, width=1678, 
-                                      bg="#b4b5b8")
+                                      bg=LIGHT_GRAY_COLOR)
         divider_frame.place(x=0, y=860)
 
         __del_customer_button = customtkinter.CTkButton(master=self._square_frame,
                                                         width=230, height=32,
+                                                        text_color=WHITE_COLOR,
+                                                        fg_color=RED_COLOR,
+                                                        hover_color=RED_HOVER_COLOR,
+                                                        bg_color=LIGHT_GRAY_COLOR,
                                                         corner_radius=3,
                                                         font=("arial", 15),
-                                                        text_color="#ffffff",
                                                         text="Delete Customer",
-                                                        fg_color="#d93030",
-                                                        bg_color= "#b4b5b8",
-                                                        hover_color="#f03535",
                                                         command=self.__fn_delete_customer)
         __del_customer_button.place(x=905, y=868)
 
         update_customer_button = customtkinter.CTkButton(master=self._square_frame,
                                                          width=230, height=32,
+                                                         text_color=WHITE_COLOR,
+                                                         fg_color=ORANGE_COLOR,
+                                                         hover_color=ORANGE_HOVER_COLOR,
+                                                         bg_color=LIGHT_GRAY_COLOR,
                                                          corner_radius=3,
                                                          font=("arial", 15),
-                                                         text_color="#ffffff",
                                                          text="Update Customer",
-                                                         fg_color="#f29818",
-                                                         bg_color= "#b4b5b8", 
-                                                         hover_color="#ffa626",
                                                          command=self._ui_update_customer)
         update_customer_button.place(x=1165, y=868)
 
         create_customer_button = customtkinter.CTkButton(master=self._square_frame,
                                                          width=230, height=32,
+                                                         text_color=WHITE_COLOR,
+                                                         fg_color=GREEN_COLOR,
+                                                         hover_color=GREEN_HOVER_COLOR,
+                                                         bg_color=LIGHT_GRAY_COLOR, 
                                                          corner_radius=3,
                                                          font=("arial", 15),
-                                                         text_color="#ffffff",
                                                          text="Add Customer",
-                                                         fg_color="#37b837",
-                                                         bg_color= "#b4b5b8", 
-                                                         hover_color="#3bc43b",
                                                          command=self.__ui_create_customer)
         create_customer_button.place(x=1425, y=868)
 
@@ -141,92 +145,92 @@ class UiCustomer:
 
         add_customer_frame = customtkinter.CTkFrame(master=self._square_frame,
                                                     width=1668, height=440,
-                                                    corner_radius=10, 
-                                                    fg_color="#ffffff")
+                                                    fg_color=WHITE_COLOR,
+                                                    corner_radius=10)
         add_customer_frame.place(x=5, y=55)
 
         name_label = customtkinter.CTkLabel(master=add_customer_frame,
                                             font=("arial bold", 17),
-                                            text_color="#2e2e2e",
+                                            text_color=GRAY_TEXT_COLOR,
                                             text="Name:")
         name_label.place(x=25, y=25)
 
         self.__name_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                    width=1618, height=35,
+                                                   border_color=LIGHT_GRAY_COLOR, 
                                                    corner_radius=3, 
                                                    font=("arial", 17), 
-                                                   border_color="#e3e3e3", 
                                                    border_width=1)
         self.__name_entry.place(x=25, y=62)
 
         address_label = customtkinter.CTkLabel(master=add_customer_frame,
                                                font=("arial bold", 17),
-                                               text_color="#2e2e2e",
+                                               text_color=GRAY_TEXT_COLOR,
                                                text="Address:")
         address_label.place(x=25, y=120)
 
         self.__address_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                       width=1618, height=35,
+                                                      border_color=LIGHT_GRAY_COLOR, 
                                                       corner_radius=3, 
                                                       font=("arial", 17), 
-                                                      border_color="#e3e3e3", 
                                                       border_width=1)
         self.__address_entry.place(x=25, y=160)
 
         cellphone_label = customtkinter.CTkLabel(master=add_customer_frame,
                                                  font=("arial bold", 17),
-                                                 text_color="#2e2e2e",
+                                                 text_color=GRAY_TEXT_COLOR,
                                                  text="Cell Phone:")
         cellphone_label.place(x=25, y=215)
 
         self.__cellphone_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                         width=1618, height=35,
+                                                        border_color=LIGHT_GRAY_COLOR, 
                                                         corner_radius=3, 
                                                         font=("arial", 17),
-                                                        border_color="#e3e3e3", 
                                                         border_width=1)
         self.__cellphone_entry.place(x=25, y=255)
 
         email_label = customtkinter.CTkLabel(master=add_customer_frame,
                                              font=("arial bold", 17),
-                                             text_color="#2e2e2e",
+                                             text_color=GRAY_TEXT_COLOR,
                                              text="Email:")
         email_label.place(x=25, y=310)
 
         self.__email_entry = customtkinter.CTkEntry(master=add_customer_frame,
                                                     width=1618, height=35,                                                  
+                                                    border_color=LIGHT_GRAY_COLOR, 
                                                     corner_radius=3,
                                                     font=("arial", 17),
-                                                    border_color="#e3e3e3", 
                                                     border_width=1)
         self.__email_entry.place(x=25, y=350)
 
         divider_frame = tkinter.Frame(master=self._square_frame, 
                                       height=55, width=1678, 
-                                      bg="#b4b5b8")
+                                      bg=LIGHT_GRAY_COLOR)
         divider_frame.place(x=0, y=860)
 
         __add_customer_button = customtkinter.CTkButton(master=self._square_frame,
                                                         width=230, height=32,
+                                                        text_color=WHITE_COLOR,
+                                                        fg_color=GREEN_COLOR,
+                                                        hover_color=GREEN_HOVER_COLOR,
+                                                        bg_color=LIGHT_GRAY_COLOR, 
                                                         corner_radius=3,
                                                         font=("arial", 15),
-                                                        text_color="#ffffff",
                                                         text="Add Customer",
-                                                        fg_color="#37b837",
-                                                        bg_color= "#b4b5b8", 
-                                                        hover_color="#3bc43b",
                                                         command=self.__fn_create_customer)
         __add_customer_button.place(x=1165, y=868)
     
         self._cancel_button = customtkinter.CTkButton(master=self._square_frame,
                                                       width=230, height=32,
+                                                      text_color=WHITE_COLOR,
+                                                      bg_color= LIGHT_GRAY_COLOR, 
+                                                      fg_color=GRAY_COLOR,
+                                                      hover_color=GRAY_HOVER_COLOR,
                                                       corner_radius=3,
                                                       font=("arial", 15),
-                                                      text_color="#ffffff",
                                                       text="Cancel",
-                                                      fg_color="#5c5c5c",
-                                                      bg_color= "#b4b5b8", 
-                                                      hover_color="#6e6e6e",
                                                       command=self._to_back)
         self._cancel_button.place(x=1425, y=868)
 
@@ -245,90 +249,90 @@ class UiCustomer:
         update_customer_frame = customtkinter.CTkFrame(master=self._square_frame,
                                                        width=1668, height=537,
                                                        corner_radius=10, 
-                                                       fg_color="#ffffff")
+                                                       fg_color=WHITE_COLOR)
         update_customer_frame.place(x=5, y=55)
 
         id_label = customtkinter.CTkLabel(master=update_customer_frame,
                                           font=("arial bold", 17),
-                                          text_color="#2e2e2e",
+                                          text_color=GRAY_TEXT_COLOR,
                                           text="ID:")
         id_label.place(x=25, y=25)
 
         self.__id_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                  width=1618, height=35,
+                                                 border_color=LIGHT_GRAY_COLOR, 
                                                  corner_radius=3, 
                                                  font=("arial", 17), 
-                                                 border_color="#e3e3e3", 
                                                  border_width=1)
         self.__id_entry.place(x=25, y=62)
 
         name_label = customtkinter.CTkLabel(master=update_customer_frame,
                                             font=("arial bold", 17),
-                                            text_color="#2e2e2e",
+                                            text_color=GRAY_TEXT_COLOR,
                                             text="Name:")
         name_label.place(x=25, y=120)
 
         self.__name_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                    width=1618, height=35,
+                                                   border_color=LIGHT_GRAY_COLOR, 
                                                    corner_radius=3, 
                                                    font=("arial", 17), 
-                                                   border_color="#e3e3e3", 
                                                    border_width=1)
         self.__name_entry.place(x=25, y=160)
 
         address_label = customtkinter.CTkLabel(master=update_customer_frame,
                                                font=("arial bold", 17),
-                                               text_color="#2e2e2e",
+                                               text_color=GRAY_TEXT_COLOR,
                                                text="Address:")
         address_label.place(x=25, y=215)
 
         self.__address_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                       width=1618, height=35,
+                                                      border_color=LIGHT_GRAY_COLOR,
                                                       corner_radius=3, 
                                                       font=("arial", 17),
-                                                      border_color="#e3e3e3",
                                                       border_width=1)
         self.__address_entry.place(x=25, y=255)
 
         cellphone_label = customtkinter.CTkLabel(master=update_customer_frame,
                                                  font=("arial bold", 17),
-                                                 text_color="#2e2e2e",
+                                                 text_color=GRAY_TEXT_COLOR,
                                                  text="Cell Phone:")
         cellphone_label.place(x=25, y=310)
 
         self.__cellphone_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                         width=1618, height=35,
+                                                        border_color=LIGHT_GRAY_COLOR, 
                                                         corner_radius=3, 
                                                         font=("arial", 17), 
-                                                        border_color="#e3e3e3", 
                                                         border_width=1)
         self.__cellphone_entry.place(x=25, y=350)
 
         email_label = customtkinter.CTkLabel(master=update_customer_frame,
                                              font=("arial bold", 17),
-                                             text_color="#2e2e2e",
+                                             text_color=GRAY_TEXT_COLOR,
                                              text="Email:")
         email_label.place(x=25, y=405)
 
         self.__email_entry = customtkinter.CTkEntry(master=update_customer_frame,
                                                     width=1618, height=35,
+                                                    border_color=LIGHT_GRAY_COLOR, 
                                                     corner_radius=3, 
                                                     font=("arial", 17),
-                                                    border_color="#e3e3e3", 
                                                     border_width=1)
         self.__email_entry.place(x=25, y=445)
 
         divider_frame = tkinter.Frame(master=self._square_frame, 
                                       height=55, width=1678, 
-                                      bg="#b4b5b8")
+                                      bg=LIGHT_GRAY_COLOR)
         divider_frame.place(x=0, y=860)
 
         __update_customer_button = customtkinter.CTkButton(master=self._square_frame,
                                                            width=230, height=32,
+                                                           text_color=WHITE_COLOR,
+                                                           fg_color=GREEN_COLOR, 
+                                                           hover_color=GREEN_HOVER_COLOR,
                                                            corner_radius=3,
-                                                           fg_color="#4bb34b", 
-                                                           hover_color="#7ebf7e",
-                                                           text_color="#ffffff",
                                                            font=("arial", 15), 
                                                            text="Save Changes",
                                                            command=self.__fn_update_customer)
@@ -336,10 +340,10 @@ class UiCustomer:
 
         cancel_button = customtkinter.CTkButton(master=self._square_frame,
                                                 width=230, height=32,
+                                                fg_color=GRAY_COLOR,
+                                                hover_color=GRAY_HOVER_COLOR, 
+                                                text_color=WHITE_COLOR,
                                                 corner_radius=3,
-                                                fg_color="#5c5c5c",
-                                                hover_color="#6e6e6e", 
-                                                text_color="#ffffff",
                                                 font=("arial", 15), 
                                                 text="Cancel",
                                                 command=self._to_back)
@@ -363,12 +367,12 @@ class UiCustomer:
         __all_customers = [(i[0], i[1], i[2], i[3], i[4], i[5].replace(microsecond=0)) 
                            for i in DbCustomer(token=self.__token).read_customers()]
 
-        self.__customer_treeview.tag_configure("hexgray", background="#ededed")
-        self.__customer_treeview.tag_configure("hexwhite", background="#fafbfc")
+        self.__customer_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
+        self.__customer_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
         
-        tag = "hexwhite"
+        tag = "even_row"
         for i in __all_customers:
-            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__customer_treeview.insert("", "end", values=i, tags=tag)
 
     def __fn_update_customer(self) -> None:
@@ -396,9 +400,9 @@ class UiCustomer:
 
         __customer = DbCustomer(self.__token).search_customer(typed=typed)
 
-        tag = "hexwhite"
+        tag = "even_row"
         for i in __customer:
-            tag = "hexgray" if tag == "hexwhite" else "hexwhite"
+            tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__customer_treeview.insert("", "end", values=i, tags=tag)
 
     def __customer_data(self) -> None:
@@ -410,7 +414,7 @@ class UiCustomer:
         for k, v in enumerate(list_entries):
             v.insert(0, self.__data[k])
 
-        self.__id_entry.configure(state="disabled", fg_color="#e3e3e3", border_color="#ffffff")
+        self.__id_entry.configure(state="disabled", fg_color=LIGHT_GRAY_COLOR, border_color=WHITE_COLOR)
 
     def __selected_row(self) -> tuple:
         try:

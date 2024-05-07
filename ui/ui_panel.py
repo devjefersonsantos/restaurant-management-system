@@ -1,12 +1,14 @@
-from database import DbLogin
-from ui import UiHome
-from ui import UiCustomer
-from ui import UiWaiter
-from ui import UiCategory
-from ui import UiMeal
-from PIL import Image
-from utils import clear_frames
 import customtkinter
+from PIL import Image
+
+from .colors import *
+from database import DbLogin
+from ui import UiCategory
+from ui import UiCustomer
+from ui import UiHome
+from ui import UiMeal
+from ui import UiWaiter
+from utils import clear_frames
 
 class UiPanel:
     @DbLogin.verify_token
@@ -24,20 +26,20 @@ class UiPanel:
 
         self._banner_frame = customtkinter.CTkFrame(master=self._main_frame, 
                                                     width=1920, height=100,
-                                                    corner_radius=0,
-                                                    fg_color="#ffc83d")
+                                                    fg_color=ORANGE_FRAME_COLOR,
+                                                    corner_radius=0)
         self._banner_frame.grid(row=0, column=0, columnspan=2)
 
         self._sidebar_frame = customtkinter.CTkFrame(master=self._main_frame,
                                                      width=242, height=1012, 
-                                                     corner_radius=0,
-                                                     fg_color="#313338")
+                                                     fg_color=SIDEBAR_COLOR,
+                                                     corner_radius=0)
         self._sidebar_frame.grid(row=1, column=0, sticky="w")
 
         self._square_frame = customtkinter.CTkFrame(master=self._main_frame,
                                                     width=1678, height=1012,
-                                                    corner_radius=0,
-                                                    fg_color="#edeef0")
+                                                    fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                    corner_radius=0)
         self._square_frame.place(x=242, y=100)
 
         self._ui_images()
@@ -67,9 +69,9 @@ class UiPanel:
 
         self._home_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                     width=242, height=37,
+                                                    fg_color=SIDEBAR_COLOR,
+                                                    hover_color=SIDEBAR_HOVER_COLOR,
                                                     corner_radius=0, 
-                                                    fg_color="#313338",
-                                                    hover_color="#21222c",
                                                     text="Home",
                                                     font=("arial", 17),
                                                     command=self._home_interface)
@@ -77,9 +79,9 @@ class UiPanel:
 
         self._customer_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                         width=242, height=37,
+                                                        fg_color=SIDEBAR_COLOR,
+                                                        hover_color=SIDEBAR_HOVER_COLOR,
                                                         corner_radius=0, 
-                                                        fg_color="#313338",
-                                                        hover_color="#21222c",
                                                         text="Customer",
                                                         font=("arial", 17),
                                                         command=self._customer_interface)
@@ -87,9 +89,9 @@ class UiPanel:
 
         self._waiter_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                       width=242, height=37,
+                                                      fg_color=SIDEBAR_COLOR,
+                                                      hover_color=SIDEBAR_HOVER_COLOR,
                                                       corner_radius=0,
-                                                      fg_color="#313338",
-                                                      hover_color="#21222c",
                                                       text="Waiter",
                                                       font=("arial", 17),
                                                       command=self._waiter_interface)
@@ -97,9 +99,9 @@ class UiPanel:
 
         self._category_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                         width=242, height=37,
+                                                        fg_color=SIDEBAR_COLOR,
+                                                        hover_color=SIDEBAR_HOVER_COLOR,
                                                         corner_radius=0, 
-                                                        fg_color="#313338",
-                                                        hover_color="#21222c",
                                                         text="Category",
                                                         font=("arial", 17),
                                                         command=self._category_interface)
@@ -107,9 +109,9 @@ class UiPanel:
 
         self._meal_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                     width=242, height=37,
+                                                    fg_color=SIDEBAR_COLOR,
+                                                    hover_color=SIDEBAR_HOVER_COLOR,
                                                     corner_radius=0, 
-                                                    fg_color="#313338",
-                                                    hover_color="#21222c",
                                                     text="Meal",
                                                     font=("arial", 17),
                                                     command=self._meal_interface)
@@ -117,18 +119,18 @@ class UiPanel:
 
         tables_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                 width=242, height=37,
+                                                fg_color=SIDEBAR_COLOR,
+                                                hover_color=SIDEBAR_HOVER_COLOR,
                                                 corner_radius=0,
-                                                fg_color="#313338",
-                                                hover_color="#21222c",
                                                 text="Tables",
                                                 font=("arial", 17))
         tables_button.place(x=0, y=293)
 
         account_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                  width=242, height=37,
+                                                 fg_color=SIDEBAR_COLOR,
+                                                 hover_color=SIDEBAR_HOVER_COLOR,
                                                  corner_radius=0,
-                                                 fg_color="#313338",
-                                                 hover_color="#21222c",
                                                  text="Account",
                                                  font=("arial", 17))
         account_button.place(x=0, y=858)
@@ -154,6 +156,6 @@ class UiPanel:
         self._button_selected(target_button=self._meal_button)
 
     def _button_selected(self, target_button:customtkinter.CTkButton) -> None:
-        self._current_button.configure(fg_color="#313338")
+        self._current_button.configure(fg_color=SIDEBAR_COLOR)
         self._current_button = target_button
-        self._current_button.configure(fg_color="#292a33")
+        self._current_button.configure(fg_color=SIDEBAR_SELECTED_COLOR)

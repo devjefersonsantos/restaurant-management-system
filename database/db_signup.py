@@ -1,8 +1,9 @@
-from database import Database
-from utils import empty_entries
 from tkinter import messagebox
-from utils import convert_to_sha3_256
+
+from database import Database
 from logs import *
+from utils import convert_to_sha3_256
+from utils import empty_entries
 
 class DbSignup(Database):
     def __init__(self, username: str, password: str, email: str):

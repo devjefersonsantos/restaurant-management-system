@@ -1,6 +1,7 @@
-import psycopg2
 import json
 from tkinter import messagebox
+
+import psycopg2
 
 class Database:
     def connect_to_database(self, database: str | None = "restaurant_management_system") -> True:
