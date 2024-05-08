@@ -148,7 +148,8 @@ class UiMeal:
                                                     bg_color=LIGHT_GRAY_COLOR,
                                                     corner_radius=3,
                                                     font=("arial", 15),
-                                                    text="Delete Meal")
+                                                    text="Delete Meal",
+                                                    command=self.__fn_delete_meal)
         __del_meal_button.place(x=905, y=868)
 
         update_meal_button = customtkinter.CTkButton(master=self._square_frame,
@@ -181,7 +182,7 @@ class UiMeal:
         self.__meal_treeview.configure(yscroll=treeview_scrollbar.set)
         treeview_scrollbar.place(x=1660, y=50, height=808)
 
-        self.__fn_read_meal()
+        self.__fn_read_meals()
 
     def __ui_create_meal(self) -> None:
         clear_frames(self._square_frame)
@@ -423,7 +424,7 @@ class UiMeal:
                                             status=self.__status_optionmenu.get()):
                self._to_back()
     
-    def __fn_read_meal(self) -> None:
+    def __fn_read_meals(self) -> None:
         self.__meal_treeview.delete(*self.__meal_treeview.get_children())
 
         __all_meals = [i for i in DbMeal(token=self.__token).read_meals()]
@@ -436,9 +437,28 @@ class UiMeal:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
+    def __fn_delete_meal(self) -> None:
+        self.__data = self.__selected_row()
+        if not self.__data:
+            return
+          
+        message = f"Are you sure you want to delete\nthis meal? {self.__data[1]}."
+        if tkinter.messagebox.askyesno(title="Delete Meal", 
+                                       message=message, 
+                                       icon=tkinter.messagebox.WARNING) == True:
+            DbMeal(self.__token).delete_meal(id_meal=self.__data[0])
+            self.__fn_read_meals()
+
     def _list_of_categories(self) -> list[str]:
         __categories = DbCategory(self.__token).read_categories()
         return [i[1] for i in __categories]
+    
+    def __selected_row(self) -> tuple:
+        try:
+            selected_meal = self.__meal_treeview.item(self.__meal_treeview.selection()[0], "values")
+            return selected_meal
+        except IndexError:
+            tkinter.messagebox.showerror(title=None, message="Please select a meal")
     
     def _to_back(self) -> None:
         clear_frames(self._square_frame)

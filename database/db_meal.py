@@ -51,3 +51,18 @@ class DbMeal(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def delete_meal(self, id_meal: int) -> None:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""DELETE FROM meal
+                                    WHERE id_meal = %s""", (id_meal,))
+                self.connection.commit()
+            except Exception as error:
+                log_error(f"System user id: {self.__id_account}. An error occurred while deleting a meal.")
+                messagebox.showerror(title="Delete Meal Error", message=error)
+            else:
+                log_warning(f"System user id: {self.__id_account}. Meal id: {id_meal} was deleted.")
+            finally:
+                self.cursor.close()
+                self.connection.close()
