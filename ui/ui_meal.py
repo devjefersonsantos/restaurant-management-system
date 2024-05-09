@@ -296,10 +296,13 @@ class UiMeal:
         self._cancel_button.place(x=1425, y=868)
 
     def __ui_update_meal(self) -> None:
+        self.__data = self.__selected_row()
+        if not self.__data:
+            return
+
         clear_frames(self._square_frame)
         
         self._topbar()
-        
         self._topbar_label.configure(text="Update Meal")
         self._search_meals_entry.destroy()
         self._search_meals_button.destroy()
@@ -367,7 +370,7 @@ class UiMeal:
                                                                  corner_radius=4,
                                                                  font=("arial", 17),
                                                                  dropdown_font=("arial", 15),
-                                                                 values=[""])
+                                                                 values=self._list_of_categories())
         self.__category_optionmenu.place(x=25, y=350)
 
         status_label = customtkinter.CTkLabel(master=update_meal_frame,
@@ -402,7 +405,8 @@ class UiMeal:
                                                        text_color=WHITE_COLOR,
                                                        corner_radius=3,
                                                        font=("arial", 15),
-                                                       text="Save Changes")
+                                                       text="Save Changes",
+                                                       command=self.__fn_update_meal)
         __update_meal_button.place(x=1165, y=868)
     
         self._cancel_button = customtkinter.CTkButton(master=self._square_frame,
@@ -416,6 +420,8 @@ class UiMeal:
                                                       text="Cancel",
                                                       command=self._to_back)
         self._cancel_button.place(x=1425, y=868)
+
+        self.__meal_data()
 
     def _fn_create_meal(self) -> None:
         if DbMeal(self.__token).create_meal(meal_name=self.__meal_name_entry.get(),
@@ -449,10 +455,31 @@ class UiMeal:
             DbMeal(self.__token).delete_meal(id_meal=self.__data[0])
             self.__fn_read_meals()
 
+    def __fn_update_meal(self) -> None:
+        if DbMeal(token=self.__token).update_meal(id_meal=self.__id_meal_entry.get(),
+                                                  meal_name=self.__meal_name_entry.get(),
+                                                  sale_price=self.__sale_price_entry.get(),
+                                                  category_id_category=DbCategory(self.__token).get_category_id(self.__category_optionmenu.get()),
+                                                  status=self.__status_optionmenu.get()):
+                self._to_back()
+
     def _list_of_categories(self) -> list[str]:
         __categories = DbCategory(self.__token).read_categories()
         return [i[1] for i in __categories]
     
+    def __meal_data(self) -> None:
+        list_entries = [self.__id_meal_entry, 
+                        self.__meal_name_entry, 
+                        self.__sale_price_entry]
+        
+        for k, v in enumerate(list_entries):
+            v.insert(0, self.__data[k])
+        
+        self.__category_optionmenu.set(self.__data[3])
+        self.__status_optionmenu.set(self.__data[4])
+
+        self.__id_meal_entry.configure(state="disabled", fg_color=LIGHT_GRAY_COLOR, border_color=WHITE_COLOR)
+
     def __selected_row(self) -> tuple:
         try:
             selected_meal = self.__meal_treeview.item(self.__meal_treeview.selection()[0], "values")
