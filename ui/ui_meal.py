@@ -50,7 +50,8 @@ class UiMeal:
                                                             hover_color=LIGHT_BLUE_HOVER_COLOR,
                                                             corner_radius=4,
                                                             font=("arial", 15), 
-                                                            text="Search")
+                                                            text="Search",
+                                                            command=lambda:self.__fn_search_meal(self._search_meals_entry.get()))
         self._search_meals_button.place(x=1425, y=9)
 
     def _info_widgets(self) -> None:
@@ -443,6 +444,14 @@ class UiMeal:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
+    def __fn_update_meal(self) -> None:
+        if DbMeal(token=self.__token).update_meal(id_meal=self.__id_meal_entry.get(),
+                                                  meal_name=self.__meal_name_entry.get(),
+                                                  sale_price=self.__sale_price_entry.get(),
+                                                  category_id_category=DbCategory(self.__token).get_category_id(self.__category_optionmenu.get()),
+                                                  status=self.__status_optionmenu.get()):
+                self._to_back()
+
     def __fn_delete_meal(self) -> None:
         self.__data = self.__selected_row()
         if not self.__data:
@@ -455,13 +464,15 @@ class UiMeal:
             DbMeal(self.__token).delete_meal(id_meal=self.__data[0])
             self.__fn_read_meals()
 
-    def __fn_update_meal(self) -> None:
-        if DbMeal(token=self.__token).update_meal(id_meal=self.__id_meal_entry.get(),
-                                                  meal_name=self.__meal_name_entry.get(),
-                                                  sale_price=self.__sale_price_entry.get(),
-                                                  category_id_category=DbCategory(self.__token).get_category_id(self.__category_optionmenu.get()),
-                                                  status=self.__status_optionmenu.get()):
-                self._to_back()
+    def __fn_search_meal(self, typed: str) -> None:
+        self.__meal_treeview.delete(*self.__meal_treeview.get_children())
+
+        __meal = DbMeal(self.__token).search_meal(typed=typed)
+
+        tag = "even_row"
+        for i in __meal:
+            tag = "even_row" if tag == "odd_row" else "odd_row"
+            self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
     def _list_of_categories(self) -> list[str]:
         __categories = DbCategory(self.__token).read_categories()

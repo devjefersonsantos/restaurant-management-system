@@ -93,3 +93,17 @@ class DbMeal(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def search_meal(self, typed: str) -> str:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT * FROM meal 
+                                    WHERE meal_name LIKE %s""", ("%" + typed + "%",))
+                result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Search Meal Error", message=error)
+            else:
+                return result
+            finally:
+                self.cursor.close()
+                self.connection.close()
