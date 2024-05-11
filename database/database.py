@@ -49,7 +49,10 @@ class Database:
                                     access_token VARCHAR(255), 
                                     username VARCHAR(10) NOT NULL UNIQUE, 
                                     password VARCHAR(255) NOT NULL,
-                                    email VARCHAR(255) NOT NULL);""")
+                                    email VARCHAR(255) NOT NULL,
+                                    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                    last_login TIMESTAMP,
+                                    register_login TIMESTAMP);""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS customer (
                                     id_customer SERIAL PRIMARY KEY,
