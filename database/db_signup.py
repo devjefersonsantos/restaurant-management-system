@@ -23,12 +23,12 @@ class DbSignup(Database):
                                         VALUES (%s, %s, %s) RETURNING id_account;""", 
                                         (self.__username, convert_to_sha3_256(self.__password), self.__email))
                     self.connection.commit()
-                    __id_account = self.cursor.fetchone()[0]
+                    __id_account = self.cursor.fetchone()
                 except Exception as error:
                     log_error("An error occurred while creating a account.")
                     messagebox.showerror(title="Sign Up Error", message=error)
                 else:
-                    log_info(f"Account has been created with id {__id_account}.")
+                    log_info(f"Account has been created with id {__id_account[0]}.")
                     messagebox.showinfo(title="Sign Up", message="Congratulations! Your account\nhas been successfully created.")
                 finally:
                     self.cursor.close()

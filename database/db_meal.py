@@ -24,13 +24,13 @@ class DbMeal(Database):
                     self.cursor.execute("""INSERT INTO meal (meal_name, sale_price, category_id_category, status)
                                         VALUES (%s, %s, %s, %s) RETURNING id_meal;""", (meal_name, sale_price, category_id_category, status))
                     self.connection.commit()
-                    __id_meal = self.cursor.fetchone()[0]
+                    __id_meal = self.cursor.fetchone()
 
                 except Exception as error:
                     log_error(f"System user id: {self.__id_account}. An error occurred while creating a meal.")
                     messagebox.showerror(title="Create Meal Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__id_account}. Create meal with id: {__id_meal}.")
+                    log_info(f"System user id: {self.__id_account}. Create meal with id: {__id_meal[0]}.")
                     messagebox.showinfo(title="Create Meal", message=f"Meal: {meal_name}, successfully registered.")
                     return True
                 finally:

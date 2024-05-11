@@ -23,12 +23,12 @@ class DbCustomer(Database):
                         self.cursor.execute("""INSERT INTO customer (name, address, cell_phone, email, account_id_account)
                                             VALUES (%s, %s, %s, %s, %s) RETURNING id_customer;""", (name, address, cellphone, email, self.__id_account))
                     self.connection.commit()
-                    __id_customer = self.cursor.fetchone()[0]
+                    __id_customer = self.cursor.fetchone()
                 except Exception as error:
                     log_error(f"System user id: {self.__id_account}. An error occurred while creating a customer.")
                     messagebox.showerror(title="Create Customer Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__id_account}. Create customer with id: {__id_customer}.")
+                    log_info(f"System user id: {self.__id_account}. Create customer with id: {__id_customer[0]}.")
                     messagebox.showinfo(title="Create Customer", message=f"Customer: {name}, successfully registered.")
                     return True
                 finally:

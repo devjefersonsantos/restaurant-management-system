@@ -19,13 +19,13 @@ class DbCategory(Database):
                     self.cursor.execute("""INSERT INTO category (name, description)
                                         VALUES (%s, %s) RETURNING id_category;""", (name, description))
                     self.connection.commit()
-                    __id_category = self.cursor.fetchone()[0]
+                    __id_category = self.cursor.fetchone()
 
                 except Exception as error:
                     log_error(f"System user id: {self.__id_account}. An error occurred while creating a category.")
                     messagebox.showerror(title="Create Category Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__id_account}. Create category with id: {__id_category}.")
+                    log_info(f"System user id: {self.__id_account}. Create category with id: {__id_category[0]}.")
                     messagebox.showinfo(title="Create Category", message=f"Category: {name}, successfully registered.")
                     return True
                 finally:

@@ -19,13 +19,13 @@ class DbWaiter(Database):
                     self.cursor.execute("""INSERT INTO waiter (name, cell_phone)
                                         VALUES (%s, %s) RETURNING id_waiter;""", (name, cellphone))
                     self.connection.commit()
-                    __id_waiter = self.cursor.fetchone()[0]
+                    __id_waiter = self.cursor.fetchone()
 
                 except Exception as error:
                     log_error(f"System user id: {self.__id_account}. An error occurred while creating a waiter.")
                     messagebox.showerror(title="Create Waiter Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__id_account}. Create waiter with id: {__id_waiter}.")
+                    log_info(f"System user id: {self.__id_account}. Create waiter with id: {__id_waiter[0]}.")
                     messagebox.showinfo(title="Create Waiter", message=f"Waiter: {name}, successfully registered.")
                     return True
                 finally:
