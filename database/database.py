@@ -51,8 +51,8 @@ class Database:
                                     password VARCHAR(255) NOT NULL,
                                     email VARCHAR(255) NOT NULL,
                                     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                    last_login TIMESTAMP,
-                                    register_login TIMESTAMP);""")
+                                    last_login_date TIMESTAMP,
+                                    current_login_date TIMESTAMP);""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS customer (
                                     id_customer SERIAL PRIMARY KEY,
