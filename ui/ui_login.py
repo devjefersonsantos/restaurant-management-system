@@ -52,7 +52,7 @@ class UiLogin(customtkinter.CTk):
 
         # INSERT INTO account (username, password, email)
         # VALUES ('dev', 'daeed6308874de11ec5ba896aff636aee60821b397f88164be3eae5cf6d276d8', 'dev');
-        if __token := DbLogin(username="dev", password="dev").create_access_token():
+        if __token := DbLogin(username="dev", password="dev").process_login():
             UiPanel(root=self, token=__token)
     
     def _ui_images(self) -> None:
@@ -487,7 +487,7 @@ class UiLogin(customtkinter.CTk):
                 Database().connect_to_database(database=None)
 
     def __login(self, username, password) -> None:
-        if __token := DbLogin(username=username, password=password).create_access_token():
+        if __token := DbLogin(username=username, password=password).process_login():
             UiPanel(root=self, token=__token)
 
     def _go_back_loginscreen(self) -> None:
