@@ -236,6 +236,7 @@ class MealUi:
                                                 text="Category:")
         category_label.place(x=25, y=215)
 
+        __categories : list = self._list_categories()
         self.__category_optionmenu = customtkinter.CTkOptionMenu(master=add_meal_frame,
                                                                  width=1618, height=35,
                                                                  fg_color=FG_OPTION_MENU_COLOR,
@@ -245,7 +246,8 @@ class MealUi:
                                                                  corner_radius=4,
                                                                  font=("arial", 17),
                                                                  dropdown_font=("arial", 15),
-                                                                 values=self._list_of_categories())
+                                                                 values=__categories if __categories else ["No categories available"],
+                                                                 state=tkinter.NORMAL if __categories else tkinter.DISABLED)
         self.__category_optionmenu.place(x=25, y=255)
 
         status_label = customtkinter.CTkLabel(master=add_meal_frame,
@@ -362,6 +364,7 @@ class MealUi:
                                                 text="Category:")
         category_label.place(x=25, y=310)
 
+        
         self.__category_optionmenu = customtkinter.CTkOptionMenu(master=update_meal_frame,
                                                                  width=1618, height=35,
                                                                  fg_color=FG_OPTION_MENU_COLOR,
@@ -371,7 +374,7 @@ class MealUi:
                                                                  corner_radius=4,
                                                                  font=("arial", 17),
                                                                  dropdown_font=("arial", 15),
-                                                                 values=self._list_of_categories())
+                                                                 values=self._list_categories())
         self.__category_optionmenu.place(x=25, y=350)
 
         status_label = customtkinter.CTkLabel(master=update_meal_frame,
@@ -474,7 +477,7 @@ class MealUi:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
-    def _list_of_categories(self) -> list[str]:
+    def _list_categories(self) -> list[str]:
         __categories = CategoryDb(self.__token).read_categories()
         return [i[1] for i in __categories]
     
