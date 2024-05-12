@@ -6,12 +6,12 @@ import customtkinter
 
 from .colors import *
 from database import Database 
-from database import DbSignup
-from database import DbLogin
-from ui import UiPanel
+from database import SignupDb
+from database import LoginDb
+from ui import PanelUi
 from utils import clear_frames
 
-class UiLogin(customtkinter.CTk):
+class LoginUi(customtkinter.CTk):
     def __init__(self) -> None:
         super().__init__()
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
@@ -48,12 +48,12 @@ class UiLogin(customtkinter.CTk):
         self._frame_four.place(x=33, y=388)
 
         self._ui_images()
-        self._ui_login()
+        self._login_ui()
 
         # INSERT INTO account (username, password, email)
         # VALUES ('dev', 'daeed6308874de11ec5ba896aff636aee60821b397f88164be3eae5cf6d276d8', 'dev');
-        if __token := DbLogin(username="dev", password="dev").process_login():
-            UiPanel(root=self, token=__token)
+        if __token := LoginDb(username="dev", password="dev").process_login():
+            PanelUi(root=self, token=__token)
     
     def _ui_images(self) -> None:
         # https://pixabay.com/illustrations/chef-food-kitchen-restaurant-adult-2410818/
@@ -122,7 +122,7 @@ class UiLogin(customtkinter.CTk):
                                                        light_image=loggedoutpil_image,
                                                        size=(45,45)) 
 
-    def _ui_login(self) -> None:
+    def _login_ui(self) -> None:
         chef_label = customtkinter.CTkLabel(master=self._frame_one, 
                                             corner_radius=0,
                                             text="", 
@@ -430,7 +430,7 @@ class UiLogin(customtkinter.CTk):
                                                   hover_color=LIGHT_BLUE_HOVER_COLOR,
                                                   text_color=WHITE_COLOR,
                                                   text="Sign up",
-                                                  command=lambda:DbSignup(username=__username_entry.get(),
+                                                  command=lambda:SignupDb(username=__username_entry.get(),
                                                                           password=self.__password_entry.get(),
                                                                           email=__email_entry.get()))
         __signup_button.place(x=27, y=380)
@@ -487,8 +487,8 @@ class UiLogin(customtkinter.CTk):
                 Database().connect_to_database(database=None)
 
     def __login(self, username, password) -> None:
-        if __token := DbLogin(username=username, password=password).process_login():
-            UiPanel(root=self, token=__token)
+        if __token := LoginDb(username=username, password=password).process_login():
+            PanelUi(root=self, token=__token)
 
     def _go_back_loginscreen(self) -> None:
         clear_frames(self._frame_three)
@@ -500,4 +500,4 @@ class UiLogin(customtkinter.CTk):
         self.after(10, lambda:self._frame_four.configure(width=458, height=220))
         self.after(10, lambda:self._frame_four.place(x=33, y=388))
 
-        self._ui_login()
+        self._login_ui()

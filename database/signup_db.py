@@ -5,7 +5,7 @@ from logs import *
 from utils import convert_to_sha3_256
 from utils import empty_entries
 
-class DbSignup(Database):
+class SignupDb(Database):
     def __init__(self, username: str, password: str, email: str):
         super().__init__()
         self.__username = username
@@ -20,15 +20,15 @@ class DbSignup(Database):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""INSERT INTO account (username, password, email)
-                                        VALUES (%s, %s, %s) RETURNING id_account;""", 
+                                        VALUES (%s, %s, %s) RETURNING account_id;""", 
                                         (self.__username, convert_to_sha3_256(self.__password), self.__email))
                     self.connection.commit()
-                    __id_account = self.cursor.fetchone()
+                    __account_id = self.cursor.fetchone()
                 except Exception as error:
                     log_error("An error occurred while creating a account.")
                     messagebox.showerror(title="Sign Up Error", message=error)
                 else:
-                    log_info(f"Account has been created with id {__id_account[0]}.")
+                    log_info(f"Account has been created with id {__account_id[0]}.")
                     messagebox.showinfo(title="Sign Up", message="Congratulations! Your account\nhas been successfully created.")
                 finally:
                     self.cursor.close()

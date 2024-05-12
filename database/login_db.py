@@ -7,7 +7,7 @@ from utils import convert_to_sha3_256
 from utils import empty_entries
 from utils import restart_software
 
-class DbLogin(Database):
+class LoginDb(Database):
     def __init__(self, username: str, password: str):
         super().__init__()
         self.__username = username
@@ -21,21 +21,21 @@ class DbLogin(Database):
         4ª Set current_login_date to CURRENT_TIMESTAMP (Account table)
         5ª return token
         """
-        if __id_account := self.verify_credentials():
+        if __account_id := self.verify_credentials():
             if self.connect_to_database():
                 try:
                     __token = secrets.token_hex(32)
                     self.cursor.execute("""UPDATE account
                                         SET access_token = %s,
-                                        last_login_date = (SELECT current_login_date FROM account WHERE id_account = %s),
+                                        last_login_date = (SELECT current_login_date FROM account WHERE account_id = %s),
                                         current_login_date = CURRENT_TIMESTAMP
-                                        WHERE id_account = %s;""", (convert_to_sha3_256(__token), __id_account, __id_account))
+                                        WHERE account_id = %s;""", (convert_to_sha3_256(__token), __account_id, __account_id))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"Login failed. Create access token failed for user with id: {__id_account}.")
+                    log_error(f"Login failed. Create access token failed for user with id: {__account_id}.")
                     messagebox.showerror(title="Login Process Failed", message=error)
                 else:
-                    log_info(f"Login successful. Access token created for user with id: {__id_account}.")
+                    log_info(f"Login successful. Access token created for user with id: {__account_id}.")
                     return __token
                 finally:
                     self.connection.close()
@@ -47,12 +47,12 @@ class DbLogin(Database):
         if not empty_entries(**__entry_items):
             if self.connect_to_database():
                 try:
-                    self.cursor.execute("""SELECT id_account FROM ACCOUNT 
+                    self.cursor.execute("""SELECT account_id FROM ACCOUNT 
                                         WHERE username = %s AND password = %s;""", (self.__username, 
                                                                                     convert_to_sha3_256(self.__password)))
-                    if id_account := self.cursor.fetchone():
-                        log_info(f"Successful authentication for user with id: {id_account[0]}.")
-                        return id_account[0]
+                    if account_id := self.cursor.fetchone():
+                        log_info(f"Successful authentication for user with id: {account_id[0]}.")
+                        return account_id[0]
                     else:
                         log_error("Authentication failed.")
                         messagebox.showerror(title="Login Error", message="Incorrect username or password\nplease try again.")
@@ -63,7 +63,7 @@ class DbLogin(Database):
                     self.cursor.close()
     
     def create_access_token(self) -> str:
-        if id_account := self.verify_credentials():
+        if account_id := self.verify_credentials():
             if self.connect_to_database():
                 try:
                     __token = secrets.token_hex(32)
@@ -73,10 +73,10 @@ class DbLogin(Database):
                                                                                     convert_to_sha3_256(self.__password)))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"Create access token failed for user with id: {id_account}.")
+                    log_error(f"Create access token failed for user with id: {account_id}.")
                     messagebox.showerror(title="Authentication Failed", message=error)
                 else:
-                    log_info(f"Access token created for user with id: {id_account}.")
+                    log_info(f"Access token created for user with id: {account_id}.")
                     return __token
                 finally:
                     self.connection.close()
@@ -84,7 +84,7 @@ class DbLogin(Database):
     
 
     def create_access_token(self) -> str:
-        if id_account := self.verify_credentials():
+        if account_id := self.verify_credentials():
             if self.connect_to_database():
                 try:
                     __token = secrets.token_hex(32)
@@ -94,10 +94,10 @@ class DbLogin(Database):
                                                                                     convert_to_sha3_256(self.__password)))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"Create access token failed for user with id: {id_account}.")
+                    log_error(f"Create access token failed for user with id: {account_id}.")
                     messagebox.showerror(title="Authentication Failed", message=error)
                 else:
-                    log_info(f"Access token created for user with id: {id_account}.")
+                    log_info(f"Access token created for user with id: {account_id}.")
                     return __token
                 finally:
                     self.connection.close()
@@ -125,12 +125,12 @@ class DbLogin(Database):
         return wrapper
 
     @staticmethod
-    def token_to_id_account(token) -> int:
+    def token_to_account_id(token) -> int:
         __database = Database()
         if __database.connect_to_database():
             try:
                 cursor = __database.connection.cursor()
-                cursor.execute("""SELECT id_account FROM account
+                cursor.execute("""SELECT account_id FROM account
                                WHERE access_token = %s;""", (convert_to_sha3_256(token),))
                 result = cursor.fetchone()
                 

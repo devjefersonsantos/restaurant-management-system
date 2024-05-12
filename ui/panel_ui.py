@@ -2,16 +2,16 @@ import customtkinter
 from PIL import Image
 
 from .colors import *
-from database import DbLogin
-from ui import UiCategory
-from ui import UiCustomer
-from ui import UiHome
-from ui import UiMeal
-from ui import UiWaiter
+from database import LoginDb
+from ui import CategoryUi
+from ui import CustomerUi
+from ui import HomeUi
+from ui import MealUi
+from ui import WaiterUi
 from utils import clear_frames
 
-class UiPanel:
-    @DbLogin.verify_token
+class PanelUi:
+    @LoginDb.verify_token
     def __init__(self, root: customtkinter.CTk, token: str) -> None:
         self._root = root
         self.__token = token
@@ -43,11 +43,11 @@ class UiPanel:
         self._square_frame.place(x=242, y=100)
 
         self._ui_images()
-        self._ui_panel()
+        self._panel_ui()
 
         self._current_button: customtkinter.CTkButton = self._home_button
         self._button_selected(target_button=self._home_button)
-        UiHome(root=self._root, square_frame=self._square_frame, token=self.__token)
+        HomeUi(root=self._root, square_frame=self._square_frame, token=self.__token)
 
     def _ui_images(self) -> None:
         # https://pixabay.com/vectors/shop-supermarket-bakery-store-2891677/
@@ -56,7 +56,7 @@ class UiPanel:
                                                         light_image=restaurantpil_image, 
                                                         size=(85, 75))
 
-    def _ui_panel(self) -> None:
+    def _panel_ui(self) -> None:
         restaurant_label = customtkinter.CTkLabel(master=self._banner_frame, 
                                                   text=None, 
                                                   image=self._restaurant_image)
@@ -136,23 +136,23 @@ class UiPanel:
         account_button.place(x=0, y=858)
 
     def _home_interface(self) -> None:
-        UiHome(root=self._root, square_frame=self._square_frame, token=self.__token)
+        HomeUi(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._home_button)
 
     def _customer_interface(self) -> None:
-        UiCustomer(root=self._root, square_frame=self._square_frame, token=self.__token)
+        CustomerUi(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._customer_button)
 
     def _waiter_interface(self) -> None:
-        UiWaiter(root=self._root, square_frame=self._square_frame, token=self.__token)
+        WaiterUi(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._waiter_button)
 
     def _category_interface(self) -> None:
-        UiCategory(root=self._root, square_frame=self._square_frame, token=self.__token)
+        CategoryUi(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._category_button)
 
     def _meal_interface(self) -> None:
-        UiMeal(root=self._root, square_frame=self._square_frame, token=self.__token)
+        MealUi(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._meal_button)
 
     def _button_selected(self, target_button:customtkinter.CTkButton) -> None:

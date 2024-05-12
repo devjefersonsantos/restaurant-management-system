@@ -1,11 +1,11 @@
 import customtkinter
 
 from .colors import *
-from database import DbLogin
+from database import LoginDb
 from utils import clear_frames
 
-class UiHome:
-    @DbLogin.verify_token
+class HomeUi:
+    @LoginDb.verify_token
     def __init__(self, 
                  root: customtkinter.CTk, 
                  square_frame: customtkinter.CTk,
@@ -14,7 +14,7 @@ class UiHome:
         self._square_frame = square_frame
 
         clear_frames(self._square_frame)
-        self._ui_home()
+        self._home_ui()
 
     def _topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -28,7 +28,7 @@ class UiHome:
                                               text="Home")
         topbar_label.place(x=20, y=5)
 
-    def _ui_home(self) -> None:
+    def _home_ui(self) -> None:
         self._topbar()
 
         frame_one = customtkinter.CTkFrame(master=self._square_frame,

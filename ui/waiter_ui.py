@@ -4,12 +4,12 @@ from tkinter import ttk
 import customtkinter
 
 from .colors import *
-from database import DbLogin
-from database import DbWaiter
+from database import LoginDb
+from database import WaiterDb
 from utils import clear_frames
 
-class UiWaiter:
-    @DbLogin.verify_token
+class WaiterUi:
+    @LoginDb.verify_token
     def __init__(self, 
                  root: customtkinter.CTk, 
                  square_frame: customtkinter.CTk, 
@@ -19,7 +19,7 @@ class UiWaiter:
         self.__token = token
 
         clear_frames(self._square_frame)
-        self._ui_waiter()
+        self._waiter_ui()
 
     def _topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -53,7 +53,7 @@ class UiWaiter:
                                                               command=lambda:self.__fn_search_waiter(self._search_waiters_entry.get()))
         self._search_waiters_button.place(x=1425, y=9)
 
-    def _ui_waiter(self) -> None:
+    def _waiter_ui(self) -> None:
         clear_frames(self._square_frame)
 
         self._topbar()
@@ -158,11 +158,11 @@ class UiWaiter:
         self.__waiter_treeview = ttk.Treeview(master=self._square_frame,
                                               height=29,
                                               style="style_treeview.Treeview",
-                                              columns=("id waiter", "name", "cell phone", "registration date"),
+                                              columns=("waiter id", "name", "cell phone", "registration date"),
                                               show="headings")
         self.__waiter_treeview.place(x=370, y=58)
 
-        self.__waiter_treeview.heading("#1", text="id waiter", anchor="center")
+        self.__waiter_treeview.heading("#1", text="waiter id", anchor="center")
         self.__waiter_treeview.heading("#2", text="name", anchor="center")
         self.__waiter_treeview.heading("#3", text="cell phone", anchor="center")
         self.__waiter_treeview.heading("#4", text="registration date", anchor="center")
@@ -205,14 +205,14 @@ class UiWaiter:
                                                       corner_radius=3,
                                                       font=("arial", 15),
                                                       text="Cancel",
-                                                      command=self._ui_waiter)
+                                                      command=self._waiter_ui)
         self._cancel_button.place(x=10, y=240)
 
         self.__waiter_name_entry.insert(0, self.__data[1])
         self.__waiter_cellphone_entry.insert(0, self.__data[2])
 
     def __fn_create_waiter(self) -> None:
-        if DbWaiter(token=self.__token).create_waiter(name=self.__waiter_name_entry.get(),
+        if WaiterDb(token=self.__token).create_waiter(name=self.__waiter_name_entry.get(),
                                                       cellphone=self.__waiter_cellphone_entry.get()):
             self._clear_entries()
             self.__fn_read_waiters()
@@ -221,7 +221,7 @@ class UiWaiter:
         self.__waiter_treeview.delete(*self.__waiter_treeview.get_children())
 
         __all_waiters = [(i[0], i[1], i[2], i[3].replace(microsecond=0))
-                         for i in DbWaiter(token=self.__token).read_waiters()]
+                         for i in WaiterDb(token=self.__token).read_waiters()]
 
         self.__waiter_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
         self.__waiter_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
@@ -236,12 +236,12 @@ class UiWaiter:
         if not self.__data:
             return
         
-        updated_waiter = DbWaiter(self.__token).update_waiter(new_name=self.__waiter_name_entry.get(),
+        updated_waiter = WaiterDb(self.__token).update_waiter(new_name=self.__waiter_name_entry.get(),
                                                               new_cellphone=self.__waiter_cellphone_entry.get(),
-                                                              id_waiter=self.__data[0])
+                                                              waiter_id=self.__data[0])
         
         if updated_waiter:
-            self._ui_waiter()
+            self._waiter_ui()
 
     def __fn_delete_waiter(self) -> None:
         self.__data = self.__selected_row()
@@ -252,13 +252,13 @@ class UiWaiter:
         if tkinter.messagebox.askyesno(title="Delete Waiter", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            DbWaiter(self.__token).delete_waiter(id_waiter=self.__data[0])
+            WaiterDb(self.__token).delete_waiter(waiter_id=self.__data[0])
             self.__fn_read_waiters()
     
     def __fn_search_waiter(self, typed: str) -> None:
         self.__waiter_treeview.delete(*self.__waiter_treeview.get_children())
 
-        __waiter = DbWaiter(self.__token).search_waiter(typed=typed)
+        __waiter = WaiterDb(self.__token).search_waiter(typed=typed)
 
         tag = "even_row"
         for i in __waiter:

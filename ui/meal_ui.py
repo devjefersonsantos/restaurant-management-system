@@ -4,13 +4,13 @@ from tkinter import ttk
 import customtkinter
 
 from .colors import *
-from database import DbCategory
-from database import DbLogin
-from database import DbMeal
+from database import CategoryDb
+from database import LoginDb
+from database import MealDb
 from utils import clear_frames
 
-class UiMeal:
-    @DbLogin.verify_token
+class MealUi:
+    @LoginDb.verify_token
     def __init__(self, 
                  root: customtkinter.CTk, 
                  square_frame: customtkinter.CTk, 
@@ -20,7 +20,7 @@ class UiMeal:
         self.__token = token
 
         clear_frames(self._square_frame)
-        self._ui_meal()
+        self._meal_ui()
 
     def _topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -103,7 +103,7 @@ class UiMeal:
                                              text=None)
         total_label.place(x=30, y=72)
 
-    def _ui_meal(self) -> None:
+    def _meal_ui(self) -> None:
         self._topbar()
         self._info_widgets()
 
@@ -116,11 +116,11 @@ class UiMeal:
         self.__meal_treeview = ttk.Treeview(master=self._square_frame,
                                             height=28,
                                             style="style_treeview.Treeview",
-                                            columns=("id meal", "meal name", "sale price", "category", "status"),
+                                            columns=("meal id", "meal name", "sale price", "category", "status"),
                                             show="headings")
         self.__meal_treeview.place(x=325, y=50)
 
-        self.__meal_treeview.heading("#1", text="id meal", anchor="center")
+        self.__meal_treeview.heading("#1", text="meal id", anchor="center")
         self.__meal_treeview.heading("#2", text="meal name", anchor="center")
         self.__meal_treeview.heading("#3", text="sale price", anchor="center")
         self.__meal_treeview.heading("#4", text="category", anchor="center")
@@ -314,19 +314,19 @@ class UiMeal:
                                                    corner_radius=10)
         update_meal_frame.place(x=5, y=55)
 
-        id_meal_label = customtkinter.CTkLabel(master=update_meal_frame,
+        meal_id_label = customtkinter.CTkLabel(master=update_meal_frame,
                                                font=("arial bold", 17),
                                                text_color=GRAY_TEXT_COLOR,
                                                text="ID:")
-        id_meal_label.place(x=25, y=25)
+        meal_id_label.place(x=25, y=25)
 
-        self.__id_meal_entry = customtkinter.CTkEntry(master=update_meal_frame,
+        self.__meal_id_entry = customtkinter.CTkEntry(master=update_meal_frame,
                                                       width=1618, height=35,
                                                       border_color=LIGHT_GRAY_COLOR, 
                                                       corner_radius=3, 
                                                       font=("arial", 17), 
                                                       border_width=1)
-        self.__id_meal_entry.place(x=25, y=62)
+        self.__meal_id_entry.place(x=25, y=62)
 
         meal_name_label = customtkinter.CTkLabel(master=update_meal_frame,
                                                  font=("arial bold", 17),
@@ -425,16 +425,16 @@ class UiMeal:
         self.__meal_data()
 
     def _fn_create_meal(self) -> None:
-        if DbMeal(self.__token).create_meal(meal_name=self.__meal_name_entry.get(),
+        if MealDb(self.__token).create_meal(meal_name=self.__meal_name_entry.get(),
                                             sale_price=self.__sale_price_entry.get(),
-                                            category_id_category=DbCategory(self.__token).get_category_id(self.__category_optionmenu.get()),
+                                            category_category_id=CategoryDb(self.__token).get_category_id(self.__category_optionmenu.get()),
                                             status=self.__status_optionmenu.get()):
                self._to_back()
     
     def __fn_read_meals(self) -> None:
         self.__meal_treeview.delete(*self.__meal_treeview.get_children())
 
-        __all_meals = [i for i in DbMeal(token=self.__token).read_meals()]
+        __all_meals = [i for i in MealDb(token=self.__token).read_meals()]
 
         self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
         self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
@@ -445,10 +445,10 @@ class UiMeal:
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
     def __fn_update_meal(self) -> None:
-        if DbMeal(token=self.__token).update_meal(id_meal=self.__id_meal_entry.get(),
+        if MealDb(token=self.__token).update_meal(meal_id=self.__meal_id_entry.get(),
                                                   meal_name=self.__meal_name_entry.get(),
                                                   sale_price=self.__sale_price_entry.get(),
-                                                  category_id_category=DbCategory(self.__token).get_category_id(self.__category_optionmenu.get()),
+                                                  category_category_id=CategoryDb(self.__token).get_category_id(self.__category_optionmenu.get()),
                                                   status=self.__status_optionmenu.get()):
                 self._to_back()
 
@@ -461,13 +461,13 @@ class UiMeal:
         if tkinter.messagebox.askyesno(title="Delete Meal", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            DbMeal(self.__token).delete_meal(id_meal=self.__data[0])
+            MealDb(self.__token).delete_meal(meal_id=self.__data[0])
             self.__fn_read_meals()
 
     def __fn_search_meal(self, typed: str) -> None:
         self.__meal_treeview.delete(*self.__meal_treeview.get_children())
 
-        __meal = DbMeal(self.__token).search_meal(typed=typed)
+        __meal = MealDb(self.__token).search_meal(typed=typed)
 
         tag = "even_row"
         for i in __meal:
@@ -475,11 +475,11 @@ class UiMeal:
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
     def _list_of_categories(self) -> list[str]:
-        __categories = DbCategory(self.__token).read_categories()
+        __categories = CategoryDb(self.__token).read_categories()
         return [i[1] for i in __categories]
     
     def __meal_data(self) -> None:
-        list_entries = [self.__id_meal_entry, 
+        list_entries = [self.__meal_id_entry, 
                         self.__meal_name_entry, 
                         self.__sale_price_entry]
         
@@ -489,7 +489,7 @@ class UiMeal:
         self.__category_optionmenu.set(self.__data[3])
         self.__status_optionmenu.set(self.__data[4])
 
-        self.__id_meal_entry.configure(state="disabled", fg_color=LIGHT_GRAY_COLOR, border_color=WHITE_COLOR)
+        self.__meal_id_entry.configure(state="disabled", fg_color=LIGHT_GRAY_COLOR, border_color=WHITE_COLOR)
 
     def __selected_row(self) -> tuple:
         try:
@@ -500,4 +500,4 @@ class UiMeal:
     
     def _to_back(self) -> None:
         clear_frames(self._square_frame)
-        self._ui_meal()
+        self._meal_ui()

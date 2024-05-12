@@ -1,14 +1,14 @@
 from tkinter import messagebox
 
 from database import Database
-from database import DbLogin
+from database import LoginDb
 from logs import *
 from utils import empty_entries
 
-class DbCategory(Database):
+class CategoryDb(Database):
     def __init__(self, token):
         super().__init__()
-        self.__id_account = DbLogin.token_to_id_account(token)
+        self.__account_id = LoginDb.token_to_account_id(token)
 
     def create_category(self, name: str, description: str) -> True:
         __entry_items = {"name": name, "description ": description}
@@ -17,15 +17,15 @@ class DbCategory(Database):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""INSERT INTO category (name, description)
-                                        VALUES (%s, %s) RETURNING id_category;""", (name, description))
+                                        VALUES (%s, %s) RETURNING category_id;""", (name, description))
                     self.connection.commit()
-                    __id_category = self.cursor.fetchone()
+                    __category_id = self.cursor.fetchone()
 
                 except Exception as error:
-                    log_error(f"System user id: {self.__id_account}. An error occurred while creating a category.")
+                    log_error(f"System user id: {self.__account_id}. An error occurred while creating a category.")
                     messagebox.showerror(title="Create Category Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__id_account}. Create category with id: {__id_category[0]}.")
+                    log_info(f"System user id: {self.__account_id}. Create category with id: {__category_id[0]}.")
                     messagebox.showinfo(title="Create Category", message=f"Category: {name}, successfully registered.")
                     return True
                 finally:
@@ -36,7 +36,7 @@ class DbCategory(Database):
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT * FROM category
-                                    ORDER BY id_category""")
+                                    ORDER BY category_id""")
                 result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Read Categories Error", message=error)
@@ -46,7 +46,7 @@ class DbCategory(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def update_category(self, new_name: str, new_description: str, id_category: str) -> True:
+    def update_category(self, new_name: str, new_description: str, category_id: str) -> True:
         __entry_items = {"name": new_name, "description ": new_description}
         
         if not empty_entries(**__entry_items):
@@ -54,30 +54,30 @@ class DbCategory(Database):
                 try:
                     self.cursor.execute("""UPDATE category
                                         SET name = %s, description = %s
-                                        WHERE id_category = %s""", (new_name, new_description, id_category))
+                                        WHERE category_id = %s""", (new_name, new_description, category_id))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"System user id: {self.__id_account}. An error occurred while updating a category.")
+                    log_error(f"System user id: {self.__account_id}. An error occurred while updating a category.")
                     messagebox.showerror(title="Update Category Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__id_account}. Category id: {id_category} has been updated.")
+                    log_info(f"System user id: {self.__account_id}. Category id: {category_id} has been updated.")
                     messagebox.showinfo(title="Update Category", message=f"Category: {new_name}, updated successfully!")
                     return True
                 finally:
                     self.cursor.close()
                     self.connection.close()
 
-    def delete_category(self, id_category: int) -> None:
+    def delete_category(self, category_id: int) -> None:
         if self.connect_to_database():
             try:
                 self.cursor.execute("""DELETE FROM category
-                                    WHERE id_category = %s""", (id_category,))
+                                    WHERE category_id = %s""", (category_id,))
                 self.connection.commit()
             except Exception as error:
-                log_error(f"System user id: {self.__id_account}. An error occurred while deleting a category.")
+                log_error(f"System user id: {self.__account_id}. An error occurred while deleting a category.")
                 messagebox.showerror(title="Delete Category Error", message=error)
             else:
-                log_warning(f"System user id: {self.__id_account}. Category id: {id_category} was deleted.")
+                log_warning(f"System user id: {self.__account_id}. Category id: {category_id} was deleted.")
             finally:
                 self.cursor.close()
                 self.connection.close()
@@ -99,7 +99,7 @@ class DbCategory(Database):
     def get_category_id(self, category_name) -> tuple[int]:
         if self.connect_to_database():
             try:
-                self.cursor.execute("""SELECT id_category FROM category 
+                self.cursor.execute("""SELECT category_id FROM category 
                                     WHERE name = %s""", (category_name,))
                 result = self.cursor.fetchone()
             except Exception as error:

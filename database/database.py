@@ -45,47 +45,47 @@ class Database:
                 self.connect_to_database()
 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS account (
-                                    id_account SERIAL PRIMARY KEY,
+                                    account_id SERIAL PRIMARY KEY,
                                     access_token VARCHAR(255), 
                                     username VARCHAR(10) NOT NULL UNIQUE, 
                                     password VARCHAR(255) NOT NULL,
-                                    email VARCHAR(255) NOT NULL,
+                                    email VARCHAR(255) NOT NULL UNIQUE,
                                     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                     last_login_date TIMESTAMP,
                                     current_login_date TIMESTAMP);""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS customer (
-                                    id_customer SERIAL PRIMARY KEY,
+                                    customer_id SERIAL PRIMARY KEY,
                                     name VARCHAR(255) NOT NULL,
                                     address VARCHAR(255) NOT NULL,
                                     cell_phone VARCHAR(13) NOT NULL,
-                                    email VARCHAR(255),
+                                    email VARCHAR(255) NOT NULL UNIQUE,
                                     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                    account_id_account INT NOT NULL,
+                                    account_account_id INT NOT NULL,
                                     CONSTRAINT fk_customer_account
-                                        FOREIGN KEY (account_id_account)
-                                        REFERENCES account (id_account));""")
-                
+                                        FOREIGN KEY (account_account_id)
+                                        REFERENCES account (account_id));""")
+
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS waiter (
-                                    id_waiter SERIAL PRIMARY KEY,
+                                    waiter_id SERIAL PRIMARY KEY,
                                     name VARCHAR(255) NOT NULL,
                                     cell_phone VARCHAR(13) NOT NULL,
                                     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS category (
-                                    id_category SERIAL PRIMARY KEY,
+                                    category_id SERIAL PRIMARY KEY,
                                     name VARCHAR(255) NOT NULL,
                                     description VARCHAR(300));""")
 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS meal (
-                                    id_meal SERIAL PRIMARY KEY,
+                                    meal_id SERIAL PRIMARY KEY,
                                     meal_name VARCHAR(255) NOT NULL UNIQUE,
                                     sale_price DECIMAL(10,2) NOT NULL,
-                                    category_id_category INT NOT NULL,
+                                    category_category_id INT NOT NULL,
                                     status VARCHAR(10) CHECK (status IN ('Disabled', 'Enabled')) NOT NULL,
                                     CONSTRAINT fk_meal_category
-                                        FOREIGN KEY (category_id_category)
-                                        REFERENCES category (id_category));""")
+                                        FOREIGN KEY (category_category_id)
+                                        REFERENCES category (category_id));""")
                 
                 self.connection.commit()
             except Exception as error:

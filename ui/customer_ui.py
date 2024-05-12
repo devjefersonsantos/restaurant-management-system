@@ -5,12 +5,12 @@ from tkinter import ttk
 import customtkinter
 
 from .colors import *
-from database import DbCustomer
-from database import DbLogin
+from database import CustomerDb
+from database import LoginDb
 from utils import clear_frames
 
-class UiCustomer:
-    @DbLogin.verify_token
+class CustomerUi:
+    @LoginDb.verify_token
     def __init__(self, 
                  root: customtkinter.CTk,
                  square_frame: customtkinter.CTk, 
@@ -20,7 +20,7 @@ class UiCustomer:
         self.__token = token
 
         clear_frames(self._square_frame)
-        self._ui_customer()
+        self._customer_ui()
 
     def _topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -54,7 +54,7 @@ class UiCustomer:
                                                                command=lambda:self.__fn_search_customer(self._search_customers_entry.get()))
         self._search_customers_button.place(x=1425, y=9)
 
-    def _ui_customer(self) -> None:
+    def _customer_ui(self) -> None:
         self._topbar()
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
@@ -66,12 +66,12 @@ class UiCustomer:
         self.__customer_treeview = ttk.Treeview(master=self._square_frame,
                                                 height=28,
                                                 style="style_treeview.Treeview",
-                                                columns=("id customer", "name", "address", 
+                                                columns=("customer id", "name", "address", 
                                                             "cell phone", "email", "registration date"),
                                                 show="headings")
         self.__customer_treeview.place(x=0, y=50)
 
-        self.__customer_treeview.heading("#1", text="id customer", anchor="center")
+        self.__customer_treeview.heading("#1", text="customer id", anchor="center")
         self.__customer_treeview.heading("#2", text="name", anchor="center")
         self.__customer_treeview.heading("#3", text="address", anchor="center")
         self.__customer_treeview.heading("#4", text="cell phone", anchor="center")
@@ -352,7 +352,7 @@ class UiCustomer:
         self.__customer_data()
 
     def __fn_create_customer(self) -> None:
-        if DbCustomer(token=self.__token).create_customer(name=self.__name_entry.get(), 
+        if CustomerDb(token=self.__token).create_customer(name=self.__name_entry.get(), 
                                                           address=self.__address_entry.get(), 
                                                           cellphone=self.__cellphone_entry.get(), 
                                                           email=self.__email_entry.get()):
@@ -365,7 +365,7 @@ class UiCustomer:
         self.__customer_treeview.delete(*self.__customer_treeview.get_children())
 
         __all_customers = [(i[0], i[1], i[2], i[3], i[4], i[5].replace(microsecond=0)) 
-                           for i in DbCustomer(token=self.__token).read_customers()]
+                           for i in CustomerDb(token=self.__token).read_customers()]
 
         self.__customer_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
         self.__customer_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
@@ -376,7 +376,7 @@ class UiCustomer:
             self.__customer_treeview.insert("", "end", values=i, tags=tag)
 
     def __fn_update_customer(self) -> None:
-        if DbCustomer(token=self.__token).update_customer(id_customer=self.__id_entry.get(),
+        if CustomerDb(token=self.__token).update_customer(customer_id=self.__id_entry.get(),
                                                           name=self.__name_entry.get(),
                                                           address=self.__address_entry.get(),
                                                           cellphone=self.__cellphone_entry.get(),
@@ -392,13 +392,13 @@ class UiCustomer:
         if tkinter.messagebox.askyesno(title="Delete Customer", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            DbCustomer(self.__token).delete_customer(id_customer=self.__data[0])
+            CustomerDb(self.__token).delete_customer(customer_id=self.__data[0])
             self.__fn_read_customers()
 
     def __fn_search_customer(self, typed: str) -> None:
         self.__customer_treeview.delete(*self.__customer_treeview.get_children())
 
-        __customer = DbCustomer(self.__token).search_customer(typed=typed)
+        __customer = CustomerDb(self.__token).search_customer(typed=typed)
 
         tag = "even_row"
         for i in __customer:
@@ -425,4 +425,4 @@ class UiCustomer:
 
     def _to_back(self) -> None:
         clear_frames(self._square_frame)
-        self._ui_customer()
+        self._customer_ui()
