@@ -14,7 +14,7 @@ class MealDb(Database):
         __entry_items = {
             "meal name": meal_name, 
             "sale price": sale_price, 
-            "category_category_id": category_category_id, 
+            "category": category_category_id, 
             "status": status
         }
         
@@ -57,7 +57,7 @@ class MealDb(Database):
         __entry_items = {
             "meal name": meal_name, 
             "sale price": sale_price, 
-            "category_category_id": category_category_id, 
+            "category": category_category_id, 
             "status": status
         }
 
