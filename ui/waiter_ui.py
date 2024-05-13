@@ -3,8 +3,8 @@ from tkinter import ttk
 
 import customtkinter
 
-from .colors import *
-from database import LoginDb
+from utils.colors import *
+from database.account_db import LoginDb
 from database import WaiterDb
 from utils import clear_frames
 
@@ -123,7 +123,7 @@ class WaiterUi:
                                                        corner_radius=3,
                                                        font=("arial", 15),
                                                        text="Update Waiter",
-                                                       command=self._ui_update_waiter)
+                                                       command=self._update_waiter_ui)
         update_waiter_button.place(x=10, y=45)
 
         self._delete_waiter_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -178,7 +178,7 @@ class WaiterUi:
 
         self.__fn_read_waiters()
 
-    def _ui_update_waiter(self) -> None:
+    def _update_waiter_ui(self) -> None:
         self.__data = self.__selected_row()
         if not self.__data:
             return

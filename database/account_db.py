@@ -1,4 +1,6 @@
+import datetime
 import secrets
+
 from tkinter import messagebox
 
 from database import Database
@@ -8,7 +10,7 @@ from utils import empty_entries
 from utils import restart_software
 
 class LoginDb(Database):
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str) -> None:
         super().__init__()
         self.__username = username
         self.__password = password
@@ -81,28 +83,7 @@ class LoginDb(Database):
                 finally:
                     self.connection.close()
                     self.cursor.close()
-    
 
-    def create_access_token(self) -> str:
-        if account_id := self.verify_credentials():
-            if self.connect_to_database():
-                try:
-                    __token = secrets.token_hex(32)
-                    self.cursor.execute("""UPDATE account SET access_token = %s
-                                        WHERE username = %s AND password = %s;""", (convert_to_sha3_256(__token), 
-                                                                                    self.__username, 
-                                                                                    convert_to_sha3_256(self.__password)))
-                    self.connection.commit()
-                except Exception as error:
-                    log_error(f"Create access token failed for user with id: {account_id}.")
-                    messagebox.showerror(title="Authentication Failed", message=error)
-                else:
-                    log_info(f"Access token created for user with id: {account_id}.")
-                    return __token
-                finally:
-                    self.connection.close()
-                    self.cursor.close()
-    
     @staticmethod
     def verify_token(func):
         def wrapper(*args, **kwargs):
@@ -124,16 +105,46 @@ class LoginDb(Database):
             return func(*args, **kwargs)
         return wrapper
 
-    @staticmethod
-    def token_to_account_id(token) -> int:
-        __database = Database()
-        if __database.connect_to_database():
+class SignupDb(Database):
+    def __init__(self, username: str, password: str, email: str) -> None:
+        super().__init__()
+        self.__username = username
+        self.__password = password
+        self.__email = email
+
+        self.create_database()
+        
+        __entry_items = {"username":self.__username, "password":self.__password, "email":self.__email}
+
+        if not empty_entries(**__entry_items):
+            if self.connect_to_database():
+                try:
+                    self.cursor.execute("""INSERT INTO account (username, password, email)
+                                        VALUES (%s, %s, %s) RETURNING account_id;""", 
+                                        (self.__username, convert_to_sha3_256(self.__password), self.__email))
+                    self.connection.commit()
+                    __account_id = self.cursor.fetchone()
+                except Exception as error:
+                    log_error("An error occurred while creating a account.")
+                    messagebox.showerror(title="Sign Up Error", message=error)
+                else:
+                    log_info(f"Account has been created with id {__account_id[0]}.")
+                    messagebox.showinfo(title="Sign Up", message="Congratulations! Your account\nhas been successfully created.")
+                finally:
+                    self.cursor.close()
+                    self.connection.close()
+
+class AccountDb(Database):
+    def __init__(self, token) -> None:
+        super().__init__()        
+        self.__token = convert_to_sha3_256(token)
+
+    def get_account_id(self) -> int:
+        if self.connect_to_database():
             try:
-                cursor = __database.connection.cursor()
-                cursor.execute("""SELECT account_id FROM account
-                               WHERE access_token = %s;""", (convert_to_sha3_256(token),))
-                result = cursor.fetchone()
-                
+                self.cursor.execute("""SELECT account_id FROM account
+                                    WHERE access_token = %s;""", (self.__token,))
+                result = self.cursor.fetchone()
                 if not result:
                     Exception("Authentication Failed")
             except Exception as error:
@@ -142,5 +153,47 @@ class LoginDb(Database):
             else:
                 return result[0]
             finally:
-                __database.connection.close()
-                cursor.close()
+                self.connection.close()
+                self.cursor.close()
+
+    def get_username(self) -> str:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT username FROM account
+                                    WHERE access_token = %s""", (self.__token,))
+                result = self.cursor.fetchone()
+            except Exception as error:
+                messagebox.showerror(title="Get Username Error", message=error)
+            else:
+                return result[0]
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
+    def get_creation_date(self) -> datetime.datetime:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT creation_date FROM account
+                                    WHERE access_token = %s""", (self.__token,))
+                result = self.cursor.fetchone()
+            except Exception as error:
+                messagebox.showerror(title="Get Creation Date Error", message=error)
+            else:
+                return result[0].replace(microsecond=0)
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
+    def get_last_login_date(self) -> datetime.datetime:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT last_login_date FROM account
+                                    WHERE access_token = %s""", (self.__token,))
+                result = self.cursor.fetchone()
+            except Exception as error:
+                messagebox.showerror(title="Get Last Login Error", message=error)
+            else:
+                return result[0].replace(microsecond=0)
+            finally:
+                self.cursor.close()
+                self.connection.close()

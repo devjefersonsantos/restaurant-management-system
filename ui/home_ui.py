@@ -1,7 +1,7 @@
 import customtkinter
 
-from .colors import *
-from database import LoginDb
+from utils.colors import *
+from database.account_db import LoginDb
 from utils import clear_frames
 
 class HomeUi:

@@ -1,8 +1,9 @@
 import customtkinter
 from PIL import Image
 
-from .colors import *
-from database import LoginDb
+from utils.colors import *
+from database.account_db import LoginDb
+from ui import AccountUi
 from ui import CategoryUi
 from ui import CustomerUi
 from ui import HomeUi
@@ -42,14 +43,14 @@ class PanelUi:
                                                     corner_radius=0)
         self._square_frame.place(x=242, y=100)
 
-        self._ui_images()
+        self._images_ui()
         self._panel_ui()
 
         self._current_button: customtkinter.CTkButton = self._home_button
         self._button_selected(target_button=self._home_button)
         HomeUi(root=self._root, square_frame=self._square_frame, token=self.__token)
 
-    def _ui_images(self) -> None:
+    def _images_ui(self) -> None:
         # https://pixabay.com/vectors/shop-supermarket-bakery-store-2891677/
         restaurantpil_image = Image.open("images/global_images/restaurant.png")
         self._restaurant_image = customtkinter.CTkImage(dark_image=restaurantpil_image,
@@ -126,14 +127,15 @@ class PanelUi:
                                                 font=("arial", 17))
         tables_button.place(x=0, y=293)
 
-        account_button = customtkinter.CTkButton(master=self._sidebar_frame,
-                                                 width=242, height=37,
-                                                 fg_color=SIDEBAR_COLOR,
-                                                 hover_color=SIDEBAR_HOVER_COLOR,
-                                                 corner_radius=0,
-                                                 text="Account",
-                                                 font=("arial", 17))
-        account_button.place(x=0, y=858)
+        self._account_button = customtkinter.CTkButton(master=self._sidebar_frame,
+                                                       width=242, height=37,
+                                                       fg_color=SIDEBAR_COLOR,
+                                                       hover_color=SIDEBAR_HOVER_COLOR,
+                                                       corner_radius=0,
+                                                       text="Account",
+                                                       font=("arial", 17),
+                                                       command=self._account_interface)
+        self._account_button.place(x=0, y=858)
 
     def _home_interface(self) -> None:
         HomeUi(root=self._root, square_frame=self._square_frame, token=self.__token)
@@ -154,6 +156,10 @@ class PanelUi:
     def _meal_interface(self) -> None:
         MealUi(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._meal_button)
+
+    def _account_interface(self) -> None:
+        AccountUi(root=self._root, square_frame=self._square_frame, token=self.__token)
+        self._button_selected(target_button=self._account_button)
 
     def _button_selected(self, target_button:customtkinter.CTkButton) -> None:
         self._current_button.configure(fg_color=SIDEBAR_COLOR)

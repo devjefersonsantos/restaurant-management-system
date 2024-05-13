@@ -3,10 +3,10 @@ from tkinter import ttk
 
 import customtkinter
 
-from .colors import *
+from utils.colors import *
 from database import CategoryDb
-from database import LoginDb
 from database import MealDb
+from database.account_db import LoginDb
 from utils import clear_frames
 
 class MealUi:
@@ -162,7 +162,7 @@ class MealUi:
                                                      corner_radius=3,
                                                      font=("arial", 15),
                                                      text="Update Meal",
-                                                     command=self.__ui_update_meal)
+                                                     command=self.__update_meal_ui)
         update_meal_button.place(x=1165, y=868)
 
         create_meal_button = customtkinter.CTkButton(master=self._square_frame,
@@ -174,7 +174,7 @@ class MealUi:
                                                      corner_radius=3,
                                                      font=("arial", 15),
                                                      text="Add Meal",
-                                                     command=self.__ui_create_meal)
+                                                     command=self.__create_meal_ui)
         create_meal_button.place(x=1425, y=868)
 
         treeview_scrollbar = tkinter.Scrollbar(self._square_frame, 
@@ -185,7 +185,7 @@ class MealUi:
 
         self.__fn_read_meals()
 
-    def __ui_create_meal(self) -> None:
+    def __create_meal_ui(self) -> None:
         clear_frames(self._square_frame)
         
         self._topbar()
@@ -298,7 +298,7 @@ class MealUi:
                                                       command=self._to_back)
         self._cancel_button.place(x=1425, y=868)
 
-    def __ui_update_meal(self) -> None:
+    def __update_meal_ui(self) -> None:
         self.__data = self.__selected_row()
         if not self.__data:
             return

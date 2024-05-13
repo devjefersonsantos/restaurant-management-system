@@ -1,14 +1,14 @@
 from tkinter import messagebox
 
+from database import AccountDb
 from database import Database
-from database import LoginDb
 from logs import *
 from utils import empty_entries
 
 class MealDb(Database):
-    def __init__(self, token):
+    def __init__(self, token) -> None:
         super().__init__()
-        self.__account_id = LoginDb.token_to_account_id(token)
+        self.__account_id = AccountDb(token).get_account_id()
 
     def create_meal(self, meal_name: str, sale_price: float, category_category_id: int, status: str) -> True:
         __entry_items = {

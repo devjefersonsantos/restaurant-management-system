@@ -4,10 +4,10 @@ from tkinter import messagebox
 from PIL import Image
 import customtkinter
 
-from .colors import *
+from utils.colors import *
 from database import Database 
-from database import SignupDb
-from database import LoginDb
+from database.account_db import SignupDb
+from database.account_db import LoginDb
 from ui import PanelUi
 from utils import clear_frames
 
@@ -47,7 +47,7 @@ class LoginUi(customtkinter.CTk):
                                                   corner_radius=10)
         self._frame_four.place(x=33, y=388)
 
-        self._ui_images()
+        self._images_ui()
         self._login_ui()
 
         # INSERT INTO account (username, password, email)
@@ -55,7 +55,7 @@ class LoginUi(customtkinter.CTk):
         if __token := LoginDb(username="dev", password="dev").process_login():
             PanelUi(root=self, token=__token)
     
-    def _ui_images(self) -> None:
+    def _images_ui(self) -> None:
         # https://pixabay.com/illustrations/chef-food-kitchen-restaurant-adult-2410818/
         chefpil_image = Image.open("images/login_images/chef.png")
         self._chef_image = customtkinter.CTkImage(dark_image=chefpil_image,
@@ -196,7 +196,7 @@ class LoginUi(customtkinter.CTk):
                                                           hover_color=ORANGE_HOVER_COLOR, 
                                                           text_color=WHITE_COLOR, 
                                                           text="Setup Connection",
-                                                          command=self._ui_setup_connection)
+                                                          command=self._setup_connection_ui)
         setup_connection_button.place(x=27, y=55)
 
         create_acc_label = customtkinter.CTkLabel(master=self._frame_four,
@@ -211,10 +211,10 @@ class LoginUi(customtkinter.CTk):
                                                     hover_color=GREEN_HOVER_COLOR,
                                                     text_color=WHITE_COLOR, 
                                                     text="Sign up",
-                                                    command=self._ui_signup)
+                                                    command=self._signup_ui)
         create_acc_button.place(x=27, y=141)
 
-    def _ui_setup_connection(self) -> None:
+    def _setup_connection_ui(self) -> None:
         clear_frames(self._frame_three)
         clear_frames(self._frame_four)
 
@@ -351,9 +351,9 @@ class LoginUi(customtkinter.CTk):
                 with open("database/config.json", "w") as __file:
                     json.dump(__data, __file, indent=4)
                     __file.write("\n")
-                self._ui_setup_connection()
+                self._setup_connection_ui()
 
-    def _ui_signup(self) -> None:
+    def _signup_ui(self) -> None:
         clear_frames(self._frame_three)
         clear_frames(self._frame_four)
 
@@ -483,7 +483,7 @@ class LoginUi(customtkinter.CTk):
             except Exception as error:
                 messagebox.showerror("Error!", error)
             else:
-                self._ui_setup_connection()
+                self._setup_connection_ui()
                 Database().connect_to_database(database=None)
 
     def __login(self, username, password) -> None:

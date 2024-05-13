@@ -4,9 +4,9 @@ from tkinter import ttk
 
 import customtkinter
 
-from .colors import *
+from utils.colors import *
 from database import CustomerDb
-from database import LoginDb
+from database.account_db import LoginDb
 from utils import clear_frames
 
 class CustomerUi:
@@ -111,7 +111,7 @@ class CustomerUi:
                                                          corner_radius=3,
                                                          font=("arial", 15),
                                                          text="Update Customer",
-                                                         command=self._ui_update_customer)
+                                                         command=self._update_customer_ui)
         update_customer_button.place(x=1165, y=868)
 
         create_customer_button = customtkinter.CTkButton(master=self._square_frame,
@@ -123,7 +123,7 @@ class CustomerUi:
                                                          corner_radius=3,
                                                          font=("arial", 15),
                                                          text="Add Customer",
-                                                         command=self.__ui_create_customer)
+                                                         command=self.__create_customer_ui)
         create_customer_button.place(x=1425, y=868)
 
         treeview_scrollbar = tkinter.Scrollbar(self._square_frame, 
@@ -134,7 +134,7 @@ class CustomerUi:
 
         self.__fn_read_customers()
 
-    def __ui_create_customer(self) -> None:
+    def __create_customer_ui(self) -> None:
         clear_frames(self._square_frame)
         
         self._topbar()
@@ -234,7 +234,7 @@ class CustomerUi:
                                                       command=self._to_back)
         self._cancel_button.place(x=1425, y=868)
 
-    def _ui_update_customer(self) -> None:
+    def _update_customer_ui(self) -> None:
         self.__data = self.__selected_row()
         if not self.__data:
             return

@@ -1,14 +1,14 @@
 from tkinter import messagebox
 
+from database import AccountDb
 from database import Database
-from database import LoginDb
 from logs import *
 from utils.empty_entries import empty_entries
 
 class WaiterDb(Database):
-    def __init__(self, token):
+    def __init__(self, token) -> None:
         super().__init__()
-        self.__account_id = LoginDb.token_to_account_id(token)
+        self.__account_id = AccountDb(token).get_account_id()
 
     def create_waiter(self, name: str, cellphone: str) -> True:
         __entry_items = {"name": name, "cellphone ": cellphone}

@@ -3,9 +3,9 @@ from tkinter import ttk
 
 import customtkinter
 
-from .colors import *
+from utils.colors import *
 from database import CategoryDb
-from database import LoginDb
+from database.account_db import LoginDb
 from utils import clear_frames
 
 class CategoryUi:
@@ -123,7 +123,7 @@ class CategoryUi:
                                                          corner_radius=3,
                                                          font=("arial", 15),
                                                          text="Update Category",
-                                                         command=self._ui_update_category)
+                                                         command=self._update_category_ui)
         update_category_button.place(x=10, y=45)
 
         self._delete_category_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -176,7 +176,7 @@ class CategoryUi:
 
         self.__fn_read_categories()
 
-    def _ui_update_category(self) -> None:
+    def _update_category_ui(self) -> None:
         self.__data = self.__selected_row()
         if not self.__data:
             return

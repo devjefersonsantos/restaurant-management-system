@@ -1,3 +1,4 @@
+from .account_ui import AccountUi
 from .home_ui import HomeUi
 from .customer_ui import CustomerUi
 from .waiter_ui import WaiterUi
