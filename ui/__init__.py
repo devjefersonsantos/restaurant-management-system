@@ -4,5 +4,6 @@ from .customer_ui import CustomerUi
 from .waiter_ui import WaiterUi
 from .category_ui import CategoryUi
 from .meal_ui import MealUi
+from .table_ui import TableUi
 from .panel_ui import PanelUi
 from .login_ui import LoginUi

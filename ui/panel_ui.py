@@ -9,6 +9,7 @@ from ui import CustomerUi
 from ui import HomeUi
 from ui import MealUi
 from ui import WaiterUi
+from ui import TableUi
 from utils import clear_frames
 
 class PanelUi:
@@ -118,14 +119,15 @@ class PanelUi:
                                                     command=self._meal_interface)
         self._meal_button.place(x=0, y=236)
 
-        tables_button = customtkinter.CTkButton(master=self._sidebar_frame,
-                                                width=242, height=37,
-                                                fg_color=SIDEBAR_COLOR,
-                                                hover_color=SIDEBAR_HOVER_COLOR,
-                                                corner_radius=0,
-                                                text="Tables",
-                                                font=("arial", 17))
-        tables_button.place(x=0, y=293)
+        self._table_button = customtkinter.CTkButton(master=self._sidebar_frame,
+                                                     width=242, height=37,
+                                                     fg_color=SIDEBAR_COLOR,
+                                                     hover_color=SIDEBAR_HOVER_COLOR,
+                                                     corner_radius=0,
+                                                     text="Table",
+                                                     font=("arial", 17),
+                                                     command=self._table_interface)
+        self._table_button.place(x=0, y=293)
 
         self._account_button = customtkinter.CTkButton(master=self._sidebar_frame,
                                                        width=242, height=37,
@@ -160,6 +162,10 @@ class PanelUi:
     def _account_interface(self) -> None:
         AccountUi(root=self._root, square_frame=self._square_frame, token=self.__token)
         self._button_selected(target_button=self._account_button)
+
+    def _table_interface(self) -> None:
+        TableUi(root=self._root, square_frame=self._square_frame, token=self.__token)
+        self._button_selected(target_button=self._table_button)
 
     def _button_selected(self, target_button:customtkinter.CTkButton) -> None:
         self._current_button.configure(fg_color=SIDEBAR_COLOR)
