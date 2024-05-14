@@ -15,9 +15,8 @@ class TableUi:
         self.__token = token
 
         clear_frames(self._square_frame)
-
         self._table_ui()
-
+        
     def _topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self._square_frame,
                                               width=1678, height=50,
@@ -31,6 +30,4 @@ class TableUi:
         self._topbar_label.place(x=20, y=5)
 
     def _table_ui(self) -> None:
-        clear_frames(self._square_frame)
-
         self._topbar()

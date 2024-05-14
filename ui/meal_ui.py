@@ -187,7 +187,6 @@ class MealUi:
 
     def __create_meal_ui(self) -> None:
         clear_frames(self._square_frame)
-        
         self._topbar()
         
         self._topbar_label.configure(text="Add Meal")
@@ -303,9 +302,9 @@ class MealUi:
         if not self.__data:
             return
 
-        clear_frames(self._square_frame)
-        
+        clear_frames(self._square_frame) 
         self._topbar()
+        
         self._topbar_label.configure(text="Update Meal")
         self._search_meals_entry.destroy()
         self._search_meals_button.destroy()

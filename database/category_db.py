@@ -82,7 +82,7 @@ class CategoryDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def search_category(self, typed: str) -> str:
+    def search_category(self, typed: str) -> list[tuple]:
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT * FROM category 

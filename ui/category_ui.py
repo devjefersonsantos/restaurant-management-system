@@ -54,8 +54,6 @@ class CategoryUi:
         self._search_categories_button.place(x=1425, y=9)
 
     def _category_ui(self) -> None:
-        clear_frames(self._square_frame)
-
         self._topbar()
 
         self._create_category_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -203,7 +201,7 @@ class CategoryUi:
                                                       corner_radius=3,
                                                       font=("arial", 15),
                                                       text="Cancel",
-                                                      command=self._category_ui)
+                                                      command=self._to_back)
         self._cancel_button.place(x=10, y=310)
 
         self.__category_name_entry.insert(0, self.__data[1])
@@ -212,7 +210,9 @@ class CategoryUi:
     def __fn_create_category(self) -> None:
         if CategoryDb(token=self.__token).create_category(name=self.__category_name_entry.get(),
                                                           description=self.__description_textbox.get("1.0","end").strip()):
-            self._clear_entries()
+            self.__category_name_entry.delete(0, "end")
+            self.__description_textbox.delete("1.0","end")
+            self._root.focus()
             self.__fn_read_categories()
 
     def __fn_read_categories(self) -> None:
@@ -238,7 +238,7 @@ class CategoryUi:
                                                                     category_id=self.__data[0])
         
         if updated_category:
-            self._category_ui()
+            self._to_back()
 
     def __fn_delete_category(self) -> None:
         self.__data = self.__selected_row()
@@ -269,7 +269,6 @@ class CategoryUi:
         except IndexError:
             tkinter.messagebox.showerror(title=None, message="Please select a category")
 
-    def _clear_entries(self) -> None:
-        self.__category_name_entry.delete(0, "end")
-        self.__description_textbox.delete("1.0","end")
-        self._root.focus()
+    def _to_back(self) -> None:
+        clear_frames(self._square_frame)
+        self._category_ui()

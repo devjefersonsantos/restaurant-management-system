@@ -94,7 +94,7 @@ class MealDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def search_meal(self, typed: str) -> str:
+    def search_meal(self, typed: str) -> list[tuple]:
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT * FROM meal 

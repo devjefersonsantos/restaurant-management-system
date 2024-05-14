@@ -20,7 +20,6 @@ class AccountUi:
         self.__token = token
 
         clear_frames(self._square_frame)
-        
         self._images_ui()
         self._account_ui()
 
@@ -54,8 +53,6 @@ class AccountUi:
                                                       size=(52,52))
 
     def _account_ui(self) -> None:
-        clear_frames(self._square_frame)
-
         self._topbar()
 
         square_status_frame = customtkinter.CTkFrame(master=self._square_frame,

@@ -55,9 +55,8 @@ class WaiterUi:
 
     def _waiter_ui(self) -> None:
         clear_frames(self._square_frame)
-
         self._topbar()
-
+        
         self._create_waiter_frame = customtkinter.CTkFrame(master=self._square_frame,
                                                            width=350, height=240,
                                                            fg_color=WHITE_COLOR,
@@ -258,7 +257,8 @@ class WaiterUi:
     def __fn_search_waiter(self, typed: str) -> None:
         self.__waiter_treeview.delete(*self.__waiter_treeview.get_children())
 
-        __waiter = WaiterDb(self.__token).search_waiter(typed=typed)
+        __waiter = [(i[0], i[1], i[2], i[3].replace(microsecond=0))
+                    for i in WaiterDb(self.__token).search_waiter(typed=typed)]
 
         tag = "even_row"
         for i in __waiter:

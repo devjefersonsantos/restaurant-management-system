@@ -85,7 +85,7 @@ class CustomerDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def search_customer(self, typed: str) -> str:
+    def search_customer(self, typed: str) -> list[tuple]:
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT * FROM customer 

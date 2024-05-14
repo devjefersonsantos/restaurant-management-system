@@ -136,7 +136,6 @@ class CustomerUi:
 
     def __create_customer_ui(self) -> None:
         clear_frames(self._square_frame)
-        
         self._topbar()
         
         self._topbar_label.configure(text="Add Customer")
@@ -240,8 +239,8 @@ class CustomerUi:
             return
         
         clear_frames(self._square_frame)
-        
         self._topbar()
+        
         self._topbar_label.configure(text="Update Customer")
         self._search_customers_entry.destroy()
         self._search_customers_button.destroy()
@@ -398,7 +397,8 @@ class CustomerUi:
     def __fn_search_customer(self, typed: str) -> None:
         self.__customer_treeview.delete(*self.__customer_treeview.get_children())
 
-        __customer = CustomerDb(self.__token).search_customer(typed=typed)
+        __customer = [(i[0], i[1], i[2], i[3], i[4], i[5].replace(microsecond=0))
+                      for i in CustomerDb(self.__token).search_customer(typed=typed)]
 
         tag = "even_row"
         for i in __customer:
