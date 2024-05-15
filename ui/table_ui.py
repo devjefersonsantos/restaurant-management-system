@@ -40,13 +40,13 @@ class TableUi:
                                                         corner_radius=4,
                                                         font=("arial", 15), 
                                                         text="Add Table",
-                                                        command=self.__add_table_ui)
+                                                        command=self.__create_table_ui)
         self._addtable_button.place(x=1425, y=9)
 
     def _table_ui(self) -> None:
         self._topbar()
 
-    def __add_table_ui(self):
+    def __create_table_ui(self):
         try:
             self.__table_toplevel.destroy()
         except:
