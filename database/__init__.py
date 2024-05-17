@@ -4,3 +4,4 @@ from .customer_db import CustomerDb
 from .waiter_db import WaiterDb
 from .category_db import CategoryDb
 from .meal_db import MealDb
+from .table_db import TableDb

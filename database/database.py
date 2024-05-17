@@ -87,6 +87,9 @@ class Database:
                                         FOREIGN KEY (category_category_id)
                                         REFERENCES category (category_id));""")
                 
+                self.cursor.execute("""CREATE TABLE IF NOT EXISTS "table" (
+                                    table_id SERIAL PRIMARY KEY);""")
+                
                 self.connection.commit()
             except Exception as error:
                 messagebox.showerror(title="Database Error", message=error)

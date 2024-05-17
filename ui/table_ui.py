@@ -1,10 +1,12 @@
 import tkinter
 from tkinter import Toplevel
+from tkinter import messagebox
 
 import customtkinter
 
 from utils.colors import *
 from database.account_db import LoginDb
+from database import TableDb
 from utils import clear_frames
 
 class TableUi:
@@ -32,16 +34,16 @@ class TableUi:
                                                     text="Table")
         self._topbar_label.place(x=20, y=5)
 
-        self._addtable_button = customtkinter.CTkButton(master=topbar_frame,
-                                                        width=230, height=32,
-                                                        fg_color=GREEN_COLOR,
-                                                        hover_color=GREEN_HOVER_COLOR,
-                                                        text_color=WHITE_COLOR,
-                                                        corner_radius=4,
-                                                        font=("arial", 15), 
-                                                        text="Add Table",
-                                                        command=self.__create_table_ui)
-        self._addtable_button.place(x=1425, y=9)
+        self._create_table_button = customtkinter.CTkButton(master=topbar_frame,
+                                                            width=230, height=32,
+                                                            fg_color=GREEN_COLOR,
+                                                            hover_color=GREEN_HOVER_COLOR,
+                                                            text_color=WHITE_COLOR,
+                                                            corner_radius=4,
+                                                            font=("arial", 15), 
+                                                            text="Add Table",
+                                                            command=self.__create_table_ui)
+        self._create_table_button.place(x=1425, y=9)
 
     def _table_ui(self) -> None:
         self._topbar()
@@ -66,20 +68,34 @@ class TableUi:
                                                 text="Quantity")
         quantity_label.place(x=95, y=0)
 
-        add_table_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
-                                            width=17,
-                                            validate="key",
-                                            validatecommand=(only_numbers, "%P"),
-                                            font=("arial bold", 16),
-                                            from_=0, to=100)
-        add_table_spinbox.place(x=5, y=28)
+        create_table_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
+                                               width=17,
+                                               validate="key",
+                                               validatecommand=(only_numbers, "%P"),
+                                               font=("arial bold", 16),
+                                               from_=0, to=100)
+        create_table_spinbox.place(x=5, y=28)
 
-        add_table_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                   width=150, height=30,
-                                                   text_color=WHITE_COLOR,
-                                                   fg_color=GREEN_COLOR,
-                                                   hover_color=GREEN_HOVER_COLOR,
-                                                   corner_radius=4,
-                                                   font=("arial", 15), 
-                                                   text="Add Table")
-        add_table_button.place(x=235, y=28)
+        create_table_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                      width=150, height=30,
+                                                      text_color=WHITE_COLOR,
+                                                      fg_color=GREEN_COLOR,
+                                                      hover_color=GREEN_HOVER_COLOR,
+                                                      corner_radius=4,
+                                                      font=("arial", 15), 
+                                                      text="Add Table",
+                                                      command=lambda:self.__fn_create_table(int(create_table_spinbox.get())))
+        create_table_button.place(x=235, y=28)
+
+    def __fn_create_table(self, total: int) -> None:
+        if total > 0:
+            for _ in range(total):
+                TableDb(self.__token).create_table()
+        
+            messagebox.showinfo(title=None, message="Table created successfully")
+            self.__table_toplevel.destroy()
+            self._to_back()
+
+    def _to_back(self) -> None:
+        clear_frames(self._square_frame)
+        self._table_ui()
