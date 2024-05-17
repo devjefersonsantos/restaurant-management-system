@@ -9,24 +9,19 @@ class TableDb(Database):
         super().__init__()
         self.__account_id = AccountDb(token).get_account_id()
 
-    def create_table(self, multiplier:int = None) -> True:
+    def create_table(self, multiplier: int) -> True:
         if self.connect_to_database():
             try:
-                if multiplier:
-                    for _ in range(multiplier):
-                        self.cursor.execute("""INSERT INTO "table" (table_id) 
-                                            VALUES (DEFAULT) RETURNING table_id;""")
-                else:
+                for _ in range(multiplier):
                     self.cursor.execute("""INSERT INTO "table" (table_id) 
-                                            VALUES (DEFAULT) RETURNING table_id;""")
+                                        VALUES (DEFAULT) RETURNING table_id;""")
+                    log_info(f"System user ID: {self.__account_id}. Table created with ID: {self.cursor.fetchone()[0]}.")
                 self.connection.commit()
-                __table_id = self.cursor.fetchone()
 
             except Exception as error:
                 log_error(f"System user id: {self.__account_id}. An error occurred while creating a table.")
-                messagebox.showerror(title=None, message=f"Error: {error}")
+                messagebox.showerror(title="Create Table Error", message=error)
             else:
-                log_info(f"System user ID: {self.__account_id}. Table created with ID: {__table_id[0]}.")
                 return True
             finally:
                 self.cursor.close()

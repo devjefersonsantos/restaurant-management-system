@@ -88,11 +88,11 @@ class TableUi:
         create_table_button.place(x=235, y=28)
 
     def __fn_create_table(self, multiplier: int) -> None:
-            TableDb(self.__token).create_table(multiplier=multiplier)
-
-            messagebox.showinfo(title=None, message="Table created successfully")
-            self.__table_toplevel.destroy()
-            self._to_back()
+            if multiplier > 0:
+                if TableDb(self.__token).create_table(multiplier=multiplier):
+                    messagebox.showinfo(title=None, message="Table created successfully")
+                    self.__table_toplevel.destroy()
+                    self._to_back()
 
     def _to_back(self) -> None:
         clear_frames(self._square_frame)
