@@ -84,14 +84,12 @@ class TableUi:
                                                       corner_radius=4,
                                                       font=("arial", 15), 
                                                       text="Add Table",
-                                                      command=lambda:self.__fn_create_table(int(create_table_spinbox.get())))
+                                                      command=lambda:self.__fn_create_table(multiplier=int(create_table_spinbox.get())))
         create_table_button.place(x=235, y=28)
 
-    def __fn_create_table(self, total: int) -> None:
-        if total > 0:
-            for _ in range(total):
-                TableDb(self.__token).create_table()
-        
+    def __fn_create_table(self, multiplier: int) -> None:
+            TableDb(self.__token).create_table(multiplier=multiplier)
+
             messagebox.showinfo(title=None, message="Table created successfully")
             self.__table_toplevel.destroy()
             self._to_back()

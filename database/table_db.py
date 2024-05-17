@@ -9,11 +9,16 @@ class TableDb(Database):
         super().__init__()
         self.__account_id = AccountDb(token).get_account_id()
 
-    def create_table(self) -> True:
+    def create_table(self, multiplier:int = None) -> True:
         if self.connect_to_database():
             try:
-                self.cursor.execute("""INSERT INTO "table" (table_id) 
-                                    VALUES (DEFAULT) RETURNING table_id;""")
+                if multiplier:
+                    for _ in range(multiplier):
+                        self.cursor.execute("""INSERT INTO "table" (table_id) 
+                                            VALUES (DEFAULT) RETURNING table_id;""")
+                else:
+                    self.cursor.execute("""INSERT INTO "table" (table_id) 
+                                            VALUES (DEFAULT) RETURNING table_id;""")
                 self.connection.commit()
                 __table_id = self.cursor.fetchone()
 
