@@ -20,7 +20,7 @@ class TableUi:
         self.__token = token
 
         clear_frames(self._square_frame)
-        self._table_ui()
+        self.__table_ui()
         
     def _topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -45,8 +45,50 @@ class TableUi:
                                                             command=self.__create_table_ui)
         self._create_table_button.place(x=1425, y=9)
 
-    def _table_ui(self) -> None:
+    def __table_ui(self) -> None:
         self._topbar()
+        
+        # https://www.youtube.com/watch?v=Envp9yHb2Ho
+        __table_screen_frame = customtkinter.CTkFrame(master=self._square_frame, 
+                                                      width=1678, height=962,
+                                                      corner_radius=0)
+        __table_screen_frame.place(x=0, y=50)
+
+        __table_screen_canvas = tkinter.Canvas(master=__table_screen_frame, width=1678, height=858)
+        __table_screen_canvas.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
+
+        __table_scrollbar = tkinter.Scrollbar(master=__table_screen_frame, 
+                                              orient=tkinter.VERTICAL, 
+                                              command=__table_screen_canvas.yview)
+        __table_scrollbar.place(x=1660, y=0, height=858)
+
+        __table_screen_canvas.configure(yscrollcommand=__table_scrollbar.set)
+
+        ###########################################################################################
+        def configure_scroll_region(event):
+            __table_screen_canvas.configure(scrollregion=__table_screen_canvas.bbox("all"))
+        ###########################################################################################
+        __table_screen_canvas.bind("<Configure>", configure_scroll_region)
+
+        __window_frame = tkinter.Frame(master=__table_screen_canvas)
+        __table_screen_canvas.create_window((0,0), window=__window_frame, anchor="nw")
+
+        __tables = TableDb(self.__token).read_tables()
+        table_row = table_column = 0
+
+        for table in __tables:
+            __table_button = customtkinter.CTkButton(master=__window_frame,
+                                                     width=197, height=140,
+                                                     fg_color= GREEN_COLOR,
+                                                     hover_color= GREEN_HOVER_COLOR,
+                                                     font=("arial bold", 20),
+                                                     text=table[0])
+            __table_button.grid(row=table_row, column=table_column, padx=5, pady=5)
+
+            table_column += 1
+            if table_column == 8:
+                table_row += 1
+                table_column = 0
 
     def __create_table_ui(self):
         try:
@@ -96,4 +138,4 @@ class TableUi:
 
     def _to_back(self) -> None:
         clear_frames(self._square_frame)
-        self._table_ui()
+        self.__table_ui()

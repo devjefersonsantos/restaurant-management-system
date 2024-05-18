@@ -26,3 +26,17 @@ class TableDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def read_tables(self) -> list[tuple]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT * FROM "table"
+                                    ORDER BY table_id""")
+                result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Read Tables Error", message=error)
+            else:
+                return result
+            finally:
+                self.cursor.close()
+                self.connection.close()
