@@ -40,3 +40,14 @@ class TableDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+    
+    def get_table_ids(self) -> list[tuple[int]]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT table_id FROM "table"
+                                    ORDER BY table_id;""")
+                result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Get Table IDs", message=error)
+            else:
+                return result
