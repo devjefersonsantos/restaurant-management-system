@@ -76,7 +76,7 @@ class TableUi:
         __table_screen_canvas.configure(yscrollcommand=__table_scrollbar.set)
 
         ###########################################################################################
-        def configure_scroll_region(event):
+        def configure_scroll_region(event) -> None:
             __table_screen_canvas.configure(scrollregion=__table_screen_canvas.bbox("all"))
         ###########################################################################################
         __table_screen_canvas.bind("<Configure>", configure_scroll_region)
@@ -101,7 +101,7 @@ class TableUi:
                 table_row += 1
                 table_column = 0
 
-    def __create_table_ui(self):
+    def __create_table_ui(self) -> None:
         try:
             self.__table_toplevel.destroy()
         except:
@@ -141,7 +141,7 @@ class TableUi:
                                                       command=lambda:self.__fn_create_table(multiplier=int(create_table_spinbox.get())))
         create_table_button.grid(row=0, column=1)
 
-    def __delete_table_ui(self):
+    def __delete_table_ui(self) -> None:
         try:
             self.__table_toplevel.destroy()
         except:
@@ -173,7 +173,8 @@ class TableUi:
                                                         hover_color=RED_HOVER_COLOR,
                                                         corner_radius=4,
                                                         font=("arial", 15), 
-                                                        text="Delete Table")
+                                                        text="Delete Table",
+                                                        command=lambda:self.__fn_delete_table(int(__delete_table_optionmenu.get())))
         __delete_table_button.grid(row=0, column=1)
 
     def __fn_create_table(self, multiplier: int) -> None:
@@ -182,6 +183,10 @@ class TableUi:
                     messagebox.showinfo(title=None, message="Table created successfully")
                     self.__table_toplevel.destroy()
                     self._to_back()
+
+    def __fn_delete_table(self, table_id: int) -> None:
+        if TableDb(self.__token).delete_table(table_id):
+            self._to_back()
 
     def _to_back(self) -> None:
         clear_frames(self._square_frame)
