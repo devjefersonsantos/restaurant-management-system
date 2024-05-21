@@ -107,3 +107,28 @@ class MealDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def count_meals(self) -> int:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("SELECT COUNT(*) FROM meal")
+                result = self.cursor.fetchone()
+                return result[0]
+            except Exception as error:
+                messagebox.showerror(title="Count Meals", message=error)
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
+    def count_meals_by_status(self, status:str) -> int:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT COUNT(*) FROM meal
+                                    WHERE status = %s""", (status,))
+                result = self.cursor.fetchone()
+                return result[0]
+            except Exception as error:
+                messagebox.showerror(title="Count Meals by Status", message=error)
+            finally:
+                self.cursor.close()
+                self.connection.close()

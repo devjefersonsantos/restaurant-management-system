@@ -68,3 +68,6 @@ class TableDb(Database):
                 messagebox.showerror(title="Get Table IDs", message=error)
             else:
                 return result
+            finally:
+                self.cursor.close()
+                self.connection.close()

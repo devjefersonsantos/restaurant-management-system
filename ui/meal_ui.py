@@ -68,7 +68,7 @@ class MealUi:
         totalenabled_label = customtkinter.CTkLabel(master=enabledmeals_frame,
                                                     text_color=WHITE_COLOR,
                                                     font=("arial black", 25),
-                                                    text=None)
+                                                    text=f"{MealDb(self.__token).count_meals_by_status(status="Enabled"):^26}")
         totalenabled_label.place(x=30, y=72)
 
         disabledmeals_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -84,7 +84,7 @@ class MealUi:
         totaldisabled_label = customtkinter.CTkLabel(master=disabledmeals_frame,
                                                      text_color=WHITE_COLOR,
                                                      font=("arial black", 25),
-                                                     text=None)
+                                                     text=f"{MealDb(self.__token).count_meals_by_status(status="Disabled"):^26}")
         totaldisabled_label.place(x=30, y=72)
 
         totalmeals_frame = customtkinter.CTkFrame(master=self._square_frame,
@@ -100,7 +100,7 @@ class MealUi:
         total_label = customtkinter.CTkLabel(master=totalmeals_frame,
                                              text_color=WHITE_COLOR,
                                              font=("arial black", 25),
-                                             text=None)
+                                             text=f"{MealDb(self.__token).count_meals():^26}")
         total_label.place(x=30, y=72)
 
     def _meal_ui(self) -> None:
