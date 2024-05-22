@@ -25,10 +25,10 @@ class CustomerDb(Database):
                     self.connection.commit()
                     __customer_id = self.cursor.fetchone()
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while creating a customer.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while creating a customer.")
                     messagebox.showerror(title="Create Customer Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Create customer with id: {__customer_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create customer with ID: {__customer_id[0]}.")
                     messagebox.showinfo(title="Create Customer", message=f"Customer: {name}, successfully registered.")
                     return True
                 finally:
@@ -60,10 +60,10 @@ class CustomerDb(Database):
                                         WHERE customer_id = %s;""", (name, address, cellphone, email, customer_id))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while updating a customer.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while updating a customer.")
                     messagebox.showerror(title="Update Customer Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Customer id: {customer_id} has been updated.")
+                    log_info(f"System user ID: {self.__account_id}. Customer ID: {customer_id} has been updated.")
                     messagebox.showinfo(title="Update Customer", message=f"Customer: {name}, updated successfully!")
                     return True
                 finally:
@@ -77,10 +77,10 @@ class CustomerDb(Database):
                                     WHERE customer_id = %s""", (customer_id,))
                 self.connection.commit()
             except Exception as error:
-                log_error(f"System user id: {self.__account_id}. An error occurred while deleting a customer.")
+                log_error(f"System user ID: {self.__account_id}. An error occurred while deleting a customer.")
                 messagebox.showerror(title="Delete Customer Error", message=error)
             else:
-                log_warning(f"System user id: {self.__account_id}. Customer id: {customer_id} was deleted.")
+                log_warning(f"System user ID: {self.__account_id}. Customer ID: {customer_id} was deleted.")
             finally:
                 self.cursor.close()
                 self.connection.close()

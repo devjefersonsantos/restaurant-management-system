@@ -22,10 +22,10 @@ class CategoryDb(Database):
                     __category_id = self.cursor.fetchone()
 
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while creating a category.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while creating a category.")
                     messagebox.showerror(title="Create Category Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Create category with id: {__category_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create category with ID: {__category_id[0]}.")
                     messagebox.showinfo(title="Create Category", message=f"Category: {name}, successfully registered.")
                     return True
                 finally:
@@ -57,10 +57,10 @@ class CategoryDb(Database):
                                         WHERE category_id = %s""", (new_name, new_description, category_id))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while updating a category.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while updating a category.")
                     messagebox.showerror(title="Update Category Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Category id: {category_id} has been updated.")
+                    log_info(f"System user ID: {self.__account_id}. Category ID: {category_id} has been updated.")
                     messagebox.showinfo(title="Update Category", message=f"Category: {new_name}, updated successfully!")
                     return True
                 finally:
@@ -74,10 +74,10 @@ class CategoryDb(Database):
                                     WHERE category_id = %s""", (category_id,))
                 self.connection.commit()
             except Exception as error:
-                log_error(f"System user id: {self.__account_id}. An error occurred while deleting a category.")
+                log_error(f"System user ID: {self.__account_id}. An error occurred while deleting a category.")
                 messagebox.showerror(title="Delete Category Error", message=error)
             else:
-                log_warning(f"System user id: {self.__account_id}. Category id: {category_id} was deleted.")
+                log_warning(f"System user ID: {self.__account_id}. Category ID: {category_id} was deleted.")
             finally:
                 self.cursor.close()
                 self.connection.close()

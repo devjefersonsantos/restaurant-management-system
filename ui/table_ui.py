@@ -110,34 +110,58 @@ class TableUi:
         self.__table_toplevel = Toplevel(master=self._root)
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
         self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("images/global_images/icon.ico")) 
-        self.__table_toplevel.title("Add Total Tables")
+        self.__table_toplevel.title("Add Table")
         self.__table_toplevel.geometry("420x71+760+28")
         self.__table_toplevel.resizable(False, False)
+
+        table_tabview = customtkinter.CTkTabview(master=self.__table_toplevel,
+                                                 width=420, height=80,
+                                                 bg_color=WHITE_COLOR,
+                                                 corner_radius=0)
+        table_tabview.place(x=0, y=-10)
+        table_tabview.add("ID")
+        table_tabview.add("Quantity")
         
         only_numbers = self._root.register(lambda _ : _.isdigit())
 
-        quantity_label = customtkinter.CTkLabel(master=self.__table_toplevel,
-                                                text_color=GRAY_TEXT_COLOR,
-                                                font=("arial", 17),
-                                                text="Quantity")
-        quantity_label.place(x=95, y=0)
+        create_table_id_entry = customtkinter.CTkEntry(master=table_tabview.tab("ID"),
+                                                       width=224, height=29,
+                                                       border_color= WHITE_COLOR,
+                                                       validate="key",
+                                                       validatecommand=(only_numbers, "%P"),
+                                                       border_width=1,
+                                                       corner_radius=0,
+                                                       font=("arial bold", 19))
+        create_table_id_entry.grid(row=0, column=0, padx=5, pady=5)
+        create_table_id_entry.focus()
 
-        create_table_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
+        create_table_id_button = customtkinter.CTkButton(master=table_tabview.tab("ID"),
+                                                         width=180, height=30,
+                                                         text_color=WHITE_COLOR,
+                                                         fg_color=GREEN_COLOR,
+                                                         hover_color=GREEN_HOVER_COLOR,
+                                                         corner_radius=4,
+                                                         font=("arial", 15), 
+                                                         text="Add Table",
+                                                         command=lambda:self.__fn_create_table_id(create_table_id_entry.get()))
+        create_table_id_button.grid(row=0, column=1)
+
+        create_table_spinbox = tkinter.Spinbox(master=table_tabview.tab("Quantity"),
                                                width=17,
                                                validate="key",
                                                validatecommand=(only_numbers, "%P"),
                                                font=("arial bold", 16),
                                                from_=0, to=100)
-        create_table_spinbox.grid(row=0, column=0, padx=5, pady=29)
+        create_table_spinbox.grid(row=0, column=0, padx=5, pady=5)
 
-        create_table_button = customtkinter.CTkButton(master=self.__table_toplevel,
+        create_table_button = customtkinter.CTkButton(master=table_tabview.tab("Quantity"),
                                                       width=180, height=30,
                                                       text_color=WHITE_COLOR,
                                                       fg_color=GREEN_COLOR,
                                                       hover_color=GREEN_HOVER_COLOR,
                                                       corner_radius=4,
                                                       font=("arial", 15), 
-                                                      text="Add Table",
+                                                      text="Add Tables",
                                                       command=lambda:self.__fn_create_table(multiplier=int(create_table_spinbox.get())))
         create_table_button.grid(row=0, column=1)
 
@@ -176,6 +200,10 @@ class TableUi:
                                                         text="Delete Table",
                                                         command=lambda:self.__fn_delete_table(int(__delete_table_optionmenu.get())))
         __delete_table_button.grid(row=0, column=1)
+
+    def __fn_create_table_id(self, table_id: int) -> None:
+        if TableDb(self.__token).create_table_id(table_id):
+            self._to_back()
 
     def __fn_create_table(self, multiplier: int) -> None:
             if multiplier > 0:

@@ -22,10 +22,10 @@ class WaiterDb(Database):
                     __waiter_id = self.cursor.fetchone()
 
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while creating a waiter.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while creating a waiter.")
                     messagebox.showerror(title="Create Waiter Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Create waiter with id: {__waiter_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create waiter with ID: {__waiter_id[0]}.")
                     messagebox.showinfo(title="Create Waiter", message=f"Waiter: {name}, successfully registered.")
                     return True
                 finally:
@@ -58,10 +58,10 @@ class WaiterDb(Database):
 
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while updating a waiter.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while updating a waiter.")
                     messagebox.showerror(title="Update Waiter Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Waiter id: {waiter_id} has been updated.")
+                    log_info(f"System user ID: {self.__account_id}. Waiter ID: {waiter_id} has been updated.")
                     messagebox.showinfo(title="Update Waiter", message=f"Waiter: {new_name}, updated successfully!")
                     return True
                 finally:
@@ -75,10 +75,10 @@ class WaiterDb(Database):
                                     WHERE waiter_id = %s""", (waiter_id,))
                 self.connection.commit()
             except Exception as error:
-                log_error(f"System user id: {self.__account_id}. An error occurred while deleting a waiter.")
+                log_error(f"System user ID: {self.__account_id}. An error occurred while deleting a waiter.")
                 messagebox.showerror(title="Delete Waiter Error", message=error)
             else:
-                log_warning(f"System user id: {self.__account_id}. Waiter id: {waiter_id} was deleted.")
+                log_warning(f"System user ID: {self.__account_id}. Waiter ID: {waiter_id} was deleted.")
             finally:
                 self.cursor.close()
                 self.connection.close()

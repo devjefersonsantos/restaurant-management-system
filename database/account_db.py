@@ -34,10 +34,10 @@ class LoginDb(Database):
                                         WHERE account_id = %s;""", (convert_to_sha3_256(__token), __account_id, __account_id))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"Login failed. Create access token failed for user with id: {__account_id}.")
+                    log_error(f"Login failed. Create access token failed for user with ID: {__account_id}.")
                     messagebox.showerror(title="Login Process Failed", message=error)
                 else:
-                    log_info(f"Login successful. Access token created for user with id: {__account_id}.")
+                    log_info(f"Login successful. Access token created for user with ID: {__account_id}.")
                     return __token
                 finally:
                     self.connection.close()
@@ -53,7 +53,7 @@ class LoginDb(Database):
                                         WHERE username = %s AND password = %s;""", (self.__username, 
                                                                                     convert_to_sha3_256(self.__password)))
                     if account_id := self.cursor.fetchone():
-                        log_info(f"Successful authentication for user with id: {account_id[0]}.")
+                        log_info(f"Successful authentication for user with ID: {account_id[0]}.")
                         return account_id[0]
                     else:
                         log_error("Authentication failed.")
@@ -75,10 +75,10 @@ class LoginDb(Database):
                                                                                     convert_to_sha3_256(self.__password)))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"Create access token failed for user with id: {account_id}.")
+                    log_error(f"Create access token failed for user with ID: {account_id}.")
                     messagebox.showerror(title="Authentication Failed", message=error)
                 else:
-                    log_info(f"Access token created for user with id: {account_id}.")
+                    log_info(f"Access token created for user with ID: {account_id}.")
                     return __token
                 finally:
                     self.connection.close()
@@ -128,7 +128,7 @@ class SignupDb(Database):
                     log_error("An error occurred while creating a account.")
                     messagebox.showerror(title="Sign Up Error", message=error)
                 else:
-                    log_info(f"Account has been created with id {__account_id[0]}.")
+                    log_info(f"Account has been created with ID {__account_id[0]}.")
                     messagebox.showinfo(title="Sign Up", message="Congratulations! Your account\nhas been successfully created.")
                 finally:
                     self.cursor.close()

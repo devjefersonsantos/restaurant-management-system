@@ -27,10 +27,10 @@ class MealDb(Database):
                     __meal_id = self.cursor.fetchone()
 
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while creating a meal.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while creating a meal.")
                     messagebox.showerror(title="Create Meal Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Create meal with id: {__meal_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create meal with ID: {__meal_id[0]}.")
                     messagebox.showinfo(title="Create Meal", message=f"Meal: {meal_name}, successfully registered.")
                     return True
                 finally:
@@ -69,10 +69,10 @@ class MealDb(Database):
                                         WHERE meal_id = %s;""", (meal_name, sale_price, category_category_id, status, meal_id))
                     self.connection.commit()
                 except Exception as error:
-                    log_error(f"System user id: {self.__account_id}. An error occurred while updating a meal.")
+                    log_error(f"System user ID: {self.__account_id}. An error occurred while updating a meal.")
                     messagebox.showerror(title="Update Meal Error", message=error)
                 else:
-                    log_info(f"System user id: {self.__account_id}. Meal id: {meal_id} has been updated.")
+                    log_info(f"System user ID: {self.__account_id}. Meal ID: {meal_id} has been updated.")
                     messagebox.showinfo(title="Update meal", message=f"Meal: {meal_name}, updated successfully!")
                     return True
                 finally:
@@ -86,10 +86,10 @@ class MealDb(Database):
                                     WHERE meal_id = %s""", (meal_id,))
                 self.connection.commit()
             except Exception as error:
-                log_error(f"System user id: {self.__account_id}. An error occurred while deleting a meal.")
+                log_error(f"System user ID: {self.__account_id}. An error occurred while deleting a meal.")
                 messagebox.showerror(title="Delete Meal Error", message=error)
             else:
-                log_warning(f"System user id: {self.__account_id}. Meal id: {meal_id} was deleted.")
+                log_warning(f"System user ID: {self.__account_id}. Meal ID: {meal_id} was deleted.")
             finally:
                 self.cursor.close()
                 self.connection.close()
