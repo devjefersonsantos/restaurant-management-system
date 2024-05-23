@@ -52,7 +52,8 @@ class Database:
                                     email VARCHAR(255) NOT NULL UNIQUE,
                                     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                     last_login_date TIMESTAMP,
-                                    current_login_date TIMESTAMP);""")
+                                    current_login_date TIMESTAMP
+                                    )""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS customer (
                                     customer_id SERIAL PRIMARY KEY,
@@ -64,18 +65,21 @@ class Database:
                                     account_account_id INT NOT NULL,
                                     CONSTRAINT fk_customer_account
                                         FOREIGN KEY (account_account_id)
-                                        REFERENCES account (account_id));""")
+                                        REFERENCES account (account_id)
+                                    )""")
 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS waiter (
                                     waiter_id SERIAL PRIMARY KEY,
                                     name VARCHAR(255) NOT NULL,
                                     cell_phone VARCHAR(13) NOT NULL,
-                                    registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);""")
+                                    registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                    )""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS category (
                                     category_id SERIAL PRIMARY KEY,
                                     name VARCHAR(255) NOT NULL,
-                                    description VARCHAR(300));""")
+                                    description VARCHAR(300)
+                                    )""")
 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS meal (
                                     meal_id SERIAL PRIMARY KEY,
@@ -85,11 +89,32 @@ class Database:
                                     status VARCHAR(10) CHECK (status IN ('Disabled', 'Enabled')) NOT NULL,
                                     CONSTRAINT fk_meal_category
                                         FOREIGN KEY (category_category_id)
-                                        REFERENCES category (category_id));""")
+                                        REFERENCES category (category_id)
+                                    )""")
+                
+                self.cursor.execute("""CREATE TABLE IF NOT EXISTS "order" (
+                                    order_id SERIAL PRIMARY KEY,
+                                    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                    waiter_waiter_id INT,
+                                    customer_customer_id INT,
+                                    payment DECIMAL(10,2),
+                                    end_time TIMESTAMP,
+                                    CONSTRAINT fk_order_customer
+                                        FOREIGN KEY (customer_customer_id)
+                                        REFERENCES customer (customer_id),
+                                    CONSTRAINT fk_order_waiter
+                                        FOREIGN KEY (waiter_waiter_id)
+                                        REFERENCES waiter (waiter_id)
+                                    )""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS "table" (
-                                    table_id SERIAL PRIMARY KEY);""")
-                
+                                    table_id SERIAL PRIMARY KEY,
+                                    order_order_id INT,
+                                    CONSTRAINT fk_table_order
+                                        FOREIGN KEY (order_order_id)
+                                        REFERENCES "order" (order_id)
+                                    )""")
+
                 self.connection.commit()
             except Exception as error:
                 messagebox.showerror(title="Database Error", message=error)

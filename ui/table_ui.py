@@ -7,6 +7,7 @@ import customtkinter
 from utils.colors import *
 from database.account_db import LoginDb
 from database import TableDb
+from database import WaiterDb
 from utils import clear_frames
 
 class TableUi:
@@ -93,8 +94,9 @@ class TableUi:
                                                      fg_color=GREEN_COLOR,
                                                      hover_color=GREEN_HOVER_COLOR,
                                                      font=("arial bold", 20),
-                                                     text=table[0])
-            __table_button.grid(row=table_row, column=table_column, padx=5, pady=5)
+                                                     text=table[0],
+                                                     command=lambda t=table[0]: self.__open_table_ui(table_id=t))
+            __table_button.grid(row=table_row, column=table_column, padx=5, pady=5) 
 
             table_column += 1
             if table_column == 8:
@@ -215,6 +217,70 @@ class TableUi:
     def __fn_delete_table(self, table_id: int) -> None:
         if TableDb(self.__token).delete_table(table_id):
             self._to_back()
+
+    def __open_table_ui(self, table_id: int) -> None:
+        try:
+            self.__table_toplevel.destroy()
+        except:
+            pass
+
+        self.__table_toplevel = tkinter.Toplevel(master=self._root)
+        # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
+        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("images/global_images/icon.ico"))
+        self.__table_toplevel.title("Open Table")
+        self.__table_toplevel.geometry("300x250+815+390")
+        self.__table_toplevel.resizable(False, False)
+        self.__table_toplevel.configure(background=WHITE_COLOR)
+
+        number_label = customtkinter.CTkLabel(master=self.__table_toplevel,
+                                              text_color=GRAY_TEXT_COLOR,
+                                              font=("arial bold", 17),
+                                              text="Number:")
+        number_label.place(x=25, y=10)
+
+        number_entry = customtkinter.CTkEntry(master=self.__table_toplevel,
+                                              width=250, height=35,
+                                              border_color=WHITE_COLOR,
+                                              fg_color=LIGHT_GRAY_COLOR,
+                                              corner_radius=3,
+                                              border_width=1, 
+                                              font=("arial", 17))
+        number_entry.place(x=25, y=47)
+        number_entry.insert(0, table_id)
+        number_entry.configure(state="disabled")
+
+        waiter_label = customtkinter.CTkLabel(master=self.__table_toplevel,
+                                              text_color=GRAY_TEXT_COLOR,
+                                              font=("arial bold", 17),
+                                              text="Waiter:")
+        waiter_label.place(x=25, y=95)
+
+        waiter_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
+                                                        width=250, height=35,
+                                                        fg_color=FG_OPTION_MENU_COLOR,
+                                                        text_color=GRAY_TEXT_COLOR,
+                                                        button_color=GRAY_COLOR,
+                                                        button_hover_color=GRAY_HOVER_COLOR,
+                                                        corner_radius=4,
+                                                        font=("arial", 17),
+                                                        dropdown_font=("arial", 15),
+                                                        values=self.__list_waiters() if self.__list_waiters() else ["No waiter registered"],
+                                                        state=tkinter.NORMAL if self.__list_waiters() else tkinter.DISABLED)
+        waiter_optionmenu.place(x=25, y=132)
+
+        order_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                               width=250, height=32,
+                                               text_color=WHITE_COLOR,
+                                               fg_color=GREEN_COLOR,
+                                               hover_color=GREEN_HOVER_COLOR,
+                                               corner_radius=4,
+                                               font=("arial", 15), 
+                                               text="Order")
+        order_button.place(x=25, y=195)
+
+    def __list_waiters(self) -> list[str]:
+        __waiters = WaiterDb(self.__token).read_waiters()
+        return [i[1] for i in __waiters]
 
     def _to_back(self) -> None:
         clear_frames(self._square_frame)

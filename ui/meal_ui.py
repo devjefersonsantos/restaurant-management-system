@@ -235,7 +235,6 @@ class MealUi:
                                                 text="Category:")
         category_label.place(x=25, y=215)
 
-        __categories : list = self._list_categories()
         self.__category_optionmenu = customtkinter.CTkOptionMenu(master=add_meal_frame,
                                                                  width=1618, height=35,
                                                                  fg_color=FG_OPTION_MENU_COLOR,
@@ -245,8 +244,8 @@ class MealUi:
                                                                  corner_radius=4,
                                                                  font=("arial", 17),
                                                                  dropdown_font=("arial", 15),
-                                                                 values=__categories if __categories else ["No categories available"],
-                                                                 state=tkinter.NORMAL if __categories else tkinter.DISABLED)
+                                                                 values=self._list_categories() if self._list_categories() else ["No categories available"],
+                                                                 state=tkinter.NORMAL if self._list_categories() else tkinter.DISABLED)
         self.__category_optionmenu.place(x=25, y=255)
 
         status_label = customtkinter.CTkLabel(master=add_meal_frame,
@@ -363,7 +362,6 @@ class MealUi:
                                                 text="Category:")
         category_label.place(x=25, y=310)
 
-        
         self.__category_optionmenu = customtkinter.CTkOptionMenu(master=update_meal_frame,
                                                                  width=1618, height=35,
                                                                  fg_color=FG_OPTION_MENU_COLOR,
