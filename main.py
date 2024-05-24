@@ -1,4 +1,4 @@
-from ui import LoginUi
+from ui import LoginUI
 
-app = LoginUi()
+app = LoginUI()
 app.mainloop()

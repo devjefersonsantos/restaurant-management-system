@@ -9,53 +9,53 @@ from database import MealDb
 from database.account_db import LoginDb
 from utils import clear_frames
 
-class MealUi:
+class MealUI:
     @LoginDb.verify_token
     def __init__(self, 
                  root: customtkinter.CTk, 
                  square_frame: customtkinter.CTk, 
                  token: str) -> None:
-        self._root = root
-        self._square_frame = square_frame
+        self.__root = root
+        self.__square_frame = square_frame
         self.__token = token
 
-        clear_frames(self._square_frame)
-        self._meal_ui()
+        clear_frames(self.__square_frame)
+        self.__meal_ui()
 
-    def _topbar(self) -> None:
-        topbar_frame = customtkinter.CTkFrame(master=self._square_frame,
+    def __topbar(self) -> None:
+        topbar_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                               width=1678, height=50,
                                               corner_radius=0)
         topbar_frame.place(x=0, y=0)
         
-        self._topbar_label = customtkinter.CTkLabel(master=topbar_frame, 
-                                                    font=("arial black", 25),
-                                                    text_color=WHITE_COLOR, 
-                                                    text="Meal")
-        self._topbar_label.place(x=20, y=5)
+        self.__topbar_label = customtkinter.CTkLabel(master=topbar_frame, 
+                                                     font=("arial black", 25),
+                                                     text_color=WHITE_COLOR, 
+                                                     text="Meal")
+        self.__topbar_label.place(x=20, y=5)
 
-        self._search_meals_entry = customtkinter.CTkEntry(master=topbar_frame,
-                                                          width=1227, height=35,
-                                                          fg_color=LIGHT_GRAY_HOVER_COLOR,
-                                                          border_color=LIGHT_GRAY_COLOR, 
-                                                          placeholder_text="Search by meal name",
-                                                          font=("arial", 17), 
-                                                          border_width=1)
-        self._search_meals_entry.place(x=174, y=8)
+        self.__search_meals_entry = customtkinter.CTkEntry(master=topbar_frame,
+                                                           width=1227, height=35,
+                                                           fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                           border_color=LIGHT_GRAY_COLOR, 
+                                                           placeholder_text="Search by meal name",
+                                                           font=("arial", 17), 
+                                                           border_width=1)
+        self.__search_meals_entry.place(x=174, y=8)
 
-        self._search_meals_button = customtkinter.CTkButton(master=topbar_frame,
-                                                            width=230, height=32,
-                                                            text_color=WHITE_COLOR,
-                                                            fg_color=LIGHT_BLUE_COLOR, 
-                                                            hover_color=LIGHT_BLUE_HOVER_COLOR,
-                                                            corner_radius=4,
-                                                            font=("arial", 15), 
-                                                            text="Search",
-                                                            command=lambda:self.__fn_search_meal(self._search_meals_entry.get()))
-        self._search_meals_button.place(x=1425, y=9)
+        self.__search_meals_button = customtkinter.CTkButton(master=topbar_frame,
+                                                             width=230, height=32,
+                                                             text_color=WHITE_COLOR,
+                                                             fg_color=LIGHT_BLUE_COLOR, 
+                                                             hover_color=LIGHT_BLUE_HOVER_COLOR,
+                                                             corner_radius=4,
+                                                             font=("arial", 15), 
+                                                             text="Search",
+                                                             command=lambda:self.__fn_search_meal(self.__search_meals_entry.get()))
+        self.__search_meals_button.place(x=1425, y=9)
 
-    def _info_widgets(self) -> None:
-        enabledmeals_frame = customtkinter.CTkFrame(master=self._square_frame,
+    def __info_widgets(self) -> None:
+        enabledmeals_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                     width=285, height=170,
                                                     corner_radius=8,
                                                     fg_color=GREEN_COLOR)
@@ -71,7 +71,7 @@ class MealUi:
                                                     text=f"{MealDb(self.__token).count_meals_by_status(status="Enabled"):^26}")
         totalenabled_label.place(x=30, y=72)
 
-        disabledmeals_frame = customtkinter.CTkFrame(master=self._square_frame,
+        disabledmeals_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                      fg_color=RED_COLOR,
                                                      width=285, height=170,
                                                      corner_radius=8)
@@ -87,7 +87,7 @@ class MealUi:
                                                      text=f"{MealDb(self.__token).count_meals_by_status(status="Disabled"):^26}")
         totaldisabled_label.place(x=30, y=72)
 
-        totalmeals_frame = customtkinter.CTkFrame(master=self._square_frame,
+        totalmeals_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                   width=285, height=170,
                                                   fg_color=LIGHT_BLUE_COLOR,
                                                   corner_radius=8)
@@ -103,9 +103,9 @@ class MealUi:
                                              text=f"{MealDb(self.__token).count_meals():^26}")
         total_label.place(x=30, y=72)
 
-    def _meal_ui(self) -> None:
-        self._topbar()
-        self._info_widgets()
+    def __meal_ui(self) -> None:
+        self.__topbar()
+        self.__info_widgets()
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
         style = ttk.Style()
@@ -113,7 +113,7 @@ class MealUi:
         style.configure("Treeview.Heading", font=("Arial", 13), foreground=BLACK_GRAY_COLOR)
         style.configure("Treeview", font=("Arial", 13), foreground=BLACK_GRAY_COLOR, rowheight=28)
 
-        self.__meal_treeview = ttk.Treeview(master=self._square_frame,
+        self.__meal_treeview = ttk.Treeview(master=self.__square_frame,
                                             height=28,
                                             style="style_treeview.Treeview",
                                             columns=("meal id", "meal name", "sale price", "category", "status"),
@@ -132,28 +132,28 @@ class MealUi:
         self.__meal_treeview.column("#4", minwidth=240, width=290, anchor="center")
         self.__meal_treeview.column("#5", minwidth=100, width=250, anchor="center")
 
-        self.treeview_scrollbar = tkinter.Scrollbar(self._square_frame, orient=tkinter.VERTICAL, command=self.__meal_treeview.yview)
-        self.__meal_treeview.configure(yscroll=self.treeview_scrollbar.set)
-        self.treeview_scrollbar.place(x=1660, y=50, height=808)
+        self.__treeview_scrollbar = tkinter.Scrollbar(self.__square_frame, orient=tkinter.VERTICAL, command=self.__meal_treeview.yview)
+        self.__meal_treeview.configure(yscroll=self.__treeview_scrollbar.set)
+        self.__treeview_scrollbar.place(x=1660, y=50, height=808)
 
-        divider_frame = tkinter.Frame(master=self._square_frame, 
+        divider_frame = tkinter.Frame(master=self.__square_frame, 
                                       height=55, width=1678, 
                                       bg=LIGHT_GRAY_COLOR)
         divider_frame.place(x=0, y=860)
 
-        __del_meal_button = customtkinter.CTkButton(master=self._square_frame,
-                                                    width=230, height=32,
-                                                    text_color=WHITE_COLOR,
-                                                    fg_color=RED_COLOR,
-                                                    hover_color=RED_HOVER_COLOR,
-                                                    bg_color=LIGHT_GRAY_COLOR,
-                                                    corner_radius=3,
-                                                    font=("arial", 15),
-                                                    text="Delete Meal",
-                                                    command=self.__fn_delete_meal)
-        __del_meal_button.place(x=905, y=868)
+        del_meal_button = customtkinter.CTkButton(master=self.__square_frame,
+                                                  width=230, height=32,
+                                                  text_color=WHITE_COLOR,
+                                                  fg_color=RED_COLOR,
+                                                  hover_color=RED_HOVER_COLOR,
+                                                  bg_color=LIGHT_GRAY_COLOR,
+                                                  corner_radius=3,
+                                                  font=("arial", 15),
+                                                  text="Delete Meal",
+                                                  command=self.__fn_delete_meal)
+        del_meal_button.place(x=905, y=868)
 
-        update_meal_button = customtkinter.CTkButton(master=self._square_frame,
+        update_meal_button = customtkinter.CTkButton(master=self.__square_frame,
                                                      width=230, height=32,
                                                      fg_color=ORANGE_COLOR,
                                                      hover_color=ORANGE_HOVER_COLOR,
@@ -165,7 +165,7 @@ class MealUi:
                                                      command=self.__update_meal_ui)
         update_meal_button.place(x=1165, y=868)
 
-        create_meal_button = customtkinter.CTkButton(master=self._square_frame,
+        create_meal_button = customtkinter.CTkButton(master=self.__square_frame,
                                                      width=230, height=32,
                                                      fg_color=GREEN_COLOR,
                                                      hover_color=GREEN_HOVER_COLOR,
@@ -177,7 +177,7 @@ class MealUi:
                                                      command=self.__create_meal_ui)
         create_meal_button.place(x=1425, y=868)
 
-        treeview_scrollbar = tkinter.Scrollbar(self._square_frame, 
+        treeview_scrollbar = tkinter.Scrollbar(self.__square_frame, 
                                                orient=tkinter.VERTICAL, 
                                                command=self.__meal_treeview.yview)
         self.__meal_treeview.configure(yscroll=treeview_scrollbar.set)
@@ -186,14 +186,14 @@ class MealUi:
         self.__fn_read_meals()
 
     def __create_meal_ui(self) -> None:
-        clear_frames(self._square_frame)
-        self._topbar()
+        clear_frames(self.__square_frame)
+        self.__topbar()
         
-        self._topbar_label.configure(text="Add Meal")
-        self._search_meals_entry.destroy()
-        self._search_meals_button.destroy()
+        self.__topbar_label.configure(text="Add Meal")
+        self.__search_meals_entry.destroy()
+        self.__search_meals_button.destroy()
 
-        add_meal_frame = customtkinter.CTkFrame(master=self._square_frame,
+        add_meal_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                 width=1668, height=440,
                                                 fg_color=WHITE_COLOR,
                                                 corner_radius=10)
@@ -244,8 +244,8 @@ class MealUi:
                                                                  corner_radius=4,
                                                                  font=("arial", 17),
                                                                  dropdown_font=("arial", 15),
-                                                                 values=self._list_categories() if self._list_categories() else ["No categories available"],
-                                                                 state=tkinter.NORMAL if self._list_categories() else tkinter.DISABLED)
+                                                                 values=self.__list_categories() if self.__list_categories() else ["No categories available"],
+                                                                 state=tkinter.NORMAL if self.__list_categories() else tkinter.DISABLED)
         self.__category_optionmenu.place(x=25, y=255)
 
         status_label = customtkinter.CTkLabel(master=add_meal_frame,
@@ -267,48 +267,48 @@ class MealUi:
         self.__status_optionmenu.place(x=25, y=350)
         self.__status_optionmenu.set("Enabled")
 
-        divider_frame = tkinter.Frame(master=self._square_frame, 
+        divider_frame = tkinter.Frame(master=self.__square_frame, 
                                       height=55, width=1678, 
                                       bg=LIGHT_GRAY_COLOR)
         divider_frame.place(x=0, y=860)
 
-        __add_meal_button = customtkinter.CTkButton(master=self._square_frame,
-                                                    width=230, height=32,
-                                                    fg_color=GREEN_COLOR,
-                                                    hover_color=GREEN_HOVER_COLOR,
-                                                    bg_color=LIGHT_GRAY_COLOR, 
-                                                    text_color=WHITE_COLOR,
-                                                    corner_radius=3,
-                                                    font=("arial", 15),
-                                                    text="Add Meal",
-                                                    command=self._fn_create_meal)
-        __add_meal_button.place(x=1165, y=868)
+        add_meal_button = customtkinter.CTkButton(master=self.__square_frame,
+                                                  width=230, height=32,
+                                                  fg_color=GREEN_COLOR,
+                                                  hover_color=GREEN_HOVER_COLOR,
+                                                  bg_color=LIGHT_GRAY_COLOR, 
+                                                  text_color=WHITE_COLOR,
+                                                  corner_radius=3,
+                                                  font=("arial", 15),
+                                                  text="Add Meal",
+                                                  command=self.__fn_create_meal)
+        add_meal_button.place(x=1165, y=868)
     
-        self._cancel_button = customtkinter.CTkButton(master=self._square_frame,
-                                                      width=230, height=32,
-                                                      text_color=WHITE_COLOR,
-                                                      fg_color=GRAY_COLOR,
-                                                      hover_color=GRAY_HOVER_COLOR,
-                                                      bg_color=LIGHT_GRAY_COLOR, 
-                                                      corner_radius=3,
-                                                      font=("arial", 15),
-                                                      text="Cancel",
-                                                      command=self._to_back)
-        self._cancel_button.place(x=1425, y=868)
+        self.__cancel_button = customtkinter.CTkButton(master=self.__square_frame,
+                                                       width=230, height=32,
+                                                       text_color=WHITE_COLOR,
+                                                       fg_color=GRAY_COLOR,
+                                                       hover_color=GRAY_HOVER_COLOR,
+                                                       bg_color=LIGHT_GRAY_COLOR, 
+                                                       corner_radius=3,
+                                                       font=("arial", 15),
+                                                       text="Cancel",
+                                                       command=self._to_back)
+        self.__cancel_button.place(x=1425, y=868)
 
     def __update_meal_ui(self) -> None:
         self.__data = self.__selected_row()
         if not self.__data:
             return
 
-        clear_frames(self._square_frame) 
-        self._topbar()
+        clear_frames(self.__square_frame) 
+        self.__topbar()
         
-        self._topbar_label.configure(text="Update Meal")
-        self._search_meals_entry.destroy()
-        self._search_meals_button.destroy()
+        self.__topbar_label.configure(text="Update Meal")
+        self.__search_meals_entry.destroy()
+        self.__search_meals_button.destroy()
 
-        update_meal_frame = customtkinter.CTkFrame(master=self._square_frame,
+        update_meal_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                    width=1668, height=545,
                                                    fg_color=WHITE_COLOR,
                                                    corner_radius=10)
@@ -371,7 +371,7 @@ class MealUi:
                                                                  corner_radius=4,
                                                                  font=("arial", 17),
                                                                  dropdown_font=("arial", 15),
-                                                                 values=self._list_categories())
+                                                                 values=self.__list_categories())
         self.__category_optionmenu.place(x=25, y=350)
 
         status_label = customtkinter.CTkLabel(master=update_meal_frame,
@@ -393,54 +393,54 @@ class MealUi:
         self.__status_optionmenu.place(x=25, y=445)
         self.__status_optionmenu.set("Enabled")
 
-        divider_frame = tkinter.Frame(master=self._square_frame, 
+        divider_frame = tkinter.Frame(master=self.__square_frame, 
                                       height=55, width=1678, 
                                       bg=LIGHT_GRAY_COLOR)
         divider_frame.place(x=0, y=860)
 
-        __update_meal_button = customtkinter.CTkButton(master=self._square_frame,
+        update_meal_button = customtkinter.CTkButton(master=self.__square_frame,
+                                                     width=230, height=32,
+                                                     fg_color=GREEN_COLOR,
+                                                     hover_color=GREEN_HOVER_COLOR,
+                                                     bg_color=LIGHT_GRAY_COLOR,
+                                                     text_color=WHITE_COLOR,
+                                                     corner_radius=3,
+                                                     font=("arial", 15),
+                                                     text="Save Changes",
+                                                     command=self.__fn_update_meal)
+        update_meal_button.place(x=1165, y=868)
+    
+        self.__cancel_button = customtkinter.CTkButton(master=self.__square_frame,
                                                        width=230, height=32,
-                                                       fg_color=GREEN_COLOR,
-                                                       hover_color=GREEN_HOVER_COLOR,
-                                                       bg_color=LIGHT_GRAY_COLOR,
                                                        text_color=WHITE_COLOR,
+                                                       fg_color=GRAY_COLOR,
+                                                       hover_color=GRAY_HOVER_COLOR,
+                                                       bg_color=LIGHT_GRAY_COLOR, 
                                                        corner_radius=3,
                                                        font=("arial", 15),
-                                                       text="Save Changes",
-                                                       command=self.__fn_update_meal)
-        __update_meal_button.place(x=1165, y=868)
-    
-        self._cancel_button = customtkinter.CTkButton(master=self._square_frame,
-                                                      width=230, height=32,
-                                                      text_color=WHITE_COLOR,
-                                                      fg_color=GRAY_COLOR,
-                                                      hover_color=GRAY_HOVER_COLOR,
-                                                      bg_color=LIGHT_GRAY_COLOR, 
-                                                      corner_radius=3,
-                                                      font=("arial", 15),
-                                                      text="Cancel",
-                                                      command=self._to_back)
-        self._cancel_button.place(x=1425, y=868)
+                                                       text="Cancel",
+                                                       command=self._to_back)
+        self.__cancel_button.place(x=1425, y=868)
 
         self.__meal_data()
 
-    def _fn_create_meal(self) -> None:
+    def __fn_create_meal(self) -> None:
         if MealDb(self.__token).create_meal(meal_name=self.__meal_name_entry.get(),
                                             sale_price=self.__sale_price_entry.get(),
                                             category_category_id=CategoryDb(self.__token).get_category_id(self.__category_optionmenu.get()),
                                             status=self.__status_optionmenu.get()):
-               self._to_back()
+             self._to_back()
     
     def __fn_read_meals(self) -> None:
         self.__meal_treeview.delete(*self.__meal_treeview.get_children())
 
-        __all_meals = [i for i in MealDb(token=self.__token).read_meals()]
+        all_meals = [i for i in MealDb(token=self.__token).read_meals()]
 
         self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
         self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
         
         tag = "even_row"
-        for i in __all_meals:
+        for i in all_meals:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
@@ -450,7 +450,7 @@ class MealUi:
                                                   sale_price=self.__sale_price_entry.get(),
                                                   category_category_id=CategoryDb(self.__token).get_category_id(self.__category_optionmenu.get()),
                                                   status=self.__status_optionmenu.get()):
-                self._to_back()
+              self._to_back()
 
     def __fn_delete_meal(self) -> None:
         self.__data = self.__selected_row()
@@ -467,16 +467,16 @@ class MealUi:
     def __fn_search_meal(self, typed: str) -> None:
         self.__meal_treeview.delete(*self.__meal_treeview.get_children())
 
-        __meal = MealDb(self.__token).search_meal(typed=typed)
+        meal = MealDb(self.__token).search_meal(typed=typed)
 
         tag = "even_row"
-        for i in __meal:
+        for i in meal:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
 
-    def _list_categories(self) -> list[str]:
-        __categories = CategoryDb(self.__token).read_categories()
-        return [i[1] for i in __categories]
+    def __list_categories(self) -> list[str]:
+        categories = CategoryDb(self.__token).read_categories()
+        return [i[1] for i in categories]
     
     def __meal_data(self) -> None:
         list_entries = [self.__meal_id_entry, 
@@ -499,5 +499,5 @@ class MealUi:
             tkinter.messagebox.showerror(title=None, message="Please select a meal")
     
     def _to_back(self) -> None:
-        clear_frames(self._square_frame)
-        self._meal_ui()
+        clear_frames(self.__square_frame)
+        self.__meal_ui()

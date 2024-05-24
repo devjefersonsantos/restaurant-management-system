@@ -11,21 +11,21 @@ class CategoryDb(Database):
         self.__account_id = AccountDb(token).get_account_id()
 
     def create_category(self, name: str, description: str) -> True:
-        __entry_items = {"name": name, "description ": description}
+        entry_items = {"name": name, "description ": description}
         
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""INSERT INTO category (name, description)
                                         VALUES (%s, %s) RETURNING category_id;""", (name, description))
                     self.connection.commit()
-                    __category_id = self.cursor.fetchone()
+                    category_id = self.cursor.fetchone()
 
                 except Exception as error:
                     log_error(f"System user ID: {self.__account_id}. An error occurred while creating a category.")
                     messagebox.showerror(title="Create Category Error", message=error)
                 else:
-                    log_info(f"System user ID: {self.__account_id}. Create category with ID: {__category_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create category with ID: {category_id[0]}.")
                     messagebox.showinfo(title="Create Category", message=f"Category: {name}, successfully registered.")
                     return True
                 finally:
@@ -47,9 +47,9 @@ class CategoryDb(Database):
                 self.connection.close()
 
     def update_category(self, new_name: str, new_description: str, category_id: str) -> True:
-        __entry_items = {"name": new_name, "description ": new_description}
+        entry_items = {"name": new_name, "description ": new_description}
         
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""UPDATE category

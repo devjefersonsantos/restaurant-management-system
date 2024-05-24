@@ -6,17 +6,17 @@ import psycopg2
 class Database:
     def connect_to_database(self, database: str | None = "restaurant_management_system") -> True:
         try:
-            with open("database/config.json", "r") as __file:
-                __data = json.load(__file)
-                __user = __data["user"]
-                __password = __data["password"]
-                __host = __data["host"]
-                __port = __data["port"]
+            with open("./database/config.json", "r") as file:
+                data = json.load(file)
+                user = data["user"]
+                password = data["password"]
+                host = data["host"]
+                port = data["port"]
 
-            self.connection = psycopg2.connect(user=__user,
-                                               password=__password,
-                                               host=__host,
-                                               port=__port,
+            self.connection = psycopg2.connect(user=user,
+                                               password=password,
+                                               host=host,
+                                               port=port,
                                                database=database)
             self.cursor = self.connection.cursor()
 
@@ -125,7 +125,7 @@ class Database:
     @staticmethod
     def database_status() -> bool:
         try:
-            with open("database/config.json", "r") as file:
+            with open("./database/config.json", "r") as file:
                 config = json.load(file)
             connection = psycopg2.connect(**config, database=None)
         except:

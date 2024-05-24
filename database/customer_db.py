@@ -11,9 +11,9 @@ class CustomerDb(Database):
         self.__account_id = AccountDb(token).get_account_id()
 
     def create_customer(self, name: str, address: str, cellphone: str, email: str | None = None) -> True:
-        __entry_items = {"name": name, "address": address, "cellphone": cellphone}
+        entry_items = {"name": name, "address": address, "cellphone": cellphone}
         
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     if email is None:
@@ -23,12 +23,12 @@ class CustomerDb(Database):
                         self.cursor.execute("""INSERT INTO customer (name, address, cell_phone, email, account_account_id)
                                             VALUES (%s, %s, %s, %s, %s) RETURNING customer_id;""", (name, address, cellphone, email, self.__account_id))
                     self.connection.commit()
-                    __customer_id = self.cursor.fetchone()
+                    customer_id = self.cursor.fetchone()
                 except Exception as error:
                     log_error(f"System user ID: {self.__account_id}. An error occurred while creating a customer.")
                     messagebox.showerror(title="Create Customer Error", message=error)
                 else:
-                    log_info(f"System user ID: {self.__account_id}. Create customer with ID: {__customer_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create customer with ID: {customer_id[0]}.")
                     messagebox.showinfo(title="Create Customer", message=f"Customer: {name}, successfully registered.")
                     return True
                 finally:
@@ -50,9 +50,9 @@ class CustomerDb(Database):
                 self.connection.close()
 
     def update_customer(self, customer_id: str, name: str, address: str, cellphone: str, email: str | None = None) -> True:
-        __entry_items = {"name": name, "address": address, "cellphone": cellphone}
+        entry_items = {"name": name, "address": address, "cellphone": cellphone}
         
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""UPDATE customer 

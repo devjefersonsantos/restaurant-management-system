@@ -11,26 +11,26 @@ class MealDb(Database):
         self.__account_id = AccountDb(token).get_account_id()
 
     def create_meal(self, meal_name: str, sale_price: float, category_category_id: int, status: str) -> True:
-        __entry_items = {
+        entry_items = {
             "meal name": meal_name, 
             "sale price": sale_price, 
             "category": category_category_id, 
             "status": status
         }
         
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""INSERT INTO meal (meal_name, sale_price, category_category_id, status)
                                         VALUES (%s, %s, %s, %s) RETURNING meal_id;""", (meal_name, sale_price, category_category_id, status))
                     self.connection.commit()
-                    __meal_id = self.cursor.fetchone()
+                    meal_id = self.cursor.fetchone()
 
                 except Exception as error:
                     log_error(f"System user ID: {self.__account_id}. An error occurred while creating a meal.")
                     messagebox.showerror(title="Create Meal Error", message=error)
                 else:
-                    log_info(f"System user ID: {self.__account_id}. Create meal with ID: {__meal_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create meal with ID: {meal_id[0]}.")
                     messagebox.showinfo(title="Create Meal", message=f"Meal: {meal_name}, successfully registered.")
                     return True
                 finally:
@@ -54,14 +54,14 @@ class MealDb(Database):
                 self.connection.close()
 
     def update_meal(self, meal_id: int, meal_name: str, sale_price: float, category_category_id: int, status: str) -> True:
-        __entry_items = {
+        entry_items = {
             "meal name": meal_name, 
             "sale price": sale_price, 
             "category": category_category_id, 
             "status": status
         }
 
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""UPDATE meal 

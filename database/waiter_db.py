@@ -11,21 +11,21 @@ class WaiterDb(Database):
         self.__account_id = AccountDb(token).get_account_id()
 
     def create_waiter(self, name: str, cellphone: str) -> True:
-        __entry_items = {"name": name, "cellphone ": cellphone}
+        entry_items = {"name": name, "cellphone ": cellphone}
         
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""INSERT INTO waiter (name, cell_phone)
                                         VALUES (%s, %s) RETURNING waiter_id;""", (name, cellphone))
                     self.connection.commit()
-                    __waiter_id = self.cursor.fetchone()
+                    waiter_id = self.cursor.fetchone()
 
                 except Exception as error:
                     log_error(f"System user ID: {self.__account_id}. An error occurred while creating a waiter.")
                     messagebox.showerror(title="Create Waiter Error", message=error)
                 else:
-                    log_info(f"System user ID: {self.__account_id}. Create waiter with ID: {__waiter_id[0]}.")
+                    log_info(f"System user ID: {self.__account_id}. Create waiter with ID: {waiter_id[0]}.")
                     messagebox.showinfo(title="Create Waiter", message=f"Waiter: {name}, successfully registered.")
                     return True
                 finally:
@@ -47,9 +47,9 @@ class WaiterDb(Database):
                 self.connection.close()
 
     def update_waiter(self, new_name: str, new_cellphone: str, waiter_id: int) -> True:
-        __entry_items = {"name": new_name, "cellphone": new_cellphone}
+        entry_items = {"name": new_name, "cellphone": new_cellphone}
         
-        if not empty_entries(**__entry_items):
+        if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""UPDATE waiter
