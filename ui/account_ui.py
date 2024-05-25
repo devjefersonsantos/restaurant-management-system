@@ -18,7 +18,8 @@ class AccountUI:
         self.__root = root
         self.__square_frame = square_frame
         self.__token = token
-
+        
+        self.__root.unbind("<Return>")
         clear_frames(self.__square_frame)
         self.__images_ui()
         self.__account_ui()

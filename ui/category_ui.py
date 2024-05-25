@@ -53,6 +53,8 @@ class CategoryUi:
                                                                   command=lambda:self.__fn_search_category(self.__search_categories_entry.get()))
         self.__search_categories_button.place(x=1425, y=9)
 
+        self.__root.bind("<Return>", lambda _ : self.__search_categories_button.invoke())
+
     def __category_ui(self) -> None:
         self.__topbar()
 
@@ -192,6 +194,8 @@ class CategoryUi:
         self.__create_category_frame.configure(height=365)
         self.__create_category_button.configure(text="Save Changes",
                                                 command=self.__fn_update_category)
+        
+        self.__root.bind("<Return>", lambda _ : self.__create_category_button.invoke())
 
         self.__cancel_button = customtkinter.CTkButton(master=self.__create_category_frame,
                                                        width=330, height=35,

@@ -184,6 +184,8 @@ class LoginUI(customtkinter.CTk):
                                                                            password=self.__password_entry.get()))
         login_button.place(x=27, y=270)
 
+        self.bind("<Return>", lambda _ : login_button.invoke())
+
         setup_connection_label = customtkinter.CTkLabel(master=self.__frame_four,
                                                         font=("arial", 15),
                                                         text_color=GRAY_TEXT_COLOR,
@@ -318,6 +320,8 @@ class LoginUI(customtkinter.CTk):
                                                       command=self.__save_connection_settings)
         save_changes_button.place(x=27, y=22)
 
+        self.bind("<Return>", lambda _ : save_changes_button.invoke())
+
         to_back_button = customtkinter.CTkButton(master=self.__frame_four,
                                                  width=192, height=40,
                                                  fg_color=GRAY_COLOR,
@@ -434,6 +438,8 @@ class LoginUI(customtkinter.CTk):
                                                                         password=self.__password_entry.get(),
                                                                         email=email_entry.get()))
         signup_button.place(x=27, y=380)
+
+        self.bind("<Return>", lambda _ : signup_button.invoke())
 
         to_back_button = customtkinter.CTkButton(master=self.__frame_four,
                                                  width=400, height=40, 

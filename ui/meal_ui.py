@@ -54,6 +54,8 @@ class MealUI:
                                                              command=lambda:self.__fn_search_meal(self.__search_meals_entry.get()))
         self.__search_meals_button.place(x=1425, y=9)
 
+        self.__root.bind("<Return>", lambda _ : self.__search_meals_button.invoke())
+
     def __info_widgets(self) -> None:
         enabledmeals_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                     width=285, height=170,
@@ -225,8 +227,7 @@ class MealUI:
                                                          placeholder_text_color=GRAY_TEXT_COLOR,
                                                          corner_radius=3, 
                                                          font=("arial", 17), 
-                                                         border_width=1,
-                                                         placeholder_text="0.00")
+                                                         border_width=1)
         self.__sale_price_entry.place(x=25, y=160)
         
         category_label = customtkinter.CTkLabel(master=add_meal_frame,
@@ -283,6 +284,8 @@ class MealUI:
                                                   text="Add Meal",
                                                   command=self.__fn_create_meal)
         add_meal_button.place(x=1165, y=868)
+
+        self.__root.bind("<Return>", lambda _ : add_meal_button.invoke())
     
         self.__cancel_button = customtkinter.CTkButton(master=self.__square_frame,
                                                        width=230, height=32,
@@ -409,6 +412,8 @@ class MealUI:
                                                      text="Save Changes",
                                                      command=self.__fn_update_meal)
         update_meal_button.place(x=1165, y=868)
+
+        self.__root.bind("<Return>", lambda _ : update_meal_button.invoke())
     
         self.__cancel_button = customtkinter.CTkButton(master=self.__square_frame,
                                                        width=230, height=32,

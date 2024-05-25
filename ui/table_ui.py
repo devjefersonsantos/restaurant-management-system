@@ -57,6 +57,8 @@ class TableUI:
                                                       command=self.__create_table_ui)
         create_table_button.place(x=1455, y=9)
 
+        self.__root.bind("<Return>", lambda _ : create_table_button.invoke())
+
     def __table_ui(self) -> None:
         self.__topbar()
         
@@ -119,7 +121,18 @@ class TableUI:
         table_tabview = customtkinter.CTkTabview(master=self.__table_toplevel,
                                                  width=420, height=80,
                                                  bg_color=WHITE_COLOR,
-                                                 corner_radius=0)
+                                                 corner_radius=0,
+                                                 command=lambda:__tabview_bind(table_tabview.get()))
+        
+        ###########################################################################################
+        def __tabview_bind(tab: str) -> None:
+            if tab == "ID":
+                self.__table_toplevel.bind("<Return>", lambda _ : create_table_id_button.invoke())
+            elif tab == "Quantity":
+                self.__table_toplevel.bind("<Return>", lambda _ : create_table_button.invoke())
+        ###########################################################################################
+        self.__table_toplevel.bind("<Return>", lambda _ : create_table_id_button.invoke())
+
         table_tabview.place(x=0, y=-10)
         table_tabview.add("ID")
         table_tabview.add("Quantity")
@@ -203,6 +216,9 @@ class TableUI:
                                                       command=lambda:self.__fn_delete_table(int(delete_table_optionmenu.get())))
         delete_table_button.grid(row=0, column=1)
 
+        self.__table_toplevel.focus()
+        self.__table_toplevel.bind("<Return>", lambda _ : delete_table_button.invoke())
+
     def __fn_create_table_id(self, table_id: int) -> None:
         if TableDb(self.__token).create_table_id(table_id):
             self._to_back()
@@ -283,5 +299,6 @@ class TableUI:
         return [i[1] for i in waiters]
 
     def _to_back(self) -> None:
+        self.__table_toplevel.destroy()
         clear_frames(self.__square_frame)
         self.__table_ui()

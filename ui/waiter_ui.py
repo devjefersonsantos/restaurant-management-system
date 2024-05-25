@@ -53,6 +53,8 @@ class WaiterUI:
                                                                command=lambda:self.__fn_search_waiter(self.__search_waiters_entry.get()))
         self.__search_waiters_button.place(x=1425, y=9)
 
+        self.__root.bind("<Return>", lambda _ : self.__search_waiters_button.invoke())
+
     def __waiter_ui(self) -> None:
         clear_frames(self.__square_frame)
         self.__topbar()
@@ -195,6 +197,8 @@ class WaiterUI:
         self.__create_waiter_frame.configure(height=300)
         self.__create_waiter_button.configure(text="Save Changes", 
                                               command=self.__fn_update_waiter)
+        
+        self.__root.bind("<Return>", lambda _ : self.__create_waiter_button.invoke())
 
         self.__cancel_button = customtkinter.CTkButton(master=self.__create_waiter_frame,
                                                        width=330, height=35,

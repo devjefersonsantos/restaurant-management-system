@@ -54,6 +54,8 @@ class CustomerUI:
                                                                  command=lambda:self.__fn_search_customer(self.__search_customers_entry.get()))
         self.__search_customers_button.place(x=1425, y=9)
 
+        self.__root.bind("<Return>", lambda _ : self.__search_customers_button.invoke())
+
     def __customer_ui(self) -> None:
         self.__topbar()
 
@@ -220,6 +222,8 @@ class CustomerUI:
                                                       text="Add Customer",
                                                       command=self.__fn_create_customer)
         add_customer_button.place(x=1165, y=868)
+
+        self.__root.bind("<Return>", lambda _ : add_customer_button.invoke())
     
         self.__cancel_button = customtkinter.CTkButton(master=self.__square_frame,
                                                        width=230, height=32,
@@ -337,6 +341,8 @@ class CustomerUI:
                                                          command=self.__fn_update_customer)
         update_customer_button.place(x=1165, y=868)
 
+        self.__root.bind("<Return>", lambda _ : update_customer_button.invoke())
+
         cancel_button = customtkinter.CTkButton(master=self.__square_frame,
                                                 width=230, height=32,
                                                 fg_color=GRAY_COLOR,
@@ -398,8 +404,7 @@ class CustomerUI:
         self.__customer_treeview.delete(*self.__customer_treeview.get_children())
 
         customer = [(i[0], i[1], i[2], i[3], i[4], i[5].replace(microsecond=0))
-                      for i in CustomerDb(self.__token).search_customer(typed=typed)]
-
+                    for i in CustomerDb(self.__token).search_customer(typed=typed)]
         tag = "even_row"
         for i in customer:
             tag = "even_row" if tag == "odd_row" else "odd_row"
