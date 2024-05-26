@@ -9,5 +9,4 @@ def empty_entries(**kwargs) -> bool:
     elif total_emptyentries:
         messagebox.showerror(title="Required Fields", message=f"Please fill in all required\nfields: {', '.join(total_emptyentries).strip()}.")
 
-    if total_emptyentries:
-        return True
+    return bool(total_emptyentries)

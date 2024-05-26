@@ -9,6 +9,7 @@ from database.account_db import LoginDb
 from database import TableDb
 from database import WaiterDb
 from utils import clear_frames
+from utils import empty_entries
 
 class TableUI:
     @LoginDb.verify_token
@@ -220,8 +221,10 @@ class TableUI:
         self.__table_toplevel.bind("<Return>", lambda _ : delete_table_button.invoke())
 
     def __fn_create_table_id(self, table_id: int) -> None:
-        if TableDb(self.__token).create_table_id(table_id):
-            self._to_back()
+        entry_items = {"table id": table_id}
+        if not empty_entries(**entry_items):
+            if TableDb(self.__token).create_table_id(table_id):
+                self._to_back()
 
     def __fn_create_table(self, multiplier: int) -> None:
             if multiplier > 0:
