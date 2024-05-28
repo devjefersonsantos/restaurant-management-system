@@ -98,3 +98,16 @@ class CustomerDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def get_customer_names(self) -> list[str]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("SELECT name FROM customer")
+                result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Get Customer Names Error", message=error)
+            else:
+                return [i[0] for i in result]
+            finally:
+                self.cursor.close()
+                self.connection.close()

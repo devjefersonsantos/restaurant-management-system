@@ -132,3 +132,16 @@ class MealDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def get_meal_names(self) -> list[str]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("SELECT meal_name FROM meal")
+                result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Get Meal Names Error", message=error)
+            else:
+                return [i[0] for i in result]
+            finally:
+                self.cursor.close()
+                self.connection.close()

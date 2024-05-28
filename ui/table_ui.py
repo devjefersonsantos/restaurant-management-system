@@ -8,6 +8,8 @@ import customtkinter
 
 from utils.colors import *
 from database.account_db import LoginDb
+from database import CustomerDb
+from database import MealDb
 from database import TableDb
 from database import WaiterDb
 from utils import clear_frames
@@ -291,16 +293,17 @@ class TableUI:
         waiter_label.place(x=25, y=95)
 
         waiter_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
-                                                        width=250, height=35,
-                                                        fg_color=FG_OPTION_MENU_COLOR,
-                                                        text_color=GRAY_TEXT_COLOR,
-                                                        button_color=GRAY_COLOR,
-                                                        button_hover_color=GRAY_HOVER_COLOR,
-                                                        corner_radius=4,
-                                                        font=("arial", 17),
-                                                        dropdown_font=("arial", 15),
-                                                        values=self.__list_waiters() if self.__list_waiters() else ["No waiter registered"],
-                                                        state=tkinter.NORMAL if self.__list_waiters() else tkinter.DISABLED)
+            width=250, height=35,
+            fg_color=FG_OPTION_MENU_COLOR,
+            text_color=GRAY_TEXT_COLOR,
+            button_color=GRAY_COLOR,
+            button_hover_color=GRAY_HOVER_COLOR,
+            corner_radius=4,
+            font=("arial", 17),
+            dropdown_font=("arial", 15),
+            values=WaiterDb(self.__token).get_waiter_names() if WaiterDb(self.__token).get_waiter_names() else ["No waiter registered"],
+            state=tkinter.NORMAL if WaiterDb(self.__token).get_waiter_names() else tkinter.DISABLED
+        )
         waiter_optionmenu.place(x=25, y=132)
 
         order_button = customtkinter.CTkButton(master=self.__table_toplevel,
@@ -367,14 +370,17 @@ class TableUI:
         customer_label.place(x=25, y=95)
 
         customer_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
-                                                          width=619, height=35,
-                                                          fg_color=WHITE_COLOR,
-                                                          text_color=GRAY_TEXT_COLOR,
-                                                          button_color=OPTION_MENU_BUTTON_COLOR,
-                                                          button_hover_color=OPTION_MENU_HOVER_COLOR,
-                                                          corner_radius=4,
-                                                          font=("arial", 17),
-                                                          dropdown_font=("arial", 15))
+            width=619, height=35,
+            fg_color=WHITE_COLOR,
+            text_color=GRAY_TEXT_COLOR,
+            button_color=OPTION_MENU_BUTTON_COLOR,
+            button_hover_color=OPTION_MENU_HOVER_COLOR,
+            corner_radius=4,
+            font=("arial", 17),
+            dropdown_font=("arial", 15),
+            values=CustomerDb(self.__token).get_customer_names() if CustomerDb(self.__token).get_customer_names() else ["No customer registered"],
+            state=tkinter.NORMAL if CustomerDb(self.__token).get_customer_names() else tkinter.DISABLED
+        )
         customer_optionmenu.place(x=25, y=132)
 
         meals_label = customtkinter.CTkLabel(master=self.__table_toplevel,
@@ -384,14 +390,17 @@ class TableUI:
         meals_label.place(x=25, y=180)
 
         meal_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
-                                                      width=300, height=35,
-                                                      fg_color=WHITE_COLOR,
-                                                      text_color=GRAY_TEXT_COLOR,
-                                                      button_color=OPTION_MENU_BUTTON_COLOR,
-                                                      button_hover_color=OPTION_MENU_HOVER_COLOR,
-                                                      corner_radius=4,
-                                                      font=("arial", 17),
-                                                      dropdown_font=("arial", 15))
+            width=300, height=35,
+            fg_color=WHITE_COLOR,
+            text_color=GRAY_TEXT_COLOR,
+            button_color=OPTION_MENU_BUTTON_COLOR,
+            button_hover_color=OPTION_MENU_HOVER_COLOR,
+            corner_radius=4,
+            font=("arial", 17),
+            dropdown_font=("arial", 15),
+            values=MealDb(self.__token).get_meal_names() if MealDb(self.__token).get_meal_names() else ["No meal registered"],
+            state=tkinter.NORMAL if MealDb(self.__token).get_meal_names() else tkinter.DISABLED
+        )
         meal_optionmenu.place(x=25, y=214)
 
         total_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
@@ -496,10 +505,6 @@ class TableUI:
                                               text="Back",
                                               command=lambda:self.__open_table_ui(table_id))
         back_button.place(x=170, y=623)
-
-    def __list_waiters(self) -> list[str]:
-        waiters = WaiterDb(self.__token).read_waiters()
-        return [i[1] for i in waiters]
 
     def _to_back(self) -> None:
         self.__table_toplevel.destroy()
