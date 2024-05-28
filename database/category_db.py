@@ -109,3 +109,16 @@ class CategoryDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def get_category_names(self) -> list[str]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("SELECT category_name FROM category")
+                result = self.cursor.fetchall()
+            except Exception as error:
+                messagebox.showerror(title="Get Category Names Error", message=error)
+            else:
+                return [i[0] for i in result]
+            finally:
+                self.cursor.close()
+                self.connection.close()
