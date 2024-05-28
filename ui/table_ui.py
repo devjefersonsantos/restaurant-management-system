@@ -265,6 +265,7 @@ class TableUI:
         self.__table_toplevel.geometry("300x250+815+390")
         self.__table_toplevel.resizable(False, False)
         self.__table_toplevel.configure(background=WHITE_COLOR)
+        self.__table_toplevel.focus()
 
         number_label = customtkinter.CTkLabel(master=self.__table_toplevel,
                                               text_color=GRAY_TEXT_COLOR,
@@ -485,16 +486,16 @@ class TableUI:
                                                      text="Start Order")
         start_order_button.place(x=412, y=623)
 
-        cancel_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                width=230, height=32,
-                                                text_color=WHITE_COLOR,
-                                                fg_color=GRAY_COLOR,
-                                                hover_color=GRAY_HOVER_COLOR,
-                                                corner_radius=3,
-                                                font=("arial", 15),
-                                                text="Cancel",
-                                                command=lambda:self.__table_toplevel.destroy())
-        cancel_button.place(x=170, y=623)
+        back_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                              width=230, height=32,
+                                              text_color=WHITE_COLOR,
+                                              fg_color=GRAY_COLOR,
+                                              hover_color=GRAY_HOVER_COLOR,
+                                              corner_radius=3,
+                                              font=("arial", 15),
+                                              text="Back",
+                                              command=lambda:self.__open_table_ui(table_id))
+        back_button.place(x=170, y=623)
 
     def __list_waiters(self) -> list[str]:
         waiters = WaiterDb(self.__token).read_waiters()
