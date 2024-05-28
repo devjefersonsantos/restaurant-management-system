@@ -10,14 +10,14 @@ class CategoryDb(Database):
         super().__init__()
         self.__account_id = AccountDb(token).get_account_id()
 
-    def create_category(self, name: str, description: str) -> True:
-        entry_items = {"name": name, "description ": description}
+    def create_category(self, category_name: str, description: str) -> True:
+        entry_items = {"category name": category_name, "description ": description}
         
         if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
-                    self.cursor.execute("""INSERT INTO category (name, description)
-                                        VALUES (%s, %s) RETURNING category_id;""", (name, description))
+                    self.cursor.execute("""INSERT INTO category (category_name, description)
+                                        VALUES (%s, %s) RETURNING category_id;""", (category_name, description))
                     self.connection.commit()
                     category_id = self.cursor.fetchone()
 
@@ -26,7 +26,7 @@ class CategoryDb(Database):
                     messagebox.showerror(title="Create Category Error", message=error)
                 else:
                     log_info(f"System user ID: {self.__account_id}. Create category with ID: {category_id[0]}.")
-                    messagebox.showinfo(title="Create Category", message=f"Category: {name}, successfully registered.")
+                    messagebox.showinfo(title="Create Category", message=f"Category: {category_name}, successfully registered.")
                     return True
                 finally:
                     self.cursor.close()
@@ -46,22 +46,22 @@ class CategoryDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def update_category(self, new_name: str, new_description: str, category_id: str) -> True:
-        entry_items = {"name": new_name, "description ": new_description}
+    def update_category(self, new_category_name: str, new_description: str, category_id: str) -> True:
+        entry_items = {"category_name": new_category_name, "description ": new_description}
         
         if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
                     self.cursor.execute("""UPDATE category
-                                        SET name = %s, description = %s
-                                        WHERE category_id = %s""", (new_name, new_description, category_id))
+                                        SET category_name = %s, description = %s
+                                        WHERE category_id = %s""", (new_category_name, new_description, category_id))
                     self.connection.commit()
                 except Exception as error:
                     log_error(f"System user ID: {self.__account_id}. An error occurred while updating a category.")
                     messagebox.showerror(title="Update Category Error", message=error)
                 else:
                     log_info(f"System user ID: {self.__account_id}. Category ID: {category_id} has been updated.")
-                    messagebox.showinfo(title="Update Category", message=f"Category: {new_name}, updated successfully!")
+                    messagebox.showinfo(title="Update Category", message=f"Category: {new_category_name}, updated successfully!")
                     return True
                 finally:
                     self.cursor.close()
@@ -86,7 +86,7 @@ class CategoryDb(Database):
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT * FROM category 
-                                    WHERE name LIKE %s""", ("%" + typed + "%",))
+                                    WHERE category_name LIKE %s""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Search Category Error", message=error)
@@ -100,7 +100,7 @@ class CategoryDb(Database):
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT category_id FROM category 
-                                    WHERE name = %s""", (category_name,))
+                                    WHERE category_name = %s""", (category_name,))
                 result = self.cursor.fetchone()
             except Exception as error:
                 messagebox.showerror(title="Search Category Error", message=error)

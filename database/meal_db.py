@@ -40,7 +40,7 @@ class MealDb(Database):
     def read_meals(self) -> list[tuple]:
         if self.connect_to_database():
             try:
-                self.cursor.execute("""SELECT me.meal_id, me.meal_name, me.sale_price, ca.name, me.status
+                self.cursor.execute("""SELECT me.meal_id, me.meal_name, me.sale_price, ca.category_name, me.status
                                     FROM meal me
                                     LEFT JOIN category ca ON ca.category_id = me.category_category_id
                                     ORDER BY me.meal_id;""")

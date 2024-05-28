@@ -212,7 +212,7 @@ class CategoryUi:
         self.__description_textbox.insert("0.0", self.__data[2])
 
     def __fn_create_category(self) -> None:
-        if CategoryDb(token=self.__token).create_category(name=self.__category_name_entry.get(),
+        if CategoryDb(token=self.__token).create_category(category_name=self.__category_name_entry.get(),
                                                           description=self.__description_textbox.get("1.0","end").strip()):
             self.__category_name_entry.delete(0, "end")
             self.__description_textbox.delete("1.0","end")
@@ -237,7 +237,7 @@ class CategoryUi:
         if not self.__data:
             return
         
-        updated_category = CategoryDb(self.__token).update_category(new_name=self.__category_name_entry.get(),
+        updated_category = CategoryDb(self.__token).update_category(new_category_name=self.__category_name_entry.get(),
                                                                     new_description=self.__description_textbox.get("1.0", "end").strip(),
                                                                     category_id=self.__data[0])
         

@@ -77,7 +77,7 @@ class Database:
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS category (
                                     category_id SERIAL PRIMARY KEY,
-                                    name VARCHAR(255) NOT NULL,
+                                    category_name VARCHAR(255) NOT NULL,
                                     description VARCHAR(300)
                                     )""")
 
