@@ -358,9 +358,11 @@ class CustomerUI:
 
     def __fn_create_customer(self) -> None:
         if CustomerDb(token=self.__token).create_customer(name=self.__name_entry.get(), 
-                                                          address=self.__address_entry.get(), 
-                                                          cellphone=self.__cellphone_entry.get(), 
-                                                          email=self.__email_entry.get()):
+            address=self.__address_entry.get(), 
+            cellphone=self.__cellphone_entry.get(), 
+            email=self.__email_entry.get() if self.__email_entry.get() not in ["", None] else None
+        ):
+            
             for i in [self.__name_entry, self.__address_entry, self.__cellphone_entry, self.__email_entry]:
                 i.delete(0, "end")
             self.__root.focus()
@@ -382,10 +384,11 @@ class CustomerUI:
 
     def __fn_update_customer(self) -> None:
         if CustomerDb(token=self.__token).update_customer(customer_id=self.__id_entry.get(),
-                                                          name=self.__name_entry.get(),
-                                                          address=self.__address_entry.get(),
-                                                          cellphone=self.__cellphone_entry.get(),
-                                                          email=self.__email_entry.get()):
+            name=self.__name_entry.get(),
+            address=self.__address_entry.get(),
+            cellphone=self.__cellphone_entry.get(),
+            email=self.__email_entry.get() if self.__email_entry.get() not in ["", None] else None
+        ):
             self._to_back()
 
     def __fn_delete_customer(self) -> None:
@@ -414,10 +417,10 @@ class CustomerUI:
         list_entries = [self.__id_entry, 
                         self.__name_entry, 
                         self.__address_entry, 
-                        self.__cellphone_entry, 
-                        self.__email_entry]
+                        self.__cellphone_entry]
         for k, v in enumerate(list_entries):
             v.insert(0, self.__data[k])
+        self.__email_entry.insert(0, self.__data[4] if self.__data[4] not in ["", "None"] else "")
 
         self.__id_entry.configure(state="disabled", fg_color=LIGHT_GRAY_COLOR, border_color=WHITE_COLOR)
 

@@ -57,10 +57,10 @@ class Database:
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS customer (
                                     customer_id SERIAL PRIMARY KEY,
-                                    name VARCHAR(255) NOT NULL,
+                                    name VARCHAR(255) NOT NULL UNIQUE,
                                     address VARCHAR(255) NOT NULL,
                                     cell_phone VARCHAR(13) NOT NULL,
-                                    email VARCHAR(255) NOT NULL UNIQUE,
+                                    email VARCHAR(255) UNIQUE,
                                     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                     account_account_id INT NOT NULL,
                                     CONSTRAINT fk_customer_account
@@ -70,14 +70,14 @@ class Database:
 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS waiter (
                                     waiter_id SERIAL PRIMARY KEY,
-                                    name VARCHAR(255) NOT NULL,
+                                    name VARCHAR(255) NOT NULL UNIQUE,
                                     cell_phone VARCHAR(13) NOT NULL,
                                     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                                     )""")
                 
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS category (
                                     category_id SERIAL PRIMARY KEY,
-                                    category_name VARCHAR(255) NOT NULL,
+                                    category_name VARCHAR(255) NOT NULL UNIQUE,
                                     description VARCHAR(300)
                                     )""")
 
