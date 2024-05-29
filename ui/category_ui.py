@@ -177,8 +177,8 @@ class CategoryUi:
         self.__fn_read_categories()
 
     def __update_category_ui(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
         
         self.__topbar_label.configure(text="Update Category")
@@ -193,7 +193,7 @@ class CategoryUi:
 
         self.__create_category_frame.configure(height=365)
         self.__create_category_button.configure(text="Save Changes",
-                                                command=self.__fn_update_category)
+                                                command=lambda:self.__fn_update_category(category_id=data[0]))
         
         self.__root.bind("<Return>", lambda _ : self.__create_category_button.invoke())
 
@@ -208,8 +208,8 @@ class CategoryUi:
                                                        command=self._to_back)
         self.__cancel_button.place(x=10, y=310)
 
-        self.__category_name_entry.insert(0, self.__data[1])
-        self.__description_textbox.insert("0.0", self.__data[2])
+        self.__category_name_entry.insert(0, data[1])
+        self.__description_textbox.insert("0.0", data[2])
 
     def __fn_create_category(self) -> None:
         if CategoryDb(token=self.__token).create_category(category_name=self.__category_name_entry.get(),
@@ -232,28 +232,24 @@ class CategoryUi:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__category_treeview.insert("", "end", values=i, tags=tag)
     
-    def __fn_update_category(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
-            return
-        
+    def __fn_update_category(self, category_id: int) -> None:
         updated_category = CategoryDb(self.__token).update_category(new_category_name=self.__category_name_entry.get(),
                                                                     new_description=self.__description_textbox.get("1.0", "end").strip(),
-                                                                    category_id=self.__data[0])
+                                                                    category_id=category_id)
         
         if updated_category:
             self._to_back()
 
     def __fn_delete_category(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
         
-        message = f"Are you sure you want to delete\nthis category? {self.__data[1]}."
+        message = f"Are you sure you want to delete\nthis category? {data[1]}."
         if tkinter.messagebox.askyesno(title="Delete Category", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            CategoryDb(self.__token).delete_category(category_id=self.__data[0])
+            CategoryDb(self.__token).delete_category(category_id=data[0])
             self.__fn_read_categories()
 
     def __fn_search_category(self, typed: str) -> None:

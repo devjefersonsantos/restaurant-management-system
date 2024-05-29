@@ -301,8 +301,8 @@ class MealUI:
         self.__cancel_button.place(x=1425, y=868)
 
     def __update_meal_ui(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
 
         clear_frames(self.__square_frame) 
@@ -427,8 +427,11 @@ class MealUI:
                                                        text="Cancel",
                                                        command=self._to_back)
         self.__cancel_button.place(x=1425, y=868)
-
-        self.__meal_data()
+        
+        list_entries = [self.__meal_id_entry, 
+                        self.__meal_name_entry, 
+                        self.__sale_price_entry]
+        self.__insert_data_entries(data=data, list_entries=list_entries)
 
     def __fn_create_meal(self) -> None:
         if MealDb(self.__token).create_meal(meal_name=self.__meal_name_entry.get(),
@@ -459,15 +462,15 @@ class MealUI:
               self._to_back()
 
     def __fn_delete_meal(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
           
-        message = f"Are you sure you want to delete\nthis meal? {self.__data[1]}."
+        message = f"Are you sure you want to delete\nthis meal? {data[1]}."
         if tkinter.messagebox.askyesno(title="Delete Meal", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            MealDb(self.__token).delete_meal(meal_id=self.__data[0])
+            MealDb(self.__token).delete_meal(meal_id=data[0])
             self.__fn_read_meals()
 
     def __fn_search_meal(self, typed: str) -> None:
@@ -480,16 +483,12 @@ class MealUI:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__meal_treeview.insert("", "end", values=i, tags=tag)
             
-    def __meal_data(self) -> None:
-        list_entries = [self.__meal_id_entry, 
-                        self.__meal_name_entry, 
-                        self.__sale_price_entry]
-        
+    def __insert_data_entries(self, data: tuple, list_entries: list) -> None:
         for k, v in enumerate(list_entries):
-            v.insert(0, self.__data[k])
+            v.insert(0, data[k])
         
-        self.__category_optionmenu.set(self.__data[3])
-        self.__status_optionmenu.set(self.__data[4])
+        self.__category_optionmenu.set(data[3])
+        self.__status_optionmenu.set(data[4])
 
         self.__meal_id_entry.configure(state="disabled", fg_color=LIGHT_GRAY_COLOR, border_color=WHITE_COLOR)
 

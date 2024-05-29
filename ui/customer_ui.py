@@ -238,8 +238,8 @@ class CustomerUI:
         self.__cancel_button.place(x=1425, y=868)
 
     def __update_customer_ui(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
         
         clear_frames(self.__square_frame)
@@ -354,7 +354,11 @@ class CustomerUI:
                                                 command=self._to_back)
         cancel_button.place(x=1425, y=868)
 
-        self.__customer_data()
+        list_entries = [self.__id_entry, 
+                        self.__name_entry, 
+                        self.__address_entry, 
+                        self.__cellphone_entry]
+        self.__insert_data_entries(data=data, list_entries=list_entries)
 
     def __fn_create_customer(self) -> None:
         if CustomerDb(token=self.__token).create_customer(name=self.__name_entry.get(), 
@@ -392,15 +396,15 @@ class CustomerUI:
             self._to_back()
 
     def __fn_delete_customer(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
           
-        message = f"Are you sure you want to delete\nthis customer? {self.__data[1]}."
+        message = f"Are you sure you want to delete\nthis customer? {data[1]}."
         if tkinter.messagebox.askyesno(title="Delete Customer", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            CustomerDb(self.__token).delete_customer(customer_id=self.__data[0])
+            CustomerDb(self.__token).delete_customer(customer_id=data[0])
             self.__fn_read_customers()
 
     def __fn_search_customer(self, typed: str) -> None:
@@ -413,15 +417,11 @@ class CustomerUI:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__customer_treeview.insert("", "end", values=i, tags=tag)
 
-    def __customer_data(self) -> None:
-        list_entries = [self.__id_entry, 
-                        self.__name_entry, 
-                        self.__address_entry, 
-                        self.__cellphone_entry]
+    def __insert_data_entries(self, data: tuple, list_entries: list) -> None:
         for k, v in enumerate(list_entries):
-            v.insert(0, self.__data[k])
-        self.__email_entry.insert(0, self.__data[4] if self.__data[4] not in ["", "None"] else "")
-
+            v.insert(0, data[k])
+        self.__email_entry.insert(0, data[4] if data[4] not in ["", "None"] else "")
+        
         self.__id_entry.configure(state="disabled", fg_color=LIGHT_GRAY_COLOR, border_color=WHITE_COLOR)
 
     def __selected_row(self) -> tuple:

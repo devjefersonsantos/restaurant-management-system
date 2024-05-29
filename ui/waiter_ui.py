@@ -180,8 +180,8 @@ class WaiterUI:
         self.__fn_read_waiters()
 
     def __update_waiter_ui(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
         
         self.__topbar_label.configure(text="Update Waiter")
@@ -196,7 +196,7 @@ class WaiterUI:
 
         self.__create_waiter_frame.configure(height=300)
         self.__create_waiter_button.configure(text="Save Changes", 
-                                              command=self.__fn_update_waiter)
+                                              command=lambda:self.__fn_update_waiter(waiter_id=data[0]))
         
         self.__root.bind("<Return>", lambda _ : self.__create_waiter_button.invoke())
 
@@ -211,8 +211,8 @@ class WaiterUI:
                                                        command=self.__waiter_ui)
         self.__cancel_button.place(x=10, y=240)
 
-        self.__waiter_name_entry.insert(0, self.__data[1])
-        self.__waiter_cellphone_entry.insert(0, self.__data[2])
+        self.__waiter_name_entry.insert(0, data[1])
+        self.__waiter_cellphone_entry.insert(0, data[2])
 
     def __fn_create_waiter(self) -> None:
         if WaiterDb(token=self.__token).create_waiter(name=self.__waiter_name_entry.get(),
@@ -234,28 +234,24 @@ class WaiterUI:
             tag = "even_row" if tag == "odd_row" else "odd_row"
             self.__waiter_treeview.insert("", "end", values=i, tags=tag)
     
-    def __fn_update_waiter(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
-            return
-        
+    def __fn_update_waiter(self, waiter_id: int) -> None:
         updated_waiter = WaiterDb(self.__token).update_waiter(new_name=self.__waiter_name_entry.get(),
                                                               new_cellphone=self.__waiter_cellphone_entry.get(),
-                                                              waiter_id=self.__data[0])
+                                                              waiter_id=waiter_id)
         
         if updated_waiter:
             self.__waiter_ui()
 
     def __fn_delete_waiter(self) -> None:
-        self.__data = self.__selected_row()
-        if not self.__data:
+        data = self.__selected_row()
+        if not data:
             return
         
-        message = f"Are you sure you want to delete\nthis waiter? {self.__data[1]}."
+        message = f"Are you sure you want to delete\nthis waiter? {data[1]}."
         if tkinter.messagebox.askyesno(title="Delete Waiter", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            WaiterDb(self.__token).delete_waiter(waiter_id=self.__data[0])
+            WaiterDb(self.__token).delete_waiter(waiter_id=data[0])
             self.__fn_read_waiters()
     
     def __fn_search_waiter(self, typed: str) -> None:
