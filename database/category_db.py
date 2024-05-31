@@ -86,7 +86,7 @@ class CategoryDb(Database):
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT * FROM category 
-                                    WHERE category_name LIKE %s""", ("%" + typed + "%",))
+                                    WHERE category_name ILIKE %s""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Search Category Error", message=error)

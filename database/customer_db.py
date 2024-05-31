@@ -89,7 +89,7 @@ class CustomerDb(Database):
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT * FROM customer 
-                                    WHERE name LIKE %s""", ("%" + typed + "%",))
+                                    WHERE name ILIKE %s""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Search Customer Error", message=error)

@@ -97,8 +97,11 @@ class MealDb(Database):
     def search_meal(self, typed: str) -> list[tuple]:
         if self.connect_to_database():
             try:
-                self.cursor.execute("""SELECT * FROM meal 
-                                    WHERE meal_name LIKE %s""", ("%" + typed + "%",))
+                self.cursor.execute("""SELECT me.meal_id, me.meal_name, me.sale_price, ca.category_name, me.status
+                                    FROM meal me
+                                    LEFT JOIN category ca ON ca.category_id = me.category_category_id
+                                    WHERE meal_name ILIKE %s
+                                    ORDER BY me.meal_id""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
                 messagebox.showerror(title="Search Meal Error", message=error)
