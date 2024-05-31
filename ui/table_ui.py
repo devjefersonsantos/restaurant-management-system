@@ -198,62 +198,6 @@ class TableUI:
                                                       command=lambda:self.__fn_create_table(multiplier=int(create_table_spinbox.get())))
         create_table_button.grid(row=0, column=1)
 
-    def __delete_table_ui(self) -> None:
-        try:
-            self.__table_toplevel.destroy()
-        except:
-            pass
-
-        self.__table_toplevel = Toplevel(master=self.__root)
-        # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
-        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("./images/global_images/icon.ico")) 
-        self.__table_toplevel.title("Delete Table")
-        self.__table_toplevel.geometry("426x54+760+35")
-        self.__table_toplevel.resizable(False, False)
-
-        delete_table_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
-                                                              width=230, height=30,
-                                                              text_color=GRAY_TEXT_COLOR,
-                                                              fg_color=WHITE_COLOR,
-                                                              button_color=OPTION_MENU_BUTTON_COLOR,
-                                                              button_hover_color=OPTION_MENU_HOVER_COLOR,
-                                                              corner_radius=4,
-                                                              font=("arial", 17),
-                                                              dropdown_font=("arial", 15),
-                                                              values=[str(i[0]) for i in TableDb(self.__token).get_table_ids()])
-        delete_table_optionmenu.grid(row=0, column=0, padx=5, pady=12)
-        
-        delete_table_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                      width=180, height=30,
-                                                      text_color=WHITE_COLOR,
-                                                      fg_color=RED_COLOR,
-                                                      hover_color=RED_HOVER_COLOR,
-                                                      corner_radius=4,
-                                                      font=("arial", 15), 
-                                                      text="Delete Table",
-                                                      command=lambda:self.__fn_delete_table(int(delete_table_optionmenu.get())))
-        delete_table_button.grid(row=0, column=1)
-
-        self.__table_toplevel.focus()
-        self.__table_toplevel.bind("<Return>", lambda _ : delete_table_button.invoke())
-
-    def __fn_create_table_id(self, table_id: int) -> None:
-        entry_items = {"table id": table_id}
-        if not empty_entries(**entry_items):
-            if TableDb(self.__token).create_table_id(table_id):
-                self._to_back()
-
-    def __fn_create_table(self, multiplier: int) -> None:
-            if multiplier > 0:
-                if TableDb(self.__token).create_table(multiplier=multiplier):
-                    messagebox.showinfo(title=None, message="Table created successfully")
-                    self.__table_toplevel.destroy()
-                    self._to_back()
-
-    def __fn_delete_table(self, table_id: int) -> None:
-        if TableDb(self.__token).delete_table(table_id):
-            self._to_back()
-
     def __open_table_ui(self, table_id: int) -> None:
         try:
             self.__table_toplevel.destroy()
@@ -403,11 +347,11 @@ class TableUI:
         )
         meal_optionmenu.place(x=25, y=214)
 
-        total_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
+        self.__total_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
                                              width=3,
                                              font=("arial", 19),
                                              from_=1, to=100)
-        total_spinbox.place(x=336, y=215)
+        self.__total_spinbox.place(x=336, y=215)
 
         add_button = customtkinter.CTkButton(master=self.__table_toplevel,
                                              width=100, height=35,
@@ -416,7 +360,8 @@ class TableUI:
                                              hover_color=GREEN_HOVER_COLOR,
                                              corner_radius=4,
                                              font=("arial", 15), 
-                                             text="Add to list")
+                                             text="Add to list",
+                                             command=lambda:self.__add_to_list(meal=meal_optionmenu.get(), total=self.__total_spinbox.get()))
         add_button.place(x=410, y=214)
 
         remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
@@ -435,27 +380,26 @@ class TableUI:
         style.configure("Treeview.Heading", font=("Arial", 13), foreground=BLACK_GRAY_COLOR)
         style.configure("Treeview", font=("Arial", 13), foreground=BLACK_GRAY_COLOR, rowheight=28)
 
-        meal_treeview = ttk.Treeview(master=self.__table_toplevel,
-                                     height=8,
-                                     style="style_treeview.Treeview",
-                                     columns=("ID", "meal name", "sale price", "category"),
-                                     show="headings")
-        meal_treeview.place(x=25, y=260)
+        self.__meal_treeview = ttk.Treeview(master=self.__table_toplevel,
+                                            height=8,
+                                            style="style_treeview.Treeview",
+                                            columns=("ID", "meal name", "sale price", "category"),
+                                            show="headings")
+        self.__meal_treeview.place(x=25, y=260)
 
-        meal_treeview.heading("#1", text="ID", anchor="center")
-        meal_treeview.heading("#2", text="meal name", anchor="center")
-        meal_treeview.heading("#3", text="sale price", anchor="center")
-        meal_treeview.heading("#4", text="category", anchor="center")
+        self.__meal_treeview.heading("#1", text="ID", anchor="center")
+        self.__meal_treeview.heading("#2", text="meal name", anchor="center")
+        self.__meal_treeview.heading("#3", text="sale price", anchor="center")
+        self.__meal_treeview.heading("#4", text="category", anchor="center")
 
-        meal_treeview.column("#1", minwidth=50, width=70, anchor="center")
-        meal_treeview.column("#2", minwidth=100, width=260, anchor="center")
-        meal_treeview.column("#3", minwidth=100, width=130, anchor="w")
-        meal_treeview.column("#4", minwidth=100, width=150, anchor="w")
+        self.__meal_treeview.column("#1", minwidth=50, width=70, anchor="center")
+        self.__meal_treeview.column("#2", minwidth=100, width=260, anchor="center")
+        self.__meal_treeview.column("#3", minwidth=100, width=130, anchor="w")
+        self.__meal_treeview.column("#4", minwidth=100, width=150, anchor="w")
 
-        treeview_scrollbar = tkinter.Scrollbar(master=self.__table_toplevel, orient=tkinter.VERTICAL, command=meal_treeview.yview)
-        meal_treeview.configure(yscroll=treeview_scrollbar.set)
-        treeview_scrollbar.place(x=627, y=260, height=248)
-
+        self.__treeview_scrollbar = tkinter.Scrollbar(master=self.__table_toplevel, orient=tkinter.VERTICAL, command=self.__meal_treeview.yview)
+        self.__meal_treeview.configure(yscroll=self.__treeview_scrollbar.set)
+        self.__treeview_scrollbar.place(x=627, y=260, height=248)
 
         squarestatus_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
                                                     width=619, height=90,
@@ -505,6 +449,77 @@ class TableUI:
                                               text="Back",
                                               command=lambda:self.__open_table_ui(table_id))
         back_button.place(x=170, y=623)
+
+    def __delete_table_ui(self) -> None:
+        try:
+            self.__table_toplevel.destroy()
+        except:
+            pass
+
+        self.__table_toplevel = Toplevel(master=self.__root)
+        # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
+        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("./images/global_images/icon.ico")) 
+        self.__table_toplevel.title("Delete Table")
+        self.__table_toplevel.geometry("426x54+760+35")
+        self.__table_toplevel.resizable(False, False)
+
+        delete_table_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
+                                                              width=230, height=30,
+                                                              text_color=GRAY_TEXT_COLOR,
+                                                              fg_color=WHITE_COLOR,
+                                                              button_color=OPTION_MENU_BUTTON_COLOR,
+                                                              button_hover_color=OPTION_MENU_HOVER_COLOR,
+                                                              corner_radius=4,
+                                                              font=("arial", 17),
+                                                              dropdown_font=("arial", 15),
+                                                              values=[str(i[0]) for i in TableDb(self.__token).get_table_ids()])
+        delete_table_optionmenu.grid(row=0, column=0, padx=5, pady=12)
+        
+        delete_table_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                      width=180, height=30,
+                                                      text_color=WHITE_COLOR,
+                                                      fg_color=RED_COLOR,
+                                                      hover_color=RED_HOVER_COLOR,
+                                                      corner_radius=4,
+                                                      font=("arial", 15), 
+                                                      text="Delete Table",
+                                                      command=lambda:self.__fn_delete_table(int(delete_table_optionmenu.get())))
+        delete_table_button.grid(row=0, column=1)
+
+        self.__table_toplevel.focus()
+        self.__table_toplevel.bind("<Return>", lambda _ : delete_table_button.invoke())
+
+    def __add_to_list(self, meal: str, total: int) -> None:
+        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
+        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
+
+        meal = MealDb(self.__token).get_meal_by_name(meal)
+        
+        tag = "even_row"
+        for _ in range(int(total)):
+            if meal:
+                tag = "even_row" if tag == "odd_row" else "odd_row"
+                self.__meal_treeview.insert("", "end", values=meal, tags=tag)
+        
+        self.__total_spinbox.delete(0, "end")
+        self.__total_spinbox.insert(0, 1)
+
+    def __fn_create_table_id(self, table_id: int) -> None:
+        entry_items = {"table id": table_id}
+        if not empty_entries(**entry_items):
+            if TableDb(self.__token).create_table_id(table_id):
+                self._to_back()
+
+    def __fn_create_table(self, multiplier: int) -> None:
+            if multiplier > 0:
+                if TableDb(self.__token).create_table(multiplier=multiplier):
+                    messagebox.showinfo(title=None, message="Table created successfully")
+                    self.__table_toplevel.destroy()
+                    self._to_back()
+
+    def __fn_delete_table(self, table_id: int) -> None:
+        if TableDb(self.__token).delete_table(table_id):
+            self._to_back()
 
     def _to_back(self) -> None:
         self.__table_toplevel.destroy()
