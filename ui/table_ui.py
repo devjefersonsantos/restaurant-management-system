@@ -371,7 +371,8 @@ class TableUI:
                                                 hover_color=RED_HOVER_COLOR,
                                                 corner_radius=4,
                                                 font=("arial", 15), 
-                                                text="Remove selected")
+                                                text="Remove selected",
+                                                command=self.__remove_from_list)
         remove_button.place(x=520, y=214)
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
@@ -516,6 +517,13 @@ class TableUI:
         self.__total_spinbox.delete(0, "end")
         self.__total_spinbox.insert(0, 1)
 
+    def __remove_from_list(self) -> None:
+        if self.__selected_row() == False:
+            return 
+        
+        self.__meal_treeview.delete(self.__meal_treeview.selection()[0])
+        self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) - 1)
+
     def __fn_create_table_id(self, table_id: int) -> None:
         entry_items = {"table id": table_id}
         if not empty_entries(**entry_items):
@@ -533,6 +541,13 @@ class TableUI:
         if TableDb(self.__token).delete_table(table_id):
             self._to_back()
 
+    def __selected_row(self) -> tuple:
+        try:
+            selected_meal = self.__meal_treeview.item(self.__meal_treeview.selection()[0], "values")
+            return selected_meal
+        except IndexError:
+            tkinter.messagebox.showerror(title=None, message="Please select a meal")
+        
     def _to_back(self) -> None:
         self.__table_toplevel.destroy()
         clear_frames(self.__square_frame)
