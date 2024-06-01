@@ -401,6 +401,8 @@ class TableUI:
         self.__meal_treeview.configure(yscroll=self.__treeview_scrollbar.set)
         self.__treeview_scrollbar.place(x=627, y=260, height=248)
 
+        self.__treeview_tag = "even_row"
+
         squarestatus_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
                                                     width=619, height=90,
                                                     fg_color=WHITE_COLOR)
@@ -416,8 +418,17 @@ class TableUI:
                                                  text="Total meals:")
         totalmeal_label.place(x=95, y=10)
 
+        self.__total_meal_stringvar = customtkinter.StringVar()
+        self.__total_meal_stringvar.set(0)
+        total_meal_stringvar_label = customtkinter.CTkLabel(master=squarestatus_frame, 
+                                                            text_color=GRAY_TEXT_COLOR, 
+                                                            font=("arial", 19), 
+                                                            textvariable=self.__total_meal_stringvar)
+        total_meal_stringvar_label.place(x=140, y=36)
+
         divider_frame = tkinter.Frame(master=squarestatus_frame, height=70, width=1)
         divider_frame.place(x=309, y=10)
+
 
         salepriceimage_label = customtkinter.CTkLabel(master=squarestatus_frame,
                                                       text="", 
@@ -495,11 +506,12 @@ class TableUI:
 
         meal = MealDb(self.__token).get_meal_by_name(meal)
         
-        tag = "even_row"
         for _ in range(int(total)):
             if meal:
-                tag = "even_row" if tag == "odd_row" else "odd_row"
-                self.__meal_treeview.insert("", "end", values=meal, tags=tag)
+                self.__treeview_tag = "even_row" if self.__treeview_tag == "odd_row" else "odd_row"
+                self.__meal_treeview.insert("", "end", values=meal, tags=self.__treeview_tag)
+                
+                self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) + 1)
         
         self.__total_spinbox.delete(0, "end")
         self.__total_spinbox.insert(0, 1)
