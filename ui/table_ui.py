@@ -404,42 +404,42 @@ class TableUI:
 
         self.__treeview_tag = "even_row"
 
-        squarestatus_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
-                                                    width=619, height=90,
-                                                    fg_color=WHITE_COLOR)
-        squarestatus_frame.place(x=25, y=520)
+        square_status_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
+                                                     width=619, height=90,
+                                                     fg_color=WHITE_COLOR)
+        square_status_frame.place(x=25, y=520)
 
-        mealimage_label = customtkinter.CTkLabel(master=squarestatus_frame,
-                                                 text="", 
-                                                 image=self.__meal_image)
-        mealimage_label.place(x=25, y=22)
-        totalmeal_label = customtkinter.CTkLabel(master=squarestatus_frame, 
-                                                 text_color=BLACK_GRAY_COLOR,
-                                                 font=("arial", 17), 
-                                                 text="Total meals:")
-        totalmeal_label.place(x=95, y=10)
+        meal_image_label = customtkinter.CTkLabel(master=square_status_frame,
+                                                  text="", 
+                                                  image=self.__meal_image)
+        meal_image_label.place(x=25, y=22)
+        total_meal_label = customtkinter.CTkLabel(master=square_status_frame, 
+                                                  text_color=BLACK_GRAY_COLOR,
+                                                  font=("arial", 17), 
+                                                  text="Total meals:")
+        total_meal_label.place(x=95, y=10)
 
         self.__total_meal_stringvar = customtkinter.StringVar()
         self.__total_meal_stringvar.set(0)
-        total_meal_stringvar_label = customtkinter.CTkLabel(master=squarestatus_frame, 
+        total_meal_stringvar_label = customtkinter.CTkLabel(master=square_status_frame, 
                                                             text_color=GRAY_TEXT_COLOR, 
                                                             font=("arial", 19), 
                                                             textvariable=self.__total_meal_stringvar)
         total_meal_stringvar_label.place(x=140, y=36)
 
-        divider_frame = tkinter.Frame(master=squarestatus_frame, height=70, width=1)
+        divider_frame = tkinter.Frame(master=square_status_frame, height=70, width=1)
         divider_frame.place(x=309, y=10)
 
 
-        salepriceimage_label = customtkinter.CTkLabel(master=squarestatus_frame,
-                                                      text="", 
-                                                      image=self.__price_image)
-        salepriceimage_label.place(x=334, y=22)
-        saleprice_label = customtkinter.CTkLabel(master=squarestatus_frame, 
-                                                 font=("arial", 17), 
-                                                 text_color=BLACK_GRAY_COLOR, 
-                                                 text="Total price:")
-        saleprice_label.place(x=404, y=10)
+        sale_price_image_label = customtkinter.CTkLabel(master=square_status_frame,
+                                                        text="", 
+                                                        image=self.__price_image)
+        sale_price_image_label.place(x=334, y=22)
+        sale_price_label = customtkinter.CTkLabel(master=square_status_frame, 
+                                                  font=("arial", 17), 
+                                                  text_color=BLACK_GRAY_COLOR, 
+                                                  text="Total price:")
+        sale_price_label.place(x=404, y=10)
 
         start_order_button = customtkinter.CTkButton(master=self.__table_toplevel,
                                                      width=230, height=32,
@@ -518,7 +518,7 @@ class TableUI:
         self.__total_spinbox.insert(0, 1)
 
     def __remove_from_list(self) -> None:
-        if self.__selected_row() == False:
+        if not self.__selected_row(parent=self.__table_toplevel):
             return 
         
         self.__meal_treeview.delete(self.__meal_treeview.selection()[0])
@@ -541,13 +541,13 @@ class TableUI:
         if TableDb(self.__token).delete_table(table_id):
             self._to_back()
 
-    def __selected_row(self) -> tuple:
+    def __selected_row(self, parent: Toplevel) -> tuple:
         try:
             selected_meal = self.__meal_treeview.item(self.__meal_treeview.selection()[0], "values")
             return selected_meal
         except IndexError:
-            tkinter.messagebox.showerror(title=None, message="Please select a meal")
-        
+            messagebox.showerror(parent=parent, title=None, message="Please select a meal")
+
     def _to_back(self) -> None:
         self.__table_toplevel.destroy()
         clear_frames(self.__square_frame)
