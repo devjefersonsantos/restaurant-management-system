@@ -372,7 +372,7 @@ class TableUI:
                                                 corner_radius=4,
                                                 font=("arial", 15), 
                                                 text="Remove selected",
-                                                command=self.__remove_from_list)
+                                                command=lambda:self.__remove_from_list(parent=self.__table_toplevel))
         remove_button.place(x=520, y=214)
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
@@ -440,6 +440,14 @@ class TableUI:
                                                   text_color=BLACK_GRAY_COLOR, 
                                                   text="Total price:")
         sale_price_label.place(x=404, y=10)
+
+        self.__sale_price_stringvar = customtkinter.StringVar()
+        self.__sale_price_stringvar.set(0.00)
+        sale_price_stringvar_label = customtkinter.CTkLabel(master=square_status_frame, 
+                                                            font=("arial", 19), 
+                                                            text_color="#383838", 
+                                                            textvariable=self.__sale_price_stringvar)
+        sale_price_stringvar_label.place(x=449, y=36)
 
         start_order_button = customtkinter.CTkButton(master=self.__table_toplevel,
                                                      width=230, height=32,
@@ -513,16 +521,19 @@ class TableUI:
                 self.__meal_treeview.insert("", "end", values=meal, tags=self.__treeview_tag)
                 
                 self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) + 1)
+                self.__sale_price_stringvar.set(f"{float(self.__sale_price_stringvar.get()) + float(meal[2]):.2f}")
         
         self.__total_spinbox.delete(0, "end")
         self.__total_spinbox.insert(0, 1)
 
-    def __remove_from_list(self) -> None:
-        if not self.__selected_row(parent=self.__table_toplevel):
-            return 
+    def __remove_from_list(self, parent: Toplevel) -> None:
+        selected_meal : tuple = self.__selected_row(parent=parent)
+        if not selected_meal:
+            return
         
         self.__meal_treeview.delete(self.__meal_treeview.selection()[0])
         self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) - 1)
+        self.__sale_price_stringvar.set(f"{float(self.__sale_price_stringvar.get()) - float(selected_meal[2]):.2f}")
 
     def __fn_create_table_id(self, table_id: int) -> None:
         entry_items = {"table id": table_id}
