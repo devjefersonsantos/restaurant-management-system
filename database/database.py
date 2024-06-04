@@ -107,6 +107,19 @@ class Database:
                                         REFERENCES waiter (waiter_id)
                                     )""")
                 
+                self.cursor.execute("""CREATE TABLE IF NOT EXISTS order_has_meal (
+                                    order_id INT NOT NULL,
+                                    meal_id INT NOT NULL,
+                                    quantity INT NOT NULL,
+                                    PRIMARY KEY (order_id, meal_id),
+                                    CONSTRAINT fk_order_has_meal_meal
+                                        FOREIGN KEY (meal_id)
+                                        REFERENCES meal (meal_id),
+                                    CONSTRAINT fk_order_has_meal_order
+                                        FOREIGN KEY (order_id)
+                                        REFERENCES "order" (order_id)
+                                    )""")
+                
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS "table" (
                                     table_id SERIAL PRIMARY KEY,
                                     order_order_id INT,

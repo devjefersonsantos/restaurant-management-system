@@ -456,7 +456,8 @@ class TableUI:
                                                      hover_color=GREEN_HOVER_COLOR,
                                                      corner_radius=4,
                                                      font=("arial", 15), 
-                                                     text="Start Order")
+                                                     text="Start Order",
+                                                     command=lambda:self.__fn_create_initial_order(self.__meal_treeview.get_children()))
         start_order_button.place(x=412, y=623)
 
         back_button = customtkinter.CTkButton(master=self.__table_toplevel,
@@ -551,6 +552,10 @@ class TableUI:
     def __fn_delete_table(self, table_id: int) -> None:
         if TableDb(self.__token).delete_table(table_id):
             self._to_back()
+
+    def __fn_create_initial_order(self, treeview_children: tuple) -> None:
+        meals_data : list = [self.__meal_treeview.item(children)["values"] for children in treeview_children]
+        print(meals_data)
 
     def __selected_row(self, parent: Toplevel) -> tuple:
         try:
