@@ -236,6 +236,7 @@ class TableUI:
                                               text="Waiter:")
         waiter_label.place(x=25, y=95)
 
+        waiter_names = WaiterDb(self.__token).get_waiter_names()
         waiter_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
             width=250, height=35,
             fg_color=FG_OPTION_MENU_COLOR,
@@ -245,8 +246,8 @@ class TableUI:
             corner_radius=4,
             font=("arial", 17),
             dropdown_font=("arial", 15),
-            values=WaiterDb(self.__token).get_waiter_names() if WaiterDb(self.__token).get_waiter_names() else ["No waiter registered"],
-            state=tkinter.NORMAL if WaiterDb(self.__token).get_waiter_names() else tkinter.DISABLED
+            values=waiter_names if waiter_names else ["No waiter registered"],
+            state=tkinter.NORMAL if waiter_names else tkinter.DISABLED
         )
         waiter_optionmenu.place(x=25, y=132)
 
@@ -313,6 +314,7 @@ class TableUI:
                                                 text="Customer:")
         customer_label.place(x=25, y=95)
 
+        customer_names : list[str] = CustomerDb(self.__token).get_customer_names()
         customer_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
             width=619, height=35,
             fg_color=WHITE_COLOR,
@@ -322,8 +324,8 @@ class TableUI:
             corner_radius=4,
             font=("arial", 17),
             dropdown_font=("arial", 15),
-            values=CustomerDb(self.__token).get_customer_names() if CustomerDb(self.__token).get_customer_names() else ["No customer registered"],
-            state=tkinter.NORMAL if CustomerDb(self.__token).get_customer_names() else tkinter.DISABLED
+            values=customer_names if customer_names else ["No customer registered"],
+            state=tkinter.NORMAL if customer_names else tkinter.DISABLED
         )
         customer_optionmenu.place(x=25, y=132)
 
@@ -333,6 +335,7 @@ class TableUI:
                                              text="Meals:")
         meals_label.place(x=25, y=180)
 
+        meal_names : list[str] = MealDb(self.__token).get_meal_names()
         meal_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
             width=300, height=35,
             fg_color=WHITE_COLOR,
@@ -342,8 +345,8 @@ class TableUI:
             corner_radius=4,
             font=("arial", 17),
             dropdown_font=("arial", 15),
-            values=MealDb(self.__token).get_meal_names() if MealDb(self.__token).get_meal_names() else ["No meal registered"],
-            state=tkinter.NORMAL if MealDb(self.__token).get_meal_names() else tkinter.DISABLED
+            values=meal_names if meal_names else ["No meal registered"],
+            state=tkinter.NORMAL if meal_names else tkinter.DISABLED
         )
         meal_optionmenu.place(x=25, y=214)
 

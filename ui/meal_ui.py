@@ -236,6 +236,7 @@ class MealUI:
                                                 text="Category:")
         category_label.place(x=25, y=215)
 
+        category_names : list[str] = CategoryDb(self.__token).get_category_names()
         self.__category_optionmenu = customtkinter.CTkOptionMenu(master=add_meal_frame,
             width=1618, height=35,
             fg_color=FG_OPTION_MENU_COLOR,
@@ -245,8 +246,8 @@ class MealUI:
             corner_radius=4,
             font=("arial", 17),
             dropdown_font=("arial", 15),
-            values=CategoryDb(self.__token).get_category_names() if CategoryDb(self.__token).get_category_names() else ["No categories available"],
-            state=tkinter.NORMAL if CategoryDb(self.__token).get_category_names() else tkinter.DISABLED
+            values=category_names if category_names else ["No categories available"],
+            state=tkinter.NORMAL if category_names else tkinter.DISABLED
         )
         self.__category_optionmenu.place(x=25, y=255)
 
