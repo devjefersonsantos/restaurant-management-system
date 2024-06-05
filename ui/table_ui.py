@@ -14,6 +14,7 @@ from database import TableDb
 from database import WaiterDb
 from utils import clear_frames
 from utils import empty_entries
+from utils import find_tuple_by_name
 
 class TableUI:
     @LoginDb.verify_token
@@ -335,7 +336,7 @@ class TableUI:
                                              text="Meals:")
         meals_label.place(x=25, y=180)
 
-        meal_names : list[str] = MealDb(self.__token).get_meal_names()
+        meals_info : list[tuple] = MealDb(self.__token).read_meals()
         meal_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
             width=300, height=35,
             fg_color=WHITE_COLOR,
@@ -345,8 +346,8 @@ class TableUI:
             corner_radius=4,
             font=("arial", 17),
             dropdown_font=("arial", 15),
-            values=meal_names if meal_names else ["No meal registered"],
-            state=tkinter.NORMAL if meal_names else tkinter.DISABLED
+            values=[i[1] for i in meals_info] if meals_info else ["No meal registered"],
+            state=tkinter.NORMAL if meals_info else tkinter.DISABLED
         )
         meal_optionmenu.place(x=25, y=214)
 
@@ -357,14 +358,16 @@ class TableUI:
         self.__total_spinbox.place(x=336, y=215)
 
         add_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                             width=100, height=35,
-                                             text_color=WHITE_COLOR,
-                                             fg_color=GREEN_COLOR,
-                                             hover_color=GREEN_HOVER_COLOR,
-                                             corner_radius=4,
-                                             font=("arial", 15), 
-                                             text="Add to list",
-                                             command=lambda:self.__add_to_list(meal=meal_optionmenu.get(), total=self.__total_spinbox.get()))
+            width=100, height=35,
+            text_color=WHITE_COLOR,
+            fg_color=GREEN_COLOR,
+            hover_color=GREEN_HOVER_COLOR,
+            corner_radius=4,
+            font=("arial", 15), 
+            text="Add to list",
+            command=lambda:self.__add_to_list(meals_info=meals_info, 
+                                              meal=meal_optionmenu.get(), 
+                                              total=self.__total_spinbox.get()))
         add_button.place(x=410, y=214)
 
         remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
@@ -513,11 +516,11 @@ class TableUI:
         self.__table_toplevel.focus()
         self.__table_toplevel.bind("<Return>", lambda _ : delete_table_button.invoke())
 
-    def __add_to_list(self, meal: str, total: int) -> None:
+    def __add_to_list(self, meals_info: list[tuple], meal: str, total: int) -> None:
         self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
         self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
 
-        meal = MealDb(self.__token).get_meal_by_name(meal)
+        meal : tuple = find_tuple_by_name(list_of_tuples=meals_info, tuple_name=meal)
         
         for _ in range(int(total)):
             if meal:

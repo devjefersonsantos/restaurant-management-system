@@ -135,32 +135,3 @@ class MealDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
-
-    def get_meal_names(self) -> list[str]:
-        if self.connect_to_database():
-            try:
-                self.cursor.execute("SELECT meal_name FROM meal")
-                result = self.cursor.fetchall()
-            except Exception as error:
-                messagebox.showerror(title="Get Meal Names Error", message=error)
-            else:
-                return [i[0] for i in result]
-            finally:
-                self.cursor.close()
-                self.connection.close()
-
-    def get_meal_by_name(self, meal_name: str) -> tuple:
-        if self.connect_to_database():
-            try:
-                self.cursor.execute("""SELECT me.meal_id, me.meal_name, me.sale_price, ca.category_name, me.status
-                                    FROM meal me
-                                    LEFT JOIN category ca ON ca.category_id = me.category_category_id
-                                    WHERE meal_name = %s""", (meal_name,))
-                result = self.cursor.fetchone()
-            except Exception as error:
-                messagebox.showerror(title="Get Meal by Name", message=error)
-            else:
-                return result
-            finally:
-                self.cursor.close()
-                self.connection.close()
