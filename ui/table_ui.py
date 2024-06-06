@@ -12,6 +12,7 @@ from database import CustomerDb
 from database import MealDb
 from database import TableDb
 from database import WaiterDb
+from database import OrderDb
 from utils import clear_frames
 from utils import empty_entries
 from utils import find_tuple_by_name
@@ -456,14 +457,17 @@ class TableUI:
         sale_price_stringvar_label.place(x=449, y=36)
 
         start_order_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                     width=230, height=32,
-                                                     text_color=WHITE_COLOR,
-                                                     fg_color=GREEN_COLOR, 
-                                                     hover_color=GREEN_HOVER_COLOR,
-                                                     corner_radius=4,
-                                                     font=("arial", 15), 
-                                                     text="Start Order",
-                                                     command=lambda:self.__fn_create_initial_order(self.__meal_treeview.get_children()))
+            width=230, height=32,
+            text_color=WHITE_COLOR,
+            fg_color=GREEN_COLOR, 
+            hover_color=GREEN_HOVER_COLOR,
+            corner_radius=4,
+            font=("arial", 15), 
+            text="Start Order",
+            command=lambda:self.__fn_create_initial_order(table_id=table_id,
+                                                          waiter_name=waiter,
+                                                          customer_name=customer_optionmenu.get(),
+                                                          treeview_children=self.__meal_treeview.get_children()))
         start_order_button.place(x=412, y=623)
 
         back_button = customtkinter.CTkButton(master=self.__table_toplevel,
@@ -559,9 +563,18 @@ class TableUI:
         if TableDb(self.__token).delete_table(table_id):
             self._to_back()
 
-    def __fn_create_initial_order(self, treeview_children: tuple) -> None:
-        meals_data : list = [self.__meal_treeview.item(children)["values"] for children in treeview_children]
-        print(meals_data)
+    def __fn_create_initial_order(self, table_id: int, waiter_name: str, customer_name: str, treeview_children: tuple) -> None:
+        try:
+            waiter_id = None if waiter_name == "No waiter registered" else WaiterDb(self.__token).get_waiter_id_by_name(waiter_name)
+            customer_id = None if customer_name == "No customer registered" else CustomerDb(self.__token).get_customer_id_by_name(customer_name)
+            
+            self._to_back()
+
+            OrderDb(self.__token).create_order_id(waiter_id=waiter_id, customer_id=customer_id)
+        except Exception as error:
+            messagebox.showerror(title="Create Order Error", message=error)
+
+        # meals_data : list = [self.__meal_treeview.item(children)["values"] for children in treeview_children]
 
     def __selected_row(self, parent: Toplevel) -> tuple:
         try:

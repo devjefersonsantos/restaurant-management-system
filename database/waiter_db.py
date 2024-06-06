@@ -109,3 +109,17 @@ class WaiterDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def get_waiter_id_by_name(self, waiter_name: str) -> int:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT waiter_id FROM waiter 
+                                    WHERE name = %s """, (waiter_name,))
+                result = self.cursor.fetchone()
+            except Exception as error:
+                messagebox.showerror(title="Get Waiter ID by Name Error", message=error)
+            else:
+                return result[0]
+            finally:
+                self.cursor.close()
+                self.connection.close()

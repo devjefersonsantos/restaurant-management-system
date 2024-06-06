@@ -363,10 +363,9 @@ class CustomerUI:
     def __fn_create_customer(self) -> None:
         if CustomerDb(token=self.__token).create_customer(name=self.__name_entry.get(), 
             address=self.__address_entry.get(), 
-            cellphone=self.__cellphone_entry.get(), 
-            email=self.__email_entry.get() if self.__email_entry.get() not in ["", None] else None
+            cellphone=self.__cellphone_entry.get(),
+            email=self.__email_entry.get() if self.__email_entry.get().strip() != "" else None
         ):
-            
             for i in [self.__name_entry, self.__address_entry, self.__cellphone_entry, self.__email_entry]:
                 i.delete(0, "end")
             self.__root.focus()
@@ -391,7 +390,7 @@ class CustomerUI:
             name=self.__name_entry.get(),
             address=self.__address_entry.get(),
             cellphone=self.__cellphone_entry.get(),
-            email=self.__email_entry.get() if self.__email_entry.get() not in ["", None] else None
+            email=self.__email_entry.get() if self.__email_entry.get().strip() != "" else None
         ):
             self._to_back()
 

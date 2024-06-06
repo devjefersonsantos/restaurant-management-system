@@ -10,18 +10,14 @@ class CustomerDb(Database):
         super().__init__()
         self.__account_id = AccountDb(token).get_account_id()
 
-    def create_customer(self, name: str, address: str, cellphone: str, email: str | None = None) -> True:
+    def create_customer(self, name: str, address: str, cellphone: str, email: str | None) -> True:
         entry_items = {"name": name, "address": address, "cellphone": cellphone}
         
         if not empty_entries(**entry_items):
             if self.connect_to_database():
                 try:
-                    if email is None:
-                        self.cursor.execute("""INSERT INTO customer (name, address, cell_phone, account_account_id)
-                                            VALUES (%s, %s, %s, %s) RETURNING customer_id;""", (name, address, cellphone, self.__account_id))
-                    else:
-                        self.cursor.execute("""INSERT INTO customer (name, address, cell_phone, email, account_account_id)
-                                            VALUES (%s, %s, %s, %s, %s) RETURNING customer_id;""", (name, address, cellphone, email, self.__account_id))
+                    self.cursor.execute("""INSERT INTO customer (name, address, cell_phone, email, account_account_id)
+                                        VALUES (%s, %s, %s, %s, %s) RETURNING customer_id;""", (name, address, cellphone, email, self.__account_id))
                     self.connection.commit()
                     customer_id = self.cursor.fetchone()
                 except Exception as error:
@@ -108,6 +104,20 @@ class CustomerDb(Database):
                 messagebox.showerror(title="Get Customer Names Error", message=error)
             else:
                 return [i[0] for i in result]
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
+    def get_customer_id_by_name(self, customer_name: str) -> int:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT customer_id FROM customer 
+                                    WHERE name = %s """, (customer_name,))
+                result = self.cursor.fetchone()
+            except Exception as error:
+                messagebox.showerror(title="Get Customer ID by Name Error", message=error)
+            else:
+                return result[0]
             finally:
                 self.cursor.close()
                 self.connection.close()
