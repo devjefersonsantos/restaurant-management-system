@@ -21,7 +21,7 @@ class OrderDb(Database):
                 log_error(f"System user ID: {self.__account_id}. An error occurred while creating a order.")
                 messagebox.showerror(title="Create Order ID Error", message=error)
             else:
-                log_info(f"System user ID: {self.__account_id}. order created with ID: {order_id}.")
+                log_info(f"System user ID: {self.__account_id}. Order created with ID: {order_id[0]}.")
                 messagebox.showinfo(title=None, message="order created successfully")
                 return True
             finally:

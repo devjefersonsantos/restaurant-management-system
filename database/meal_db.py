@@ -46,6 +46,7 @@ class MealDb(Database):
                                     ORDER BY me.meal_id;""")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Read Meals Error.")
                 messagebox.showerror(title="Read Meals Error", message=error)
             else:
                 return result
@@ -104,6 +105,7 @@ class MealDb(Database):
                                     ORDER BY me.meal_id""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Search Meal Error.")
                 messagebox.showerror(title="Search Meal Error", message=error)
             else:
                 return result
@@ -118,7 +120,8 @@ class MealDb(Database):
                 result = self.cursor.fetchone()
                 return result[0]
             except Exception as error:
-                messagebox.showerror(title="Count Meals", message=error)
+                log_error(f"System user ID: {self.__account_id}. Count Meals Error.")
+                messagebox.showerror(title="Count Meals Error", message=error)
             finally:
                 self.cursor.close()
                 self.connection.close()
@@ -131,6 +134,7 @@ class MealDb(Database):
                 result = self.cursor.fetchone()
                 return result[0]
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Count Meals by Status.")
                 messagebox.showerror(title="Count Meals by Status", message=error)
             finally:
                 self.cursor.close()

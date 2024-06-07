@@ -52,6 +52,7 @@ class TableDb(Database):
                                     ORDER BY table_id""")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Read Tables Error.")
                 messagebox.showerror(title="Read Tables Error", message=error)
             else:
                 return result
@@ -83,6 +84,7 @@ class TableDb(Database):
                                     ORDER BY table_id;""")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Table IDs.")
                 messagebox.showerror(title="Get Table IDs", message=error)
             else:
                 return result

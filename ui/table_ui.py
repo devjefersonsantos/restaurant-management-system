@@ -13,6 +13,7 @@ from database import MealDb
 from database import TableDb
 from database import WaiterDb
 from database import OrderDb
+from logs import log_error
 from utils import clear_frames
 from utils import empty_entries
 from utils import find_tuple_by_name
@@ -572,6 +573,7 @@ class TableUI:
 
             OrderDb(self.__token).create_order_id(waiter_id=waiter_id, customer_id=customer_id)
         except Exception as error:
+            log_error(f"System user ID: {self.__account_id}. Create Order Error.")
             messagebox.showerror(title="Create Order Error", message=error)
 
         # meals_data : list = [self.__meal_treeview.item(children)["values"] for children in treeview_children]

@@ -39,6 +39,7 @@ class WaiterDb(Database):
                                     ORDER BY waiter_id""")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Read Waiters Error.")
                 messagebox.showerror(title="Read Waiters Error", message=error)
             else:
                 return result
@@ -90,6 +91,7 @@ class WaiterDb(Database):
                                     WHERE name ILIKE %s""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Search Waiter Error.")
                 messagebox.showerror(title="Search Waiter Error", message=error)
             else:
                 return result
@@ -103,6 +105,7 @@ class WaiterDb(Database):
                 self.cursor.execute("SELECT name FROM waiter")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Waiter Names Error.")
                 messagebox.showerror(title="Get Waiter Names Error", message=error)
             else:
                 return [i[0] for i in result]
@@ -117,6 +120,7 @@ class WaiterDb(Database):
                                     WHERE name = %s """, (waiter_name,))
                 result = self.cursor.fetchone()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Waiter ID by Name Error.")
                 messagebox.showerror(title="Get Waiter ID by Name Error", message=error)
             else:
                 return result[0]

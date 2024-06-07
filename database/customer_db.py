@@ -38,6 +38,7 @@ class CustomerDb(Database):
                                     ORDER BY customer_id""")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Read Customers Error.")
                 messagebox.showerror(title="Read Customers Error", message=error)
             else:
                 return result
@@ -88,6 +89,7 @@ class CustomerDb(Database):
                                     WHERE name ILIKE %s""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Search Customer Error.")
                 messagebox.showerror(title="Search Customer Error", message=error)
             else:
                 return result
@@ -101,6 +103,7 @@ class CustomerDb(Database):
                 self.cursor.execute("SELECT name FROM customer")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Customer Names Error.")
                 messagebox.showerror(title="Get Customer Names Error", message=error)
             else:
                 return [i[0] for i in result]
@@ -115,6 +118,7 @@ class CustomerDb(Database):
                                     WHERE name = %s """, (customer_name,))
                 result = self.cursor.fetchone()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Customer ID by Name Error.")
                 messagebox.showerror(title="Get Customer ID by Name Error", message=error)
             else:
                 return result[0]

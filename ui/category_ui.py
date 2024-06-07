@@ -1,5 +1,7 @@
 import tkinter
 from tkinter import ttk
+from tkinter import messagebox
+from tkinter import Scrollbar
 
 import customtkinter
 
@@ -170,7 +172,7 @@ class CategoryUi:
         self.__category_treeview.column("#2", minwidth=150, width=375, anchor="center")
         self.__category_treeview.column("#3", minwidth=150, width=700, anchor="w")
 
-        treeview_scrollbar = tkinter.Scrollbar(self.__square_frame, orient=tkinter.VERTICAL, command=self.__category_treeview.yview)
+        treeview_scrollbar = Scrollbar(self.__square_frame, orient=tkinter.VERTICAL, command=self.__category_treeview.yview)
         self.__category_treeview.configure(yscroll=treeview_scrollbar.set)
         treeview_scrollbar.place(x=1660, y=58, height=837)
 
@@ -246,9 +248,9 @@ class CategoryUi:
             return
         
         message = f"Are you sure you want to delete\nthis category? {data[1]}."
-        if tkinter.messagebox.askyesno(title="Delete Category", 
+        if messagebox.askyesno(title="Delete Category", 
                                        message=message, 
-                                       icon=tkinter.messagebox.WARNING) == True:
+                                       icon=messagebox.WARNING) == True:
             CategoryDb(self.__token).delete_category(category_id=data[0])
             self.__fn_read_categories()
 
@@ -267,7 +269,7 @@ class CategoryUi:
             selected_category = self.__category_treeview.item(self.__category_treeview.selection()[0], "values")
             return selected_category
         except IndexError:
-            tkinter.messagebox.showerror(title=None, message="Please select a category")
+            messagebox.showerror(title=None, message="Please select a category")
 
     def _to_back(self) -> None:
         clear_frames(self.__square_frame)

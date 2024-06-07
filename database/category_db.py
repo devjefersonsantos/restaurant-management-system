@@ -39,6 +39,7 @@ class CategoryDb(Database):
                                     ORDER BY category_id""")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Read Categories Error.")
                 messagebox.showerror(title="Read Categories Error", message=error)
             else:
                 return result
@@ -89,6 +90,7 @@ class CategoryDb(Database):
                                     WHERE category_name ILIKE %s""", ("%" + typed + "%",))
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Search Category Error.")
                 messagebox.showerror(title="Search Category Error", message=error)
             else:
                 return result
@@ -103,6 +105,7 @@ class CategoryDb(Database):
                                     WHERE category_name = %s""", (category_name,))
                 result = self.cursor.fetchone()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Search Category Error.")
                 messagebox.showerror(title="Search Category Error", message=error)
             else:
                 return result
@@ -116,6 +119,7 @@ class CategoryDb(Database):
                 self.cursor.execute("SELECT category_name FROM category")
                 result = self.cursor.fetchall()
             except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Category Names Error.")
                 messagebox.showerror(title="Get Category Names Error", message=error)
             else:
                 return [i[0] for i in result]
