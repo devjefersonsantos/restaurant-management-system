@@ -569,14 +569,18 @@ class TableUI:
             waiter_id = None if waiter_name == "No waiter registered" else WaiterDb(self.__token).get_waiter_id_by_name(waiter_name)
             customer_id = None if customer_name == "No customer registered" else CustomerDb(self.__token).get_customer_id_by_name(customer_name)
             
-            self._to_back()
-
-            OrderDb(self.__token).create_order_id(waiter_id=waiter_id, customer_id=customer_id)
+            meals_ids : list[int] = [self.__meal_treeview.item(children)["values"][0] for children in treeview_children]
+            
+            order = OrderDb(self.__token)
+            order_id = order.create_order_id(waiter_id=waiter_id, customer_id=customer_id)
+            
+            order.add_meal_to_order(order_id=order_id, meals_ids=meals_ids)
+            
         except Exception as error:
             log_error(f"System user ID: {self.__account_id}. Create Order Error.")
             messagebox.showerror(title="Create Order Error", message=error)
-
-        # meals_data : list = [self.__meal_treeview.item(children)["values"] for children in treeview_children]
+        else:
+            self._to_back()
 
     def __selected_row(self, parent: Toplevel) -> tuple:
         try:
