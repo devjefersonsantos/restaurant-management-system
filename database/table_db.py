@@ -59,7 +59,21 @@ class TableDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
-    
+
+    def update_table_order(self, order_id: int, table_id: int) -> None:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""UPDATE "table"
+                                    SET order_order_id = %s
+                                    WHERE table_id = %s;""", (order_id, table_id))
+                self.connection.commit()
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Update Table Order Error.")
+                messagebox.showerror(title="Update Table Order Error", message=f"Error: {error}")
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
     def delete_table(self, table_id: int) -> True:
         if self.connect_to_database():
             try:

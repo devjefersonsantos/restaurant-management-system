@@ -114,8 +114,8 @@ class TableUI:
         for table in tables:
             table_button = customtkinter.CTkButton(master=window_frame,
                                                    width=197, height=140,
-                                                   fg_color=GREEN_COLOR,
-                                                   hover_color=GREEN_HOVER_COLOR,
+                                                   fg_color=RED_COLOR if table[1] else GREEN_COLOR,
+                                                   hover_color=RED_HOVER_COLOR if table[1] else GREEN_HOVER_COLOR,
                                                    font=("arial bold", 20),
                                                    text=table[0],
                                                    command=lambda t=table[0]: self.__open_table_ui(table_id=t))
@@ -575,6 +575,7 @@ class TableUI:
             order_id = order.create_order_id(waiter_id=waiter_id, customer_id=customer_id)
             
             order.add_meal_to_order(order_id=order_id, meals_ids=meals_ids)
+            TableDb(self.__token).update_table_order(order_id=order_id, table_id=table_id)
             
         except Exception as error:
             log_error(f"System user ID: {self.__account_id}. Create Order Error.")
