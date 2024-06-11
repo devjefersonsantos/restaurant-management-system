@@ -108,7 +108,7 @@ class TableUI:
         window_frame = tkinter.Frame(master=table_screen_canvas)
         table_screen_canvas.create_window((0,0), window=window_frame, anchor="nw")
 
-        tables = TableDb(self.__token).read_tables()
+        tables = TableDb(self.__token).get_table_order_values()
         table_row = table_column = 0
 
         for table in tables:
@@ -117,7 +117,7 @@ class TableUI:
                                                    fg_color=RED_COLOR if table[1] else GREEN_COLOR,
                                                    hover_color=RED_HOVER_COLOR if table[1] else GREEN_HOVER_COLOR,
                                                    font=("arial bold", 20),
-                                                   text=table[0],
+                                                   text=f"{table[0]}\n\n{table[2]}" if table[1] else table[0],
                                                    command=lambda t=table[0]: self.__open_table_ui(table_id=t))
             table_button.grid(row=table_row, column=table_column, padx=5, pady=5) 
 

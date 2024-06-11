@@ -98,8 +98,38 @@ class TableDb(Database):
                                     ORDER BY table_id;""")
                 result = self.cursor.fetchall()
             except Exception as error:
-                log_error(f"System user ID: {self.__account_id}. Get Table IDs.")
-                messagebox.showerror(title="Get Table IDs", message=error)
+                log_error(f"System user ID: {self.__account_id}. Get Table IDs Error.")
+                messagebox.showerror(title="Get Table IDs Error", message=error)
+            else:
+                return result
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
+    def get_table_order_values(self) -> list[tuple]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT
+                                        "table".table_id, 
+                                        "table".order_order_id, 
+                                        SUM(meal.sale_price * order_has_meal.quantity) AS total_price
+                                    FROM 
+                                        "table"
+                                    LEFT JOIN 
+                                        "order" ON "table".order_order_id = "order".order_id
+                                    LEFT JOIN 
+                                        order_has_meal ON "order".order_id = order_has_meal.order_id
+                                    LEFT JOIN 
+                                        meal ON order_has_meal.meal_id = meal.meal_id
+                                    GROUP BY 
+                                        "table".table_id, 
+                                        "table".order_order_id
+                                    ORDER BY 
+                                        "table".table_id;""")
+                result = self.cursor.fetchall()
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Table Order Values Error.")
+                messagebox.showerror(title="Get Table Order Values Error", message=error)
             else:
                 return result
             finally:
