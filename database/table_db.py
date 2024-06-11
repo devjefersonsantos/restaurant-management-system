@@ -135,3 +135,30 @@ class TableDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def table_information(self, table_id: int) -> list[tuple]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT 
+                                        waiter.name,
+                                        customer.name,
+                                        "order".order_id
+                                    FROM 
+                                        "table"
+                                    JOIN 
+                                        "order" ON "table".order_order_id = "order".order_id
+                                    JOIN 
+                                        waiter ON "order".waiter_waiter_id = waiter.waiter_id
+                                    JOIN 
+                                        customer ON "order".customer_customer_id = customer.customer_id
+                                    WHERE 
+                                        "table".table_id = %s;""", (table_id,))
+                result = self.cursor.fetchall()
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Get Table IDs Error.")
+                messagebox.showerror(title="Get Table IDs Error", message=error)
+            else:
+                return result[0]
+            finally:
+                self.cursor.close()
+                self.connection.close()
