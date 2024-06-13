@@ -29,6 +29,23 @@ class OrderDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
+    def read_order_list(self, order_id: int) -> list[tuple]:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""SELECT meal.meal_name, order_has_meal.quantity 
+                                    FROM order_has_meal
+                                    JOIN meal ON order_has_meal.meal_id = meal.meal_id
+                                    WHERE order_has_meal.order_id = %s;""", (order_id,))
+                result = self.cursor.fetchall()
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Read Order List Error.")
+                messagebox.showerror(title="Read Order List Error", message=error)
+            else:
+                return result
+            finally:
+                self.cursor.close()
+                self.connection.close()
+                
     def add_meal_to_order(self, order_id: int, meals_ids: list) -> None:
         if self.connect_to_database():
             try:

@@ -662,6 +662,8 @@ class TableUI:
                                                 text="finish")
         finish_button.place(x=170, y=847)
 
+        self.__fn_read_order_list(meals_info=meals_info, order_id=order_id)
+
     def __delete_table_ui(self) -> None:
         try:
             self.__table_toplevel.destroy()
@@ -740,10 +742,6 @@ class TableUI:
                     self.__table_toplevel.destroy()
                     self._to_back()
 
-    def __fn_delete_table(self, table_id: int) -> None:
-        if TableDb(self.__token).delete_table(table_id):
-            self._to_back()
-
     def __fn_create_initial_order(self, table_id: int, waiter_name: str, customer_name: str, treeview_children: tuple) -> None:
         try:
             waiter_id = None if waiter_name == "No waiter registered" else WaiterDb(self.__token).get_waiter_id_by_name(waiter_name)
@@ -761,6 +759,22 @@ class TableUI:
             log_error(f"System user ID: {self.__account_id}. Create Order Error.")
             messagebox.showerror(title="Create Order Error", message=error)
         else:
+            self._to_back()
+
+    def __fn_read_order_list(self, meals_info: list[tuple], order_id: int) -> None:
+        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
+        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
+        
+        tag = "even_row"
+        for m, q in OrderDb(self.__token).read_order_list(order_id=order_id):
+            for _ in range(q):
+                meal : tuple = find_tuple_by_name(list_of_tuples=meals_info, tuple_name=m)
+
+                tag = "even_row" if tag == "odd_row" else "odd_row"
+                self.__meal_treeview.insert("", "end", values=meal, tags=tag)
+
+    def __fn_delete_table(self, table_id: int) -> None:
+        if TableDb(self.__token).delete_table(table_id):
             self._to_back()
 
     def __selected_row(self, parent: Toplevel) -> tuple:
