@@ -416,6 +416,8 @@ class TableUI:
         self.__treeview_scrollbar.place(x=627, y=260, height=248)
 
         self.__treeview_tag = "even_row"
+        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
+        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
 
         square_status_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
                                                      width=619, height=90,
@@ -576,12 +578,12 @@ class TableUI:
         )
         meal_optionmenu.place(x=25, y=214)
 
-        total_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
-                                        width=3,
-                                        font=("arial", 19),
-                                        from_=1, to=100)
-        total_spinbox.place(x=336, y=215)
-
+        self.__total_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
+                                               width=3,
+                                               font=("arial", 19),
+                                               from_=1, to=100)
+        self.__total_spinbox.place(x=336, y=215)
+        
         add_button = customtkinter.CTkButton(master=self.__table_toplevel,
             width=100, height=35,
             text_color=WHITE_COLOR,
@@ -592,7 +594,7 @@ class TableUI:
             text="Add to list",
             command=lambda:self.__add_to_list(meals_info=meals_info, 
                                               meal=meal_optionmenu.get(), 
-                                              total=total_spinbox.get()))
+                                              total=self.__total_spinbox.get()))
         add_button.place(x=410, y=214)
 
         remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
@@ -636,11 +638,53 @@ class TableUI:
         self.__treeview_scrollbar.place(x=627, y=260, height=472)
 
         self.__treeview_tag = "even_row"
+        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
+        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
 
-        self.__squarestatus_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
-                                                           width=619, height=90,
-                                                           fg_color=WHITE_COLOR)
-        self.__squarestatus_frame.place(x=25, y=742)
+        squarestatus_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
+                                                    width=619, height=90,
+                                                    fg_color=WHITE_COLOR)
+        squarestatus_frame.place(x=25, y=742)
+
+        meal_image_label = customtkinter.CTkLabel(master=squarestatus_frame,
+                                                  text="", 
+                                                  image=self.__meal_image)
+        meal_image_label.place(x=25, y=22)
+        total_meal_label = customtkinter.CTkLabel(master=squarestatus_frame, 
+                                                  text_color=BLACK_GRAY_COLOR,
+                                                  font=("arial", 17), 
+                                                  text="Total meals:")
+        total_meal_label.place(x=95, y=10)
+
+        self.__total_meal_stringvar = customtkinter.StringVar()
+        self.__total_meal_stringvar.set(0)
+        total_meal_stringvar_label = customtkinter.CTkLabel(master=squarestatus_frame,
+                                                            text_color=GRAY_TEXT_COLOR, 
+                                                            font=("arial", 19), 
+                                                            textvariable=self.__total_meal_stringvar)
+        total_meal_stringvar_label.place(x=140, y=36)
+
+        divider_frame = tkinter.Frame(master=squarestatus_frame, height=70, width=1)
+        divider_frame.place(x=309, y=10)
+
+
+        sale_price_image_label = customtkinter.CTkLabel(master=squarestatus_frame,
+                                                        text="", 
+                                                        image=self.__price_image)
+        sale_price_image_label.place(x=334, y=22)
+        sale_price_label = customtkinter.CTkLabel(master=squarestatus_frame,
+                                                  font=("arial", 17), 
+                                                  text_color=BLACK_GRAY_COLOR, 
+                                                  text="Total price:")
+        sale_price_label.place(x=404, y=10)
+
+        self.__sale_price_stringvar = customtkinter.StringVar()
+        self.__sale_price_stringvar.set(0.00)
+        sale_price_stringvar_label = customtkinter.CTkLabel(master=squarestatus_frame,
+                                                            font=("arial", 19), 
+                                                            text_color=GRAY_COLOR, 
+                                                            textvariable=self.__sale_price_stringvar)
+        sale_price_stringvar_label.place(x=449, y=36)
 
         apply_button = customtkinter.CTkButton(master=self.__table_toplevel,
                                                width=230, height=32,
@@ -704,14 +748,15 @@ class TableUI:
         self.__table_toplevel.bind("<Return>", lambda _ : delete_table_button.invoke())
 
     def __add_to_list(self, meals_info: list[tuple], meal: str, total: int) -> None:
-        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
-        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
-
         meal : tuple = find_tuple_by_name(list_of_tuples=meals_info, tuple_name=meal)
         
         for _ in range(int(total)):
             if meal:
-                self.__treeview_tag = "even_row" if self.__treeview_tag == "odd_row" else "odd_row"
+                if self.__treeview_tag == "odd_row":
+                    self.__treeview_tag = "even_row"
+                else:
+                    self.__treeview_tag = "odd_row"
+                    
                 self.__meal_treeview.insert("", "end", values=meal, tags=self.__treeview_tag)
                 
                 self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) + 1)
@@ -728,6 +773,15 @@ class TableUI:
         self.__meal_treeview.delete(self.__meal_treeview.selection()[0])
         self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) - 1)
         self.__sale_price_stringvar.set(f"{float(self.__sale_price_stringvar.get()) - float(selected_meal[2]):.2f}")
+
+        self.__treeview_tag = "even_row"
+        for item_id in self.__meal_treeview.get_children():
+            if self.__treeview_tag == "odd_row":
+                self.__treeview_tag = "even_row"
+            else:
+                self.__treeview_tag = "odd_row"
+
+            self.__meal_treeview.item(item=item_id, tags=self.__treeview_tag)
 
     def __fn_create_table_id(self, table_id: int) -> None:
         entry_items = {"table id": table_id}
@@ -762,16 +816,15 @@ class TableUI:
             self._to_back()
 
     def __fn_read_order_list(self, meals_info: list[tuple], order_id: int) -> None:
-        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
-        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
-        
-        tag = "even_row"
         for m, q in OrderDb(self.__token).read_order_list(order_id=order_id):
             for _ in range(q):
                 meal : tuple = find_tuple_by_name(list_of_tuples=meals_info, tuple_name=m)
+                
+                self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) + 1)
+                self.__sale_price_stringvar.set(f"{float(self.__sale_price_stringvar.get()) + float(meal[2]):.2f}")
 
-                tag = "even_row" if tag == "odd_row" else "odd_row"
-                self.__meal_treeview.insert("", "end", values=meal, tags=tag)
+                self.__treeview_tag = "even_row" if self.__treeview_tag == "odd_row" else "odd_row"
+                self.__meal_treeview.insert("", "end", values=meal, tags=self.__treeview_tag)
 
     def __fn_delete_table(self, table_id: int) -> None:
         if TableDb(self.__token).delete_table(table_id):
