@@ -8,6 +8,7 @@ import customtkinter
 
 from utils.colors import *
 from database.account_db import LoginDb
+from database import AccountDb
 from database import CustomerDb
 from database import MealDb
 from database import TableDb
@@ -31,6 +32,7 @@ class TableUI:
         clear_frames(self.__square_frame)
         self.__images_ui()
         self.__table_ui()
+        AuthorizationUi(self.__root, self.__token)
         
     def __topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self.__square_frame,
@@ -460,7 +462,7 @@ class TableUI:
         self.__sale_price_stringvar.set(0.00)
         sale_price_stringvar_label = customtkinter.CTkLabel(master=square_status_frame, 
                                                             font=("arial", 19), 
-                                                            text_color=GRAY_COLOR, 
+                                                            text_color=GRAY_TEXT_COLOR, 
                                                             textvariable=self.__sale_price_stringvar)
         sale_price_stringvar_label.place(x=449, y=36)
 
@@ -682,7 +684,7 @@ class TableUI:
         self.__sale_price_stringvar.set(0.00)
         sale_price_stringvar_label = customtkinter.CTkLabel(master=squarestatus_frame,
                                                             font=("arial", 19), 
-                                                            text_color=GRAY_COLOR, 
+                                                            text_color=GRAY_TEXT_COLOR, 
                                                             textvariable=self.__sale_price_stringvar)
         sale_price_stringvar_label.place(x=449, y=36)
 
@@ -841,3 +843,76 @@ class TableUI:
         self.__table_toplevel.destroy()
         clear_frames(self.__square_frame)
         self.__table_ui()
+
+class AuthorizationUi:
+    def __init__(self, 
+                 master: customtkinter.CTk,
+                 token: str) -> None:
+        self.__authorization_toplevel = Toplevel(master=master)
+        self.__authorization_toplevel.title("Authorization")
+        self.__authorization_toplevel.geometry("460x340+780+290")
+        self.__authorization_toplevel.configure(background=WHITE_COLOR)
+        self.__authorization_toplevel.resizable(False, False)
+        self.__authorization_toplevel.focus()
+        self.__token = token
+        
+        self.__images_ui()
+        self.__authorization_ui()
+
+    def __images_ui(self) -> None:
+        # https://pixabay.com/vectors/icons-icon-set-multimedia-icons-6726119/
+        userpil_image = Image.open("./images/login_images/user.png")
+        self.__user_image = customtkinter.CTkImage(dark_image=userpil_image,
+                                                   light_image=userpil_image,
+                                                   size=(32,32))
+
+        passwordpil_image = Image.open("./images/login_images/password.png")
+        self.__password_image = customtkinter.CTkImage(dark_image=passwordpil_image,
+                                                       light_image=passwordpil_image,
+                                                       size=(32,32))
+    
+    def __authorization_ui(self) -> None:
+        username_label = customtkinter.CTkLabel(master=self.__authorization_toplevel,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 15),
+                                                text="  Username:",
+                                                compound="left",
+                                                image=self.__user_image)
+        username_label.grid(row=0, column=0, padx=30, pady=20, sticky=tkinter.W)
+
+        username_entry = customtkinter.CTkEntry(master=self.__authorization_toplevel, 
+                                                width=400, height=40,
+                                                border_color=LIGHT_GRAY_COLOR,
+                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 17),
+                                                border_width=1)
+        username_entry.grid(row=1, column=0, padx=30, pady=0)
+        username_entry.insert(0, AccountDb(self.__token).get_username())
+        username_entry.configure(state=tkinter.DISABLED)
+
+        password_label = customtkinter.CTkLabel(master=self.__authorization_toplevel,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 15),
+                                                text="  Password:",
+                                                compound="left",
+                                                image=self.__password_image)
+        password_label.grid(row=2, column=0, padx=30, pady=20, sticky=tkinter.W)
+
+        password_entry = customtkinter.CTkEntry(master=self.__authorization_toplevel,
+                                                width=400, height=40,
+                                                border_color=LIGHT_GRAY_COLOR,
+                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 17), 
+                                                border_width=1,
+                                                show="*")
+        password_entry.grid(row=3, column=0, padx=30, pady=3)
+
+        confirm_button = customtkinter.CTkButton(master=self.__authorization_toplevel,
+                                                 width=400, height=40, 
+                                                 fg_color=LIGHT_BLUE_COLOR, 
+                                                 hover_color=LIGHT_BLUE_HOVER_COLOR,
+                                                 text_color=WHITE_COLOR,
+                                                 text="Confirm")
+        confirm_button.grid(row=4, column=0, padx=30, pady=30)
