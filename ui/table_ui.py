@@ -32,7 +32,6 @@ class TableUI:
         clear_frames(self.__square_frame)
         self.__images_ui()
         self.__table_ui()
-        AuthorizationUi(self.__root, self.__token)
         
     def __topbar(self) -> None:
         topbar_frame = customtkinter.CTkFrame(master=self.__square_frame,
@@ -81,6 +80,16 @@ class TableUI:
         self.__price_image = customtkinter.CTkImage(dark_image=pricepil_image,
                                                     light_image=pricepil_image,
                                                     size=(47,47))
+        
+        userpil_image = Image.open("./images/login_images/user.png")
+        self.__user_image = customtkinter.CTkImage(dark_image=userpil_image,
+                                                   light_image=userpil_image,
+                                                   size=(32,32))
+
+        passwordpil_image = Image.open("./images/login_images/password.png")
+        self.__password_image = customtkinter.CTkImage(dark_image=passwordpil_image,
+                                                       light_image=passwordpil_image,
+                                                       size=(32,32))
         
     def __table_ui(self) -> None:
         self.__topbar()
@@ -585,30 +594,6 @@ class TableUI:
                                                font=("arial", 19),
                                                from_=1, to=100)
         self.__total_spinbox.place(x=336, y=215)
-        
-        add_button = customtkinter.CTkButton(master=self.__table_toplevel,
-            width=100, height=35,
-            text_color=WHITE_COLOR,
-            fg_color=GREEN_COLOR,
-            hover_color=GREEN_HOVER_COLOR,
-            corner_radius=4,
-            font=("arial", 15), 
-            text="Add to list",
-            command=lambda:self.__add_to_list(meals_info=meals_info, 
-                                              meal=meal_optionmenu.get(), 
-                                              total=self.__total_spinbox.get()))
-        add_button.place(x=410, y=214)
-
-        remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                width=100, height=35,
-                                                text_color=WHITE_COLOR,
-                                                fg_color=RED_COLOR, 
-                                                hover_color=RED_HOVER_COLOR,
-                                                corner_radius=4,
-                                                font=("arial", 15), 
-                                                text="Remove selected",
-                                                command=lambda:self.__remove_from_list(parent=self.__table_toplevel))
-        remove_button.place(x=520, y=214)
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
         style = ttk.Style()
@@ -710,6 +695,90 @@ class TableUI:
 
         self.__fn_read_order_list(meals_info=meals_info, order_id=order_id)
 
+        add_button = customtkinter.CTkButton(master=self.__table_toplevel,
+            width=100, height=35,
+            text_color=WHITE_COLOR,
+            fg_color=GREEN_COLOR,
+            hover_color=GREEN_HOVER_COLOR,
+            corner_radius=4,
+            font=("arial", 15), 
+            text="Add to list",
+            command=lambda:self.__add_to_list(meals_info=meals_info, 
+                                              meal=meal_optionmenu.get(), 
+                                              total=self.__total_spinbox.get()))
+        add_button.place(x=410, y=214)
+
+        antecedent_orders = self.__meal_treeview.get_children()
+        remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                width=100, height=35,
+                                                text_color=WHITE_COLOR,
+                                                fg_color=RED_COLOR, 
+                                                hover_color=RED_HOVER_COLOR,
+                                                corner_radius=4,
+                                                font=("arial", 15), 
+                                                text="Remove selected",
+                                                command=lambda:self.__permission_to_remove(parent=self.__table_toplevel, 
+                                                                                           antecedent_orders=antecedent_orders))
+        remove_button.place(x=520, y=214)
+
+    def __authorize_remove_ui(self, parent: Toplevel) -> None:
+        self.__authorize_remove_toplevel = Toplevel(master=parent)
+        self.__authorize_remove_toplevel.title("Authorize Remove")
+        # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
+        self.__authorize_remove_toplevel.after(50, lambda: self.__authorize_remove_toplevel.iconbitmap("./images/global_images/icon.ico"))
+        self.__authorize_remove_toplevel.geometry("460x340+735+290")
+        self.__authorize_remove_toplevel.configure(background=WHITE_COLOR)
+        self.__authorize_remove_toplevel.resizable(False, False)
+        self.__authorize_remove_toplevel.focus()
+
+        username_label = customtkinter.CTkLabel(master=self.__authorize_remove_toplevel,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 15),
+                                                text="  Username:",
+                                                compound="left",
+                                                image=self.__user_image)
+        username_label.grid(row=0, column=0, padx=30, pady=20, sticky=tkinter.W)
+
+        username_entry = customtkinter.CTkEntry(master=self.__authorize_remove_toplevel, 
+                                                width=400, height=40,
+                                                border_color=LIGHT_GRAY_COLOR,
+                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 17),
+                                                border_width=1)
+        username_entry.grid(row=1, column=0, padx=30, pady=0)
+        username_entry.insert(0, AccountDb(self.__token).get_username())
+        username_entry.configure(state=tkinter.DISABLED)
+
+        password_label = customtkinter.CTkLabel(master=self.__authorize_remove_toplevel,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 15),
+                                                text="  Password:",
+                                                compound="left",
+                                                image=self.__password_image)
+        password_label.grid(row=2, column=0, padx=30, pady=20, sticky=tkinter.W)
+
+        password_entry = customtkinter.CTkEntry(master=self.__authorize_remove_toplevel,
+                                                width=400, height=40,
+                                                border_color=LIGHT_GRAY_COLOR,
+                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                text_color=GRAY_TEXT_COLOR,
+                                                font=("arial", 17), 
+                                                border_width=1,
+                                                show="*")
+        password_entry.grid(row=3, column=0, padx=30, pady=3)
+
+        confirm_button = customtkinter.CTkButton(master=self.__authorize_remove_toplevel,
+                                                 width=400, height=40, 
+                                                 fg_color=LIGHT_BLUE_COLOR, 
+                                                 hover_color=LIGHT_BLUE_HOVER_COLOR,
+                                                 text_color=WHITE_COLOR,
+                                                 text="Confirm",
+                                                 command=lambda:self.__remove_after_authentication(username=username_entry.get(),
+                                                                                                   password=password_entry.get(),
+                                                                                                   parent_ui=parent))
+        confirm_button.grid(row=4, column=0, padx=30, pady=30)
+
     def __delete_table_ui(self) -> None:
         try:
             self.__table_toplevel.destroy()
@@ -785,6 +854,22 @@ class TableUI:
 
             self.__meal_treeview.item(item=item_id, tags=self.__treeview_tag)
 
+    def __permission_to_remove(self, parent: Toplevel, antecedent_orders: tuple) -> None:
+        selected_meal : tuple = self.__selected_row(parent=parent)
+        if not selected_meal:
+            return
+
+        if self.__meal_treeview.selection()[0] in antecedent_orders:
+            self.__authorize_remove_ui(parent=parent)
+        else:
+            self.__remove_from_list(parent=parent)
+
+    def __remove_after_authentication(self, username: str, password: str, parent_ui: Toplevel) -> None:
+        account = LoginDb(username=username, password=password)
+        if account.verify_credentials():
+            self.__remove_from_list(parent=parent_ui)
+            self.__authorize_remove_toplevel.destroy()
+
     def __fn_create_table_id(self, table_id: int) -> None:
         entry_items = {"table id": table_id}
         if not empty_entries(**entry_items):
@@ -843,76 +928,3 @@ class TableUI:
         self.__table_toplevel.destroy()
         clear_frames(self.__square_frame)
         self.__table_ui()
-
-class AuthorizationUi:
-    def __init__(self, 
-                 master: customtkinter.CTk,
-                 token: str) -> None:
-        self.__authorization_toplevel = Toplevel(master=master)
-        self.__authorization_toplevel.title("Authorization")
-        self.__authorization_toplevel.geometry("460x340+780+290")
-        self.__authorization_toplevel.configure(background=WHITE_COLOR)
-        self.__authorization_toplevel.resizable(False, False)
-        self.__authorization_toplevel.focus()
-        self.__token = token
-        
-        self.__images_ui()
-        self.__authorization_ui()
-
-    def __images_ui(self) -> None:
-        # https://pixabay.com/vectors/icons-icon-set-multimedia-icons-6726119/
-        userpil_image = Image.open("./images/login_images/user.png")
-        self.__user_image = customtkinter.CTkImage(dark_image=userpil_image,
-                                                   light_image=userpil_image,
-                                                   size=(32,32))
-
-        passwordpil_image = Image.open("./images/login_images/password.png")
-        self.__password_image = customtkinter.CTkImage(dark_image=passwordpil_image,
-                                                       light_image=passwordpil_image,
-                                                       size=(32,32))
-    
-    def __authorization_ui(self) -> None:
-        username_label = customtkinter.CTkLabel(master=self.__authorization_toplevel,
-                                                text_color=GRAY_TEXT_COLOR,
-                                                font=("arial", 15),
-                                                text="  Username:",
-                                                compound="left",
-                                                image=self.__user_image)
-        username_label.grid(row=0, column=0, padx=30, pady=20, sticky=tkinter.W)
-
-        username_entry = customtkinter.CTkEntry(master=self.__authorization_toplevel, 
-                                                width=400, height=40,
-                                                border_color=LIGHT_GRAY_COLOR,
-                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
-                                                text_color=GRAY_TEXT_COLOR,
-                                                font=("arial", 17),
-                                                border_width=1)
-        username_entry.grid(row=1, column=0, padx=30, pady=0)
-        username_entry.insert(0, AccountDb(self.__token).get_username())
-        username_entry.configure(state=tkinter.DISABLED)
-
-        password_label = customtkinter.CTkLabel(master=self.__authorization_toplevel,
-                                                text_color=GRAY_TEXT_COLOR,
-                                                font=("arial", 15),
-                                                text="  Password:",
-                                                compound="left",
-                                                image=self.__password_image)
-        password_label.grid(row=2, column=0, padx=30, pady=20, sticky=tkinter.W)
-
-        password_entry = customtkinter.CTkEntry(master=self.__authorization_toplevel,
-                                                width=400, height=40,
-                                                border_color=LIGHT_GRAY_COLOR,
-                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
-                                                text_color=GRAY_TEXT_COLOR,
-                                                font=("arial", 17), 
-                                                border_width=1,
-                                                show="*")
-        password_entry.grid(row=3, column=0, padx=30, pady=3)
-
-        confirm_button = customtkinter.CTkButton(master=self.__authorization_toplevel,
-                                                 width=400, height=40, 
-                                                 fg_color=LIGHT_BLUE_COLOR, 
-                                                 hover_color=LIGHT_BLUE_HOVER_COLOR,
-                                                 text_color=WHITE_COLOR,
-                                                 text="Confirm")
-        confirm_button.grid(row=4, column=0, padx=30, pady=30)
