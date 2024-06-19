@@ -624,10 +624,6 @@ class TableUI:
         self.__meal_treeview.configure(yscroll=self.__treeview_scrollbar.set)
         self.__treeview_scrollbar.place(x=627, y=260, height=472)
 
-        self.__treeview_tag = "even_row"
-        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
-        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
-
         squarestatus_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
                                                     width=619, height=90,
                                                     fg_color=WHITE_COLOR)
@@ -693,7 +689,14 @@ class TableUI:
                                                 text="finish")
         finish_button.place(x=170, y=847)
 
-        self.__fn_read_order_list(meals_info=meals_info, order_id=order_id)
+        self.__treeview_tag = "even_row"
+        self.__meal_treeview.tag_configure("even_row_2", background=EVEN_ROW_COLOR_2)
+        self.__meal_treeview.tag_configure("odd_row_2", background=ODD_ROW_COLOR_2)
+        
+        self.__fn_read_order_list(meals_info=meals_info, order_id=order_id, antecedent_orders=True)
+
+        self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
+        self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
 
         add_button = customtkinter.CTkButton(master=self.__table_toplevel,
             width=100, height=35,
@@ -721,7 +724,7 @@ class TableUI:
                                                                                            antecedent_orders=antecedent_orders))
         remove_button.place(x=520, y=214)
 
-    def __authorize_remove_ui(self, parent: Toplevel) -> None:
+    def __authorize_remove_ui(self, parent: Toplevel, antecedent_orders: tuple) -> None:
         self.__authorize_remove_toplevel = Toplevel(master=parent)
         self.__authorize_remove_toplevel.title("Authorize Remove")
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
@@ -776,7 +779,8 @@ class TableUI:
                                                  text="Confirm",
                                                  command=lambda:self.__remove_after_authentication(username=username_entry.get(),
                                                                                                    password=password_entry.get(),
-                                                                                                   parent_ui=parent))
+                                                                                                   parent_ui=parent,
+                                                                                                   antecedent_orders=antecedent_orders))
         confirm_button.grid(row=4, column=0, padx=30, pady=30)
 
     def __delete_table_ui(self) -> None:
@@ -836,7 +840,7 @@ class TableUI:
         self.__total_spinbox.delete(0, "end")
         self.__total_spinbox.insert(0, 1)
 
-    def __remove_from_list(self, parent: Toplevel) -> None:
+    def __remove_from_list(self, parent: Toplevel, antecedent_orders: tuple = None) -> None:
         selected_meal : tuple = self.__selected_row(parent=parent)
         if not selected_meal:
             return
@@ -847,10 +851,16 @@ class TableUI:
 
         self.__treeview_tag = "even_row"
         for item_id in self.__meal_treeview.get_children():
-            if self.__treeview_tag == "odd_row":
-                self.__treeview_tag = "even_row"
+            if antecedent_orders and item_id in antecedent_orders:
+                if self.__treeview_tag == "odd_row_2":
+                    self.__treeview_tag = "even_row_2"
+                else:
+                    self.__treeview_tag = "odd_row_2"
             else:
-                self.__treeview_tag = "odd_row"
+                if self.__treeview_tag == "odd_row":
+                    self.__treeview_tag = "even_row"
+                else:
+                    self.__treeview_tag = "odd_row"
 
             self.__meal_treeview.item(item=item_id, tags=self.__treeview_tag)
 
@@ -860,14 +870,14 @@ class TableUI:
             return
 
         if self.__meal_treeview.selection()[0] in antecedent_orders:
-            self.__authorize_remove_ui(parent=parent)
+            self.__authorize_remove_ui(parent=parent, antecedent_orders=antecedent_orders)
         else:
-            self.__remove_from_list(parent=parent)
+            self.__remove_from_list(parent=parent, antecedent_orders=antecedent_orders)
 
-    def __remove_after_authentication(self, username: str, password: str, parent_ui: Toplevel) -> None:
+    def __remove_after_authentication(self, username: str, password: str, parent_ui: Toplevel, antecedent_orders: tuple) -> None:
         account = LoginDb(username=username, password=password)
         if account.verify_credentials():
-            self.__remove_from_list(parent=parent_ui)
+            self.__remove_from_list(parent=parent_ui, antecedent_orders=antecedent_orders)
             self.__authorize_remove_toplevel.destroy()
 
     def __fn_create_table_id(self, table_id: int) -> None:
@@ -902,7 +912,12 @@ class TableUI:
         else:
             self._to_back()
 
-    def __fn_read_order_list(self, meals_info: list[tuple], order_id: int) -> None:
+    def __fn_read_order_list(self, meals_info: list[tuple], order_id: int, antecedent_orders: bool = False) -> None:
+        if antecedent_orders == True:
+            even_row_tag, odd_row_tag = "even_row_2", "odd_row_2"
+        else:
+            even_row_tag, odd_row_tag = "even_row", "odd_row"
+
         for m, q in OrderDb(self.__token).read_order_list(order_id=order_id):
             for _ in range(q):
                 meal : tuple = find_tuple_by_name(list_of_tuples=meals_info, tuple_name=m)
@@ -910,7 +925,11 @@ class TableUI:
                 self.__total_meal_stringvar.set(int(self.__total_meal_stringvar.get()) + 1)
                 self.__sale_price_stringvar.set(f"{float(self.__sale_price_stringvar.get()) + float(meal[2]):.2f}")
 
-                self.__treeview_tag = "even_row" if self.__treeview_tag == "odd_row" else "odd_row"
+                if self.__treeview_tag == odd_row_tag:
+                    self.__treeview_tag = even_row_tag
+                else:
+                    self.__treeview_tag = odd_row_tag
+                
                 self.__meal_treeview.insert("", "end", values=meal, tags=self.__treeview_tag)
 
     def __fn_delete_table(self, table_id: int) -> None:
