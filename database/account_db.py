@@ -56,10 +56,10 @@ class LoginDb(Database):
                         log_info(f"Successful authentication for user with ID: {account_id[0]}.")
                         return account_id[0]
                     else:
-                        log_error("Authentication failed.")
-                        messagebox.showerror(title="Login Error", message="Incorrect username or password\nplease try again.")
+                        log_error("Invalid Credentials.")
+                        messagebox.showerror(title="Invalid Credentials", message="Incorrect username or password\nplease try again.")
                 except Exception as error:
-                    messagebox.showerror(title="Login Error", message=error)
+                    messagebox.showerror(title="Invalid Credentials", message=error)
                 finally:
                     self.connection.close()
                     self.cursor.close()

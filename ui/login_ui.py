@@ -20,6 +20,9 @@ class LoginUI(customtkinter.CTk):
         self.geometry("1050x625+425+199")
         self.resizable(False, False)
         customtkinter.set_appearance_mode("light")
+        # https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
+        self.attributes("-topmost", True)
+        self.attributes("-topmost", False)
 
         self.__main_frame = customtkinter.CTkFrame(master=self)
         self.__main_frame.pack()
