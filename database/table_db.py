@@ -74,19 +74,26 @@ class TableDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def delete_table(self, table_id: int) -> True:
+    def delete_table(self, table_id: int) -> bool:
         if self.connect_to_database():
             try:
                 self.cursor.execute("""DELETE FROM "table"
-                                    WHERE table_id = %s""", (table_id,))
+                                    WHERE table_id = %s AND order_order_id IS NULL""", (table_id,))
+                deleted_rows = self.cursor.rowcount
                 self.connection.commit()
             except Exception as error:
                 log_error(f"System user ID: {self.__account_id}. An error occurred while deleting a table.")
                 messagebox.showerror(title="Delete Table Error", message=error)
+                return False
             else:
-                log_warning(f"System user ID: {self.__account_id}. Table ID: {table_id} was deleted.")
-                messagebox.showinfo(title="Delete Table", message=f"Table ID: {table_id} was deleted.")
-                return True
+                if deleted_rows > 0:
+                    log_warning(f"System user ID: {self.__account_id}. Table ID: {table_id} was deleted.")
+                    messagebox.showinfo(title="Delete Table", message=f"Table ID: {table_id} was deleted.")
+                    return True
+                else:
+                    log_error(f"System user ID: {self.__account_id}. Table ID: {table_id}, cannot be deleted because it is in use.")
+                    messagebox.showerror(title="Delete Table", message=f"Table ID: {table_id}, cannot be deleted because it is in use.")
+                    return False
             finally:
                 self.cursor.close()
                 self.connection.close()
