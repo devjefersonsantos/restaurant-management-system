@@ -117,6 +117,17 @@ class TableUI:
                                                        light_image=passwordpil_image,
                                                        size=(32,32))
         
+        # https://pixabay.com/vectors/eye-see-viewing-icon-1103592/
+        showpasswordpil_image = Image.open("./images/login_images/showpassword.png")
+        self.__showpassword_image = customtkinter.CTkImage(dark_image=showpasswordpil_image,
+                                                           light_image=showpasswordpil_image,
+                                                           size=(25,15))
+
+        hidepasswordpil_image = Image.open("./images/login_images/hidepassword.png")
+        self.__hidepassword_image = customtkinter.CTkImage(dark_image=hidepasswordpil_image,
+                                                           light_image=hidepasswordpil_image,
+                                                           size=(25,15))
+        
     def __table_ui(self) -> None:
         self.__topbar()
         
@@ -787,15 +798,27 @@ class TableUI:
                                                 image=self.__password_image)
         password_label.grid(row=2, column=0, padx=30, pady=20, sticky=tkinter.W)
 
-        password_entry = customtkinter.CTkEntry(master=self.__authorize_remove_toplevel,
-                                                width=400, height=40,
-                                                border_color=LIGHT_GRAY_COLOR,
-                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
-                                                text_color=GRAY_TEXT_COLOR,
-                                                font=("arial", 17), 
-                                                border_width=1,
-                                                show="*")
-        password_entry.grid(row=3, column=0, padx=30, pady=3)
+        self.__password_entry = customtkinter.CTkEntry(master=self.__authorize_remove_toplevel,
+                                                       width=400, height=40,
+                                                       border_color=LIGHT_GRAY_COLOR,
+                                                       fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                       text_color=GRAY_TEXT_COLOR,
+                                                       font=("arial", 17), 
+                                                       border_width=1,
+                                                       show="*")
+        self.__password_entry.grid(row=3, column=0, padx=30, pady=3)
+
+        self.__hide_password = True
+
+        self.__status_password_button = customtkinter.CTkButton(master=self.__authorize_remove_toplevel,
+                                                                width=1, height=1, 
+                                                                fg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                                bg_color=LIGHT_GRAY_HOVER_COLOR,
+                                                                hover_color=LIGHT_GRAY_HOVER_COLOR, 
+                                                                image=self.__hidepassword_image, 
+                                                                text="",
+                                                                command=self.__show_password)
+        self.__status_password_button.place(x=385, y=194)
 
         confirm_button = customtkinter.CTkButton(master=self.__authorize_remove_toplevel,
                                                  width=400, height=40, 
@@ -804,7 +827,7 @@ class TableUI:
                                                  text_color=WHITE_COLOR,
                                                  text="Confirm",
                                                  command=lambda:self.__remove_after_authentication(username=username_entry.get(),
-                                                                                                   password=password_entry.get(),
+                                                                                                   password=self.__password_entry.get(),
                                                                                                    parent_ui=parent,
                                                                                                    antecedent_orders=antecedent_orders))
         confirm_button.grid(row=4, column=0, padx=30, pady=30)
@@ -970,6 +993,16 @@ class TableUI:
             return selected_meal
         except IndexError:
             messagebox.showerror(parent=parent, title=None, message="Please select a meal")
+
+    def __show_password(self) -> None:
+        if self.__hide_password:
+            self.__status_password_button.configure(image=self.__showpassword_image)
+            self.__password_entry.configure(show="")
+            self.__hide_password = False
+        else:
+            self.__status_password_button.configure(image=self.__hidepassword_image)
+            self.__password_entry.configure(show="*")
+            self.__hide_password = True
 
     def _to_back(self) -> None:
         self.__table_toplevel.destroy()
