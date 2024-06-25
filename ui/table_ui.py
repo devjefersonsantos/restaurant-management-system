@@ -45,6 +45,32 @@ class TableUI:
                                               text="Table")
         topbar_label.place(x=20, y=5)
 
+        greenstatus_frame = customtkinter.CTkFrame(master=self.__square_frame,
+                                                   width=30, height=30,
+                                                   bg_color=DEFAULT_BACKGROUND_COLOR,
+                                                   fg_color=GREEN_COLOR,
+                                                   corner_radius=100)
+        greenstatus_frame.place(x=245, y=9)
+        greenstatus_label = customtkinter.CTkLabel(master=self.__square_frame,
+                                                   text_color=GRAY_TEXT_COLOR,
+                                                   bg_color=DEFAULT_BACKGROUND_COLOR,
+                                                   text="Unoccupied",
+                                                   font=("arial", 17))
+        greenstatus_label.place(x=285, y=9)
+
+        redstatus_frame = customtkinter.CTkFrame(master=self.__square_frame,
+                                                 width=30, height=30,
+                                                 bg_color=DEFAULT_BACKGROUND_COLOR,
+                                                 fg_color=RED_COLOR,
+                                                 corner_radius=100)
+        redstatus_frame.place(x=445, y=9)
+        redstatus_label = customtkinter.CTkLabel(master=self.__square_frame,
+                                                 text_color=GRAY_TEXT_COLOR,
+                                                 bg_color=DEFAULT_BACKGROUND_COLOR,
+                                                 text="Occupied",
+                                                 font=("arial", 17))
+        redstatus_label.place(x=485, y=9)
+
         delete_table_button = customtkinter.CTkButton(master=topbar_frame,
                                                       width=197, height=32,
                                                       fg_color=RED_COLOR, 
@@ -935,6 +961,8 @@ class TableUI:
     def __fn_delete_table(self, table_id: int) -> None:
         if TableDb(self.__token).delete_table(table_id):
             self._to_back()
+        else:
+            self.__table_toplevel.focus()
 
     def __selected_row(self, parent: Toplevel) -> tuple:
         try:
