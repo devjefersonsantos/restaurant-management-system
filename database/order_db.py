@@ -46,14 +46,14 @@ class OrderDb(Database):
                 self.cursor.close()
                 self.connection.close()
                 
-    def add_meal_to_order(self, order_id: int, meals_ids: list) -> None:
+    def add_meal_to_order(self, order_id: int, meals_ids: list[int]) -> None:
         if self.connect_to_database():
             try:
                 meals_ids_and_quantity : dict = number_of_items(meals_ids)
 
-                for i in meals_ids_and_quantity.items():
+                for meal_id, quantity in meals_ids_and_quantity.items():
                     self.cursor.execute("""INSERT INTO order_has_meal (order_id, meal_id, quantity)
-                                        VALUES (%s, %s, %s);""", (order_id, i[0], i[1]))
+                                        VALUES (%s, %s, %s);""", (order_id, meal_id, quantity))
                 self.connection.commit()
 
             except Exception as error:

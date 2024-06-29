@@ -1,6 +1,5 @@
 import datetime
 import secrets
-
 from tkinter import messagebox
 
 from database import Database

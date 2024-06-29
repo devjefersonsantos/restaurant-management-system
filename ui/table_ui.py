@@ -706,26 +706,6 @@ class TableUI:
                                                             textvariable=self.__sale_price_stringvar)
         sale_price_stringvar_label.place(x=449, y=36)
 
-        apply_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                               width=230, height=32,
-                                               text_color=WHITE_COLOR,
-                                               fg_color=GREEN_COLOR, 
-                                               hover_color=GREEN_HOVER_COLOR,
-                                               corner_radius=4,
-                                               font=("arial", 15), 
-                                               text="Apply")
-        apply_button.place(x=412, y=847)
-
-        finish_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                width=230, height=32,
-                                                text_color=WHITE_COLOR,
-                                                fg_color=ORANGE_COLOR,
-                                                hover_color=ORANGE_HOVER_COLOR,
-                                                corner_radius=3,
-                                                font=("arial", 15),
-                                                text="finish")
-        finish_button.place(x=170, y=847)
-
         self.__treeview_tag = "even_row"
         self.__meal_treeview.tag_configure("even_row_2", background=EVEN_ROW_COLOR_2)
         self.__meal_treeview.tag_configure("odd_row_2", background=ODD_ROW_COLOR_2)
@@ -760,6 +740,31 @@ class TableUI:
                                                 command=lambda:self.__permission_to_remove(parent=self.__table_toplevel, 
                                                                                            antecedent_orders=antecedent_orders))
         remove_button.place(x=520, y=214)
+
+        previous_meals_ids : list[int] = [self.__meal_treeview.item(children)["values"][0] for children in self.__meal_treeview.get_children()]
+
+        apply_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                               width=230, height=32,
+                                               text_color=WHITE_COLOR,
+                                               fg_color=GREEN_COLOR, 
+                                               hover_color=GREEN_HOVER_COLOR,
+                                               corner_radius=4,
+                                               font=("arial", 15), 
+                                               text="Apply",
+                                               command=lambda:self.__fn_update_table_orders(table_id=table_id, 
+                                                                                            previous_meals_ids=previous_meals_ids, 
+                                                                                            treeview_children=self.__meal_treeview.get_children()))
+        apply_button.place(x=412, y=847)
+
+        finish_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                width=230, height=32,
+                                                text_color=WHITE_COLOR,
+                                                fg_color=ORANGE_COLOR,
+                                                hover_color=ORANGE_HOVER_COLOR,
+                                                corner_radius=3,
+                                                font=("arial", 15),
+                                                text="Finish")
+        finish_button.place(x=170, y=847)
 
     def __authorize_remove_ui(self, parent: Toplevel, antecedent_orders: tuple) -> None:
         self.__authorize_remove_toplevel = Toplevel(master=parent)
@@ -953,7 +958,7 @@ class TableUI:
             order_id = order.create_order_id(waiter_id=waiter_id, customer_id=customer_id)
             
             order.add_meal_to_order(order_id=order_id, meals_ids=meals_ids)
-            TableDb(self.__token).update_table_order(order_id=order_id, table_id=table_id)
+            TableDb(self.__token).set_table_order(order_id=order_id, table_id=table_id)
             
         except Exception as error:
             log_error(f"System user ID: {self.__account_id}. Create Order Error.")
@@ -980,6 +985,28 @@ class TableUI:
                     self.__treeview_tag = odd_row_tag
                 
                 self.__meal_treeview.insert("", "end", values=meal, tags=self.__treeview_tag)
+
+    def __fn_update_table_orders(self, table_id: int, previous_meals_ids: list, treeview_children: tuple) -> None:
+        try:
+            current_meal_ids : list[int] = [self.__meal_treeview.item(children)["values"][0] for children in treeview_children]
+            meals_ids_removed = list()
+            
+            for i in previous_meals_ids:
+                if i not in current_meal_ids and i not in meals_ids_removed:
+                    meals_ids_removed.append(i)
+
+            tablebd = TableDb(self.__token)
+            tablebd.update_table_orders(table_id=table_id, 
+                                        previous_meals_ids=previous_meals_ids, 
+                                        meals_ids=current_meal_ids)
+            if meals_ids_removed:
+                tablebd.remove_meals_from_table(*meals_ids_removed)
+
+        except Exception as error:
+            log_error(f"System user ID: {self.__account_id}. Update Table Orders.")
+            messagebox.showerror(title="Update Table Orders Error", message=error)
+        else:
+            self._to_back()
 
     def __fn_delete_table(self, table_id: int) -> None:
         if TableDb(self.__token).delete_table(table_id):

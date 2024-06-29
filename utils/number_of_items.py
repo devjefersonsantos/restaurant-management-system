@@ -1,7 +1,10 @@
-def number_of_items(item_list: list) -> dict:
-    items = item_list.copy()
+def number_of_items(items: list[int] | tuple[int]) -> dict:
+    if type(items) is list: 
+        items = items.copy()
+    else:
+        items = list(items)
+
     items.sort()
-    
     result = dict()
 
     for item in items:
