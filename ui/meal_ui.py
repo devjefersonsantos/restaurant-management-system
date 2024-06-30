@@ -471,8 +471,8 @@ class MealUI:
         if tkinter.messagebox.askyesno(title="Delete Meal", 
                                        message=message, 
                                        icon=tkinter.messagebox.WARNING) == True:
-            MealDb(self.__token).delete_meal(meal_id=data[0])
-            self.__fn_read_meals()
+            if MealDb(self.__token).delete_meal(meal_id=data[0]):
+                self._to_back()
 
     def __fn_search_meal(self, typed: str) -> None:
         self.__meal_treeview.delete(*self.__meal_treeview.get_children())

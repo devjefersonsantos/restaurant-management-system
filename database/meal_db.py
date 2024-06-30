@@ -80,7 +80,7 @@ class MealDb(Database):
                     self.cursor.close()
                     self.connection.close()
 
-    def delete_meal(self, meal_id: int) -> None:
+    def delete_meal(self, meal_id: int) -> True:
         if self.connect_to_database():
             try:
                 self.cursor.execute("""DELETE FROM meal
@@ -91,6 +91,7 @@ class MealDb(Database):
                 messagebox.showerror(title="Delete Meal Error", message=error)
             else:
                 log_warning(f"System user ID: {self.__account_id}. Meal ID: {meal_id} was deleted.")
+                return True
             finally:
                 self.cursor.close()
                 self.connection.close()
