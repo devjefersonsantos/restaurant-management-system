@@ -47,7 +47,7 @@ class Database:
                 self.cursor.execute("""CREATE TABLE IF NOT EXISTS account (
                                     account_id SERIAL PRIMARY KEY,
                                     access_token VARCHAR(255), 
-                                    username VARCHAR(10) NOT NULL UNIQUE, 
+                                    username VARCHAR(20) NOT NULL UNIQUE, 
                                     password VARCHAR(255) NOT NULL,
                                     email VARCHAR(255) NOT NULL UNIQUE,
                                     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

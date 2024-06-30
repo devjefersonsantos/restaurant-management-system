@@ -933,6 +933,9 @@ class TableUI:
         if account.verify_credentials():
             self.__remove_from_list(parent=parent_ui, antecedent_orders=antecedent_orders)
             self.__authorize_remove_toplevel.destroy()
+        else:
+            self.__table_toplevel.focus()
+            self.__authorize_remove_toplevel.focus()
 
     def __fn_create_table_id(self, table_id: int) -> None:
         entry_items = {"table id": table_id}
