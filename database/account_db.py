@@ -183,7 +183,7 @@ class AccountDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def get_last_login_date(self) -> datetime.datetime:
+    def get_last_login_date(self) -> datetime.datetime | str:
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT last_login_date FROM account
@@ -192,7 +192,10 @@ class AccountDb(Database):
             except Exception as error:
                 messagebox.showerror(title="Get Last Login Error", message=error)
             else:
-                return result[0].replace(microsecond=0)
+                if result[0] != None:
+                    return result[0].replace(microsecond=0)
+                else:
+                    return "First Login"
             finally:
                 self.cursor.close()
                 self.connection.close()
