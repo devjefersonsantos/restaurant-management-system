@@ -1,4 +1,5 @@
-![image](https://github.com/devjefersonsantos/restaurant-management-system/blob/main/images/login_screenshot.png)
+![login screenshot](https://github.com/devjefersonsantos/restaurant-management-system/blob/main/images/login_screenshot.png)
+![example in GIF](https://github.com/devjefersonsantos/restaurant-management-system/blob/main/images/restaurant-management-system.gif)
 
 ## Prerequisites
 - Python 3.10+

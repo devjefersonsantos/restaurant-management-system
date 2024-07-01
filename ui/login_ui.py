@@ -55,8 +55,8 @@ class LoginUI(customtkinter.CTk):
 
         # INSERT INTO account (username, password, email)
         # VALUES ('dev', 'daeed6308874de11ec5ba896aff636aee60821b397f88164be3eae5cf6d276d8', 'dev');
-        if token := LoginDb(username="dev", password="dev").process_login():
-            SidebarUI(root=self, token=token)
+        # if token := LoginDb(username="dev", password="dev").process_login():
+        #     SidebarUI(root=self, token=token)
     
     def __images_ui(self) -> None:
         # https://pixabay.com/illustrations/chef-food-kitchen-restaurant-adult-2410818/
