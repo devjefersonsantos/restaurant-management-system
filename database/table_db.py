@@ -61,30 +61,6 @@ class TableDb(Database):
                 self.cursor.close()
                 self.connection.close()
 
-    def update_table_orders(self, table_id: int, previous_meals_ids: list[int], meals_ids: list[int]) -> None:
-        if self.connect_to_database():
-            try:
-                meals_ids_and_quantity: dict = number_of_items(meals_ids)
-                
-                for meal_id, quantity in meals_ids_and_quantity.items():
-                    self.cursor.execute("""
-                        INSERT INTO order_has_meal (order_id, meal_id, quantity)
-                        VALUES ((SELECT order_order_id FROM "table" WHERE table_id = %s), %s, %s)
-                        ON CONFLICT (order_id, meal_id)
-                        DO UPDATE SET quantity = EXCLUDED.quantity;
-                        """, (table_id, meal_id, quantity))
-                self.connection.commit()
-
-            except Exception as error:
-                log_error(f"System user ID: {self.__account_id}. An error occurred while updating the table's orders.")
-                messagebox.showerror(title="Update Table Orders", message=error)
-            else:
-                previous_meals_ids = number_of_items(previous_meals_ids)
-                log_info(f"System user ID: {self.__account_id}. Meal id, quantity: {previous_meals_ids} to {meals_ids_and_quantity}, updated table ID: {table_id}.")
-            finally:
-                self.cursor.close()
-                self.connection.close()
-
     def delete_table(self, table_id: int) -> bool:
         if self.connect_to_database():
             try:
@@ -105,22 +81,6 @@ class TableDb(Database):
                     log_error(f"System user ID: {self.__account_id}. Table ID: {table_id}, cannot be deleted because it is in use.")
                     messagebox.showerror(title="Delete Table", message=f"Table ID: {table_id}, cannot be deleted because it is in use.")
                     return False
-            finally:
-                self.cursor.close()
-                self.connection.close()
-
-    def remove_meals_from_table(self, *meal_ids) -> None:
-        if self.connect_to_database():
-            try:
-                for meal_id in meal_ids:
-                    self.cursor.execute("""DELETE FROM order_has_meal
-                                        WHERE meal_id = %s""", (meal_id,))
-                self.connection.commit()
-            except Exception as error:
-                log_error(f"System user ID: {self.__account_id}. An error occurred while deleting a meal from table.")
-                messagebox.showerror(title="Delete Meals From Table Error", message=error)
-            else:
-                log_warning(f"System user ID: {self.__account_id}. Meal ID: {meal_ids} was deleted from table.")
             finally:
                 self.cursor.close()
                 self.connection.close()

@@ -45,7 +45,49 @@ class OrderDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
-                
+
+    def update_order_meals(self, order_id: int, previous_meals_ids: list[int], meals_ids: list[int]) -> None:
+        if self.connect_to_database():
+            try:
+                meals_ids_and_quantity: dict = number_of_items(meals_ids)
+
+                for meal_id, quantity in meals_ids_and_quantity.items():
+                    self.cursor.execute("""
+                        INSERT INTO order_has_meal (order_id, meal_id, quantity)
+                        VALUES (%s, %s, %s)
+                        ON CONFLICT (order_id, meal_id)
+                        DO UPDATE SET quantity = EXCLUDED.quantity""", 
+                        (order_id, meal_id, quantity))
+                self.connection.commit()
+
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. An error occurred while updating order meals.")
+                messagebox.showerror(title="Update Order Meals", message=error)
+            else:
+                previous_meals_ids = number_of_items(previous_meals_ids)
+                log_info(f"System user ID: {self.__account_id}. Meal id, quantity: {previous_meals_ids} to {meals_ids_and_quantity}, updated Order ID: {order_id}.")
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
+    def delete_meals_from_order(self, order_id: int, *meal_ids: int) -> None:
+        if self.connect_to_database():
+            try:
+                for meal_id in meal_ids:
+                    self.cursor.execute("""DELETE FROM order_has_meal
+                                        WHERE order_id = %s and meal_id = %s;""", 
+                                        (order_id, meal_id,))
+                self.connection.commit()
+
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. An error occurred while deleting a meal from the order.")
+                messagebox.showerror(title="Delete Meals From Order Error", message=error)
+            else:
+                log_warning(f"System user ID: {self.__account_id}. Meal ID: {meal_ids} was deleted from Order ID {order_id}.")
+            finally:
+                self.cursor.close()
+                self.connection.close()
+
     def add_meal_to_order(self, order_id: int, meals_ids: list[int]) -> None:
         if self.connect_to_database():
             try:

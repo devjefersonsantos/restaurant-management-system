@@ -751,9 +751,9 @@ class TableUI:
                                                corner_radius=4,
                                                font=("arial", 15), 
                                                text="Apply",
-                                               command=lambda:self.__fn_update_table_orders(table_id=table_id, 
-                                                                                            previous_meals_ids=previous_meals_ids, 
-                                                                                            treeview_children=self.__meal_treeview.get_children()))
+                                               command=lambda:self.__fn_update_order_meals(order_id=order_id, 
+                                                                                           previous_meals_ids=previous_meals_ids, 
+                                                                                           treeview_children=self.__meal_treeview.get_children()))
         apply_button.place(x=412, y=847)
 
         finish_button = customtkinter.CTkButton(master=self.__table_toplevel,
@@ -964,7 +964,6 @@ class TableUI:
             TableDb(self.__token).set_table_order(order_id=order_id, table_id=table_id)
             
         except Exception as error:
-            log_error(f"System user ID: {self.__account_id}. Create Order Error.")
             messagebox.showerror(title="Create Order Error", message=error)
         else:
             self._to_back()
@@ -989,7 +988,7 @@ class TableUI:
                 
                 self.__meal_treeview.insert("", "end", values=meal, tags=self.__treeview_tag)
 
-    def __fn_update_table_orders(self, table_id: int, previous_meals_ids: list, treeview_children: tuple) -> None:
+    def __fn_update_order_meals(self, order_id: int, previous_meals_ids: list, treeview_children: tuple) -> None:
         try:
             current_meal_ids : list[int] = [self.__meal_treeview.item(children)["values"][0] for children in treeview_children]
             meals_ids_removed = list()
@@ -998,18 +997,18 @@ class TableUI:
                 if i not in current_meal_ids and i not in meals_ids_removed:
                     meals_ids_removed.append(i)
 
-            tablebd = TableDb(self.__token)
-            tablebd.update_table_orders(table_id=table_id, 
-                                        previous_meals_ids=previous_meals_ids, 
-                                        meals_ids=current_meal_ids)
+            orderbd = OrderDb(self.__token)
+            orderbd.update_order_meals(order_id=order_id, 
+                                       previous_meals_ids=previous_meals_ids, 
+                                       meals_ids=current_meal_ids)
             if meals_ids_removed:
-                tablebd.remove_meals_from_table(*meals_ids_removed)
+                orderbd.delete_meals_from_order(order_id, *meals_ids_removed)
 
         except Exception as error:
-            log_error(f"System user ID: {self.__account_id}. Update Table Orders.")
-            messagebox.showerror(title="Update Table Orders Error", message=error)
+            messagebox.showerror(title="Update Order Meals Error", message=error)
         else:
             self._to_back()
+            messagebox.showinfo(title=None, message="Table orders updated successfully.")
 
     def __fn_delete_table(self, table_id: int) -> None:
         if TableDb(self.__token).delete_table(table_id):
