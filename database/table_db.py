@@ -170,3 +170,25 @@ class TableDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def remove_order_from_table(self, table_id: int, order_id: int, total_price: float, payment: float, change: float) -> None:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("""UPDATE "table"
+                                    SET order_order_id = %s
+                                    WHERE table_id = %s""", (None, table_id))
+                
+                self.cursor.execute("""UPDATE "order"
+                                    SET end_time = NOW(), payment = %s
+                                    WHERE order_id = %s;""", (payment, order_id))
+
+                self.connection.commit()
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Remove Order From Table Error.")
+                messagebox.showerror(title="Remove Order From Table Error", message=error)
+            else:
+                log_info(f'System user ID: {self.__account_id}. Finished table id: {table_id}, order id: {order_id}, total price: {total_price}, payment: {payment}, change: {change}.')
+                return True
+            finally:
+                self.cursor.close()
+                self.connection.close()

@@ -1,7 +1,9 @@
+import os
 import tkinter
 from tkinter import Toplevel
 from tkinter import messagebox
 from tkinter import ttk
+from tkinter import filedialog
 
 from PIL import Image
 import customtkinter
@@ -95,7 +97,7 @@ class TableUI:
 
         self.__root.bind("<Return>", lambda _ : create_table_button.invoke())
 
-    def __images_ui(self):
+    def __images_ui(self) -> None:
         # https://pixabay.com/vectors/icons-icon-set-multimedia-icons-6726119/
         mealpil_image = Image.open("./images/tables_images/meal.png")
         self.__meal_image = customtkinter.CTkImage(dark_image=mealpil_image,
@@ -106,6 +108,16 @@ class TableUI:
         self.__price_image = customtkinter.CTkImage(dark_image=pricepil_image,
                                                     light_image=pricepil_image,
                                                     size=(47,47))
+        
+        paymentpil_image = Image.open("./images/tables_images/payment.png")
+        self.__payment_image = customtkinter.CTkImage(dark_image=paymentpil_image,
+                                                      light_image=paymentpil_image,
+                                                      size=(47,47))
+        
+        changepil_image = Image.open("images/tables_images/change.png")
+        self.__change_image = customtkinter.CTkImage(dark_image=changepil_image,
+                                                     light_image=changepil_image,
+                                                     size=(47,47))
         
         userpil_image = Image.open("./images/login_images/user.png")
         self.__user_image = customtkinter.CTkImage(dark_image=userpil_image,
@@ -390,7 +402,7 @@ class TableUI:
         meals_label.place(x=25, y=180)
 
         meals_info : list[tuple] = MealDb(self.__token).read_meals()
-        meal_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
+        self.__meal_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
             width=300, height=35,
             fg_color=WHITE_COLOR,
             text_color=GRAY_TEXT_COLOR,
@@ -402,7 +414,7 @@ class TableUI:
             values=[i[1] for i in meals_info] if meals_info else ["No meal registered"],
             state=tkinter.NORMAL if meals_info else tkinter.DISABLED
         )
-        meal_optionmenu.place(x=25, y=214)
+        self.__meal_optionmenu.place(x=25, y=214)
 
         self.__total_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
                                              width=3,
@@ -410,7 +422,7 @@ class TableUI:
                                              from_=1, to=100)
         self.__total_spinbox.place(x=336, y=215)
 
-        add_button = customtkinter.CTkButton(master=self.__table_toplevel,
+        self.__add_button = customtkinter.CTkButton(master=self.__table_toplevel,
             width=100, height=35,
             text_color=WHITE_COLOR,
             fg_color=GREEN_COLOR,
@@ -419,20 +431,20 @@ class TableUI:
             font=("arial", 15), 
             text="Add to list",
             command=lambda:self.__add_to_list(meals_info=meals_info, 
-                                              meal=meal_optionmenu.get(), 
+                                              meal=self.__meal_optionmenu.get(), 
                                               total=self.__total_spinbox.get()))
-        add_button.place(x=410, y=214)
+        self.__add_button.place(x=410, y=214)
 
-        remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                width=100, height=35,
-                                                text_color=WHITE_COLOR,
-                                                fg_color=RED_COLOR, 
-                                                hover_color=RED_HOVER_COLOR,
-                                                corner_radius=4,
-                                                font=("arial", 15), 
-                                                text="Remove selected",
-                                                command=lambda:self.__remove_from_list(parent=self.__table_toplevel))
-        remove_button.place(x=520, y=214)
+        self.__remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                       width=100, height=35,
+                                                       text_color=WHITE_COLOR,
+                                                       fg_color=RED_COLOR, 
+                                                       hover_color=RED_HOVER_COLOR,
+                                                       corner_radius=4,
+                                                       font=("arial", 15), 
+                                                       text="Remove selected",
+                                                       command=lambda:self.__remove_from_list(parent=self.__table_toplevel))
+        self.__remove_button.place(x=520, y=214)
 
         # https://stackoverflow.com/questions/75492266/changing-font-style-of-rows-in-treeview
         style = ttk.Style()
@@ -490,7 +502,8 @@ class TableUI:
                                                             textvariable=self.__total_meal_stringvar)
         total_meal_stringvar_label.place(x=140, y=36)
 
-        divider_frame = tkinter.Frame(master=square_status_frame, height=70, width=1)
+        divider_frame = tkinter.Frame(master=square_status_frame, 
+                                      height=70, width=1)
         divider_frame.place(x=309, y=10)
 
 
@@ -605,14 +618,14 @@ class TableUI:
         customer_entry.insert(0, customer if customer != None else "Unregistered")
         customer_entry.configure(state="disabled")
 
-        meals_label = customtkinter.CTkLabel(master=self.__table_toplevel,
-                                             text_color=BLACK_GRAY_COLOR,
-                                             font=("arial bold", 17),
-                                             text="Meals:")
-        meals_label.place(x=25, y=180)
+        self.__meals_label = customtkinter.CTkLabel(master=self.__table_toplevel,
+                                                    text_color=BLACK_GRAY_COLOR,
+                                                    font=("arial bold", 17),
+                                                    text="Meals:")
+        self.__meals_label.place(x=25, y=180)
 
         meals_info : list[tuple] = MealDb(self.__token).read_meals()
-        meal_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
+        self.__meal_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
             width=300, height=35,
             fg_color=WHITE_COLOR,
             text_color=GRAY_TEXT_COLOR,
@@ -624,7 +637,7 @@ class TableUI:
             values=[i[1] for i in meals_info] if meals_info else ["No meal registered"],
             state=tkinter.NORMAL if meals_info else tkinter.DISABLED
         )
-        meal_optionmenu.place(x=25, y=214)
+        self.__meal_optionmenu.place(x=25, y=214)
 
         self.__total_spinbox = tkinter.Spinbox(master=self.__table_toplevel,
                                                width=3,
@@ -661,16 +674,16 @@ class TableUI:
         self.__meal_treeview.configure(yscroll=self.__treeview_scrollbar.set)
         self.__treeview_scrollbar.place(x=627, y=260, height=472)
 
-        squarestatus_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
-                                                    width=619, height=90,
-                                                    fg_color=WHITE_COLOR)
-        squarestatus_frame.place(x=25, y=742)
+        self.__square_status_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
+                                                            width=619, height=90,
+                                                            fg_color=WHITE_COLOR)
+        self.__square_status_frame.place(x=25, y=742)
 
-        meal_image_label = customtkinter.CTkLabel(master=squarestatus_frame,
+        meal_image_label = customtkinter.CTkLabel(master=self.__square_status_frame,
                                                   text="", 
                                                   image=self.__meal_image)
         meal_image_label.place(x=25, y=22)
-        total_meal_label = customtkinter.CTkLabel(master=squarestatus_frame, 
+        total_meal_label = customtkinter.CTkLabel(master=self.__square_status_frame, 
                                                   text_color=BLACK_GRAY_COLOR,
                                                   font=("arial", 17), 
                                                   text="Total meals:")
@@ -678,21 +691,21 @@ class TableUI:
 
         self.__total_meal_stringvar = customtkinter.StringVar()
         self.__total_meal_stringvar.set(0)
-        total_meal_stringvar_label = customtkinter.CTkLabel(master=squarestatus_frame,
+        total_meal_stringvar_label = customtkinter.CTkLabel(master=self.__square_status_frame,
                                                             text_color=GRAY_TEXT_COLOR, 
                                                             font=("arial", 19), 
                                                             textvariable=self.__total_meal_stringvar)
         total_meal_stringvar_label.place(x=140, y=36)
 
-        divider_frame = tkinter.Frame(master=squarestatus_frame, height=70, width=1)
+        divider_frame = tkinter.Frame(master=self.__square_status_frame, height=70, width=1)
         divider_frame.place(x=309, y=10)
 
 
-        sale_price_image_label = customtkinter.CTkLabel(master=squarestatus_frame,
+        sale_price_image_label = customtkinter.CTkLabel(master=self.__square_status_frame,
                                                         text="", 
                                                         image=self.__price_image)
         sale_price_image_label.place(x=334, y=22)
-        sale_price_label = customtkinter.CTkLabel(master=squarestatus_frame,
+        sale_price_label = customtkinter.CTkLabel(master=self.__square_status_frame,
                                                   font=("arial", 17), 
                                                   text_color=BLACK_GRAY_COLOR, 
                                                   text="Total price:")
@@ -700,7 +713,7 @@ class TableUI:
 
         self.__sale_price_stringvar = customtkinter.StringVar()
         self.__sale_price_stringvar.set(0.00)
-        sale_price_stringvar_label = customtkinter.CTkLabel(master=squarestatus_frame,
+        sale_price_stringvar_label = customtkinter.CTkLabel(master=self.__square_status_frame,
                                                             font=("arial", 19), 
                                                             text_color=GRAY_TEXT_COLOR, 
                                                             textvariable=self.__sale_price_stringvar)
@@ -715,7 +728,7 @@ class TableUI:
         self.__meal_treeview.tag_configure("even_row", background=EVEN_ROW_COLOR)
         self.__meal_treeview.tag_configure("odd_row", background=ODD_ROW_COLOR)
 
-        add_button = customtkinter.CTkButton(master=self.__table_toplevel,
+        self.__add_button = customtkinter.CTkButton(master=self.__table_toplevel,
             width=100, height=35,
             text_color=WHITE_COLOR,
             fg_color=GREEN_COLOR,
@@ -724,47 +737,161 @@ class TableUI:
             font=("arial", 15), 
             text="Add to list",
             command=lambda:self.__add_to_list(meals_info=meals_info, 
-                                              meal=meal_optionmenu.get(), 
+                                              meal=self.__meal_optionmenu.get(), 
                                               total=self.__total_spinbox.get()))
-        add_button.place(x=410, y=214)
+        self.__add_button.place(x=410, y=214)
 
         antecedent_orders = self.__meal_treeview.get_children()
-        remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                width=100, height=35,
-                                                text_color=WHITE_COLOR,
-                                                fg_color=RED_COLOR, 
-                                                hover_color=RED_HOVER_COLOR,
-                                                corner_radius=4,
-                                                font=("arial", 15), 
-                                                text="Remove selected",
-                                                command=lambda:self.__permission_to_remove(parent=self.__table_toplevel, 
-                                                                                           antecedent_orders=antecedent_orders))
-        remove_button.place(x=520, y=214)
+        self.__remove_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                       width=100, height=35,
+                                                       text_color=WHITE_COLOR,
+                                                       fg_color=RED_COLOR, 
+                                                       hover_color=RED_HOVER_COLOR,
+                                                       corner_radius=4,
+                                                       font=("arial", 15), 
+                                                       text="Remove selected",
+                                                       command=lambda:self.__permission_to_remove(parent=self.__table_toplevel, 
+                                                                                                  antecedent_orders=antecedent_orders))
+        self.__remove_button.place(x=520, y=214)
 
         previous_meals_ids : list[int] = [self.__meal_treeview.item(children)["values"][0] for children in self.__meal_treeview.get_children()]
 
-        apply_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                               width=230, height=32,
-                                               text_color=WHITE_COLOR,
-                                               fg_color=GREEN_COLOR, 
-                                               hover_color=GREEN_HOVER_COLOR,
-                                               corner_radius=4,
-                                               font=("arial", 15), 
-                                               text="Apply",
-                                               command=lambda:self.__fn_update_order_meals(order_id=order_id, 
-                                                                                           previous_meals_ids=previous_meals_ids, 
-                                                                                           treeview_children=self.__meal_treeview.get_children()))
-        apply_button.place(x=412, y=847)
+        self.__apply_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                      width=230, height=32,
+                                                      text_color=WHITE_COLOR,
+                                                      fg_color=GREEN_COLOR, 
+                                                      hover_color=GREEN_HOVER_COLOR,
+                                                      corner_radius=4,
+                                                      font=("arial", 15), 
+                                                      text="Apply",
+                                                      command=lambda:self.__fn_update_order_meals(order_id=order_id, 
+                                                                                                  previous_meals_ids=previous_meals_ids, 
+                                                                                                  treeview_children=self.__meal_treeview.get_children()))
+        self.__apply_button.place(x=412, y=847)
 
-        finish_button = customtkinter.CTkButton(master=self.__table_toplevel,
-                                                width=230, height=32,
-                                                text_color=WHITE_COLOR,
-                                                fg_color=ORANGE_COLOR,
-                                                hover_color=ORANGE_HOVER_COLOR,
-                                                corner_radius=3,
-                                                font=("arial", 15),
-                                                text="Finish")
-        finish_button.place(x=170, y=847)
+        self.__finish_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                                       width=230, height=32,
+                                                       text_color=WHITE_COLOR,
+                                                       fg_color=ORANGE_COLOR,
+                                                       hover_color=ORANGE_HOVER_COLOR,
+                                                       corner_radius=3,
+                                                       font=("arial", 15),
+                                                       text="Finish",
+                                                       command=lambda:self.__finalize_order(table_id,
+                                                                                            order_id,
+                                                                                            waiter,
+                                                                                            customer,
+                                                                                            self.__total_meal_stringvar.get(),
+                                                                                            self.__sale_price_stringvar.get()))
+        self.__finish_button.place(x=170, y=847)
+
+    def __finalize_order(self, table_id: int, 
+                         order_id: int, 
+                         waiter: str, 
+                         customer: str, 
+                         total_meals: float, 
+                         total_price: float) -> None:
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+        if file_path:
+            text = (
+                f"TABLE: {table_id}\nWAITER: {waiter if waiter else "Unregistered"}\n\n"
+                f"ORDER ID: {order_id}\n"
+                f"CUSTOMER: {customer if customer else "Unregistered"}\n\n"
+                "ID, MEAL NAME,  SALE PRICE,  CATEGORY,  STATUS:\n\n"
+            )
+            for item in self.__meal_treeview.get_children():
+                text += str(self.__meal_treeview.item(item, "values")) + "\n"
+            text += f"\nTOTAL MEALS: {total_meals}\nTOTAL PRICE: {total_price}"
+
+            with open(file_path, "w") as file:
+                file.write(text)
+            
+            os.system(f"start {file_path}")
+
+        widgets = [self.__meals_label,
+                   self.__meal_optionmenu,
+                   self.__total_spinbox,
+                   self.__add_button,
+                   self.__remove_button,
+                   self.__apply_button]
+        
+        for widget in widgets:
+            widget.destroy()
+
+        self.__table_toplevel.geometry("669x920+625+50")
+        self.__meal_treeview.place(x=25, y=185)
+        self.__treeview_scrollbar.place(x=627, y=185, height=472)
+        self.__square_status_frame.place(x=25, y=667)
+        
+        self.__table_toplevel.attributes("-topmost", True)
+
+        payment_frame = customtkinter.CTkFrame(master=self.__table_toplevel,
+                                               width=619, height=90,
+                                               fg_color=WHITE_COLOR)
+        payment_frame.place(x=25, y=770)
+
+        self.__change_stringvar = customtkinter.StringVar()
+        self.__change_stringvar.trace_add("write", self.__update_change_stringvar)
+
+        payment_image_label = customtkinter.CTkLabel(master=payment_frame,text="", image=self.__payment_image)
+        payment_image_label.place(x=25, y=22)
+        payment_label = customtkinter.CTkLabel(master=payment_frame, text_color=GRAY_TEXT_COLOR, font=("arial", 17), text="Payment:")
+        payment_label.place(x=95, y=10)
+        
+        only_numbers = self.__root.register(lambda _ : _.isdigit())
+
+        payment_entry = customtkinter.CTkEntry(master=payment_frame,
+                                               width=180, height=30,
+                                               border_color=LIGHT_GRAY_COLOR, 
+                                               text_color=GRAY_TEXT_COLOR,
+                                               validate="key",
+                                               validatecommand=(only_numbers, "%P"),
+                                               textvariable=self.__change_stringvar,
+                                               corner_radius=3, 
+                                               font=("arial", 19), 
+                                               border_width=1)
+        payment_entry.place(x=110, y=39)
+
+        divider_frame = tkinter.Frame(master=payment_frame, height=70, width=1)
+        divider_frame.place(x=309, y=10)
+
+        change_image_label = customtkinter.CTkLabel(master=payment_frame, text="", image=self.__change_image)
+        change_image_label.place(x=334, y=22)
+        change_label = customtkinter.CTkLabel(master=payment_frame, 
+                                              text_color=GRAY_TEXT_COLOR, 
+                                              font=("arial", 17), 
+                                              text="Change:")
+        change_label.place(x=404, y=10)
+        self.__change_stringvar_label = customtkinter.CTkLabel(master=payment_frame, 
+                                                               text_color=RED_HOVER_COLOR,
+                                                               font=("arial", 19))
+        self.__change_stringvar_label.place(x=443, y=36)
+
+        if self.__sale_price_stringvar.get() == "":
+            self.__change_stringvar_label.configure(text="")
+            payment_entry.destroy()
+        else:
+            self.__change_stringvar_label.configure(text=f"-{self.__sale_price_stringvar.get()}")
+
+        back_button = customtkinter.CTkButton(master=self.__table_toplevel,
+                                              width=230, height=32,
+                                              text_color=WHITE_COLOR,
+                                              fg_color=GRAY_COLOR,
+                                              hover_color=GRAY_COLOR,
+                                              corner_radius=3,
+                                              font=("arial", 15),
+                                              text="Back",
+                                              command=lambda:self.__back_orders_ui(table_id=table_id))
+        back_button.place(x=170, y=872)
+
+        self.__finish_button.place(x=412, y=872)
+        self.__finish_button.configure(command=lambda:self.__finalize_table(table_id=table_id, 
+                                                                            order_id=order_id, 
+                                                                            total_price=total_price, 
+                                                                            payment=payment_entry.get(), 
+                                                                            change=self.__change))
+
+        payment_entry.insert(0, 0)
 
     def __authorize_remove_ui(self, parent: Toplevel, antecedent_orders: tuple) -> None:
         self.__authorize_remove_toplevel = Toplevel(master=parent)
@@ -1016,6 +1143,17 @@ class TableUI:
         else:
             self.__table_toplevel.focus()
 
+    def __update_change_stringvar(self, *args) -> None:
+        try:
+            self.__change = float(self.__change_stringvar.get()) - float(self.__sale_price_stringvar.get())
+            self.__change_stringvar_label.configure(text=f"{self.__change:.2f}")
+            if self.__change < 0:
+                self.__change_stringvar_label.configure(text_color=RED_HOVER_COLOR)
+            else:
+                self.__change_stringvar_label.configure(text_color=BLACK_GRAY_COLOR)
+        except:
+            self.__change_stringvar_label.configure(text=f"-{self.__sale_price_stringvar.get()}")
+
     def __selected_row(self, parent: Toplevel) -> tuple:
         try:
             selected_meal = self.__meal_treeview.item(self.__meal_treeview.selection()[0], "values")
@@ -1032,6 +1170,22 @@ class TableUI:
             self.__status_password_button.configure(image=self.__hidepassword_image)
             self.__password_entry.configure(show="*")
             self.__hide_password = True
+
+    def __finalize_table(self, table_id: int, order_id: int, total_price: float, payment: float, change: float) -> None:
+        if self.__sale_price_stringvar.get() == "" or self.__change >= 0:
+            remove_customer = TableDb(self.__token).remove_order_from_table(table_id=table_id,
+                                                                                 order_id=order_id, 
+                                                                                 total_price=float(total_price), 
+                                                                                 payment=float(payment), 
+                                                                                 change=float(change))
+            if remove_customer:
+                self.__table_toplevel.destroy()
+                messagebox.showinfo(title=None, message="Table closed successfully.")
+            self._to_back()
+
+    def __back_orders_ui(self, table_id: int) -> None:
+        self.__table_toplevel.destroy()
+        self.__table_with_orders_ui(table_id=table_id)
 
     def _to_back(self) -> None:
         self.__table_toplevel.destroy()
