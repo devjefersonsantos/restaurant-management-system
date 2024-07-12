@@ -381,6 +381,7 @@ class TableUI:
         customer_label.place(x=25, y=95)
 
         customer_names : list[str] = CustomerDb(self.__token).get_customer_names()
+        customer_names.insert(0, "Unregistered")
         customer_optionmenu = customtkinter.CTkOptionMenu(master=self.__table_toplevel,
             width=619, height=35,
             fg_color=WHITE_COLOR,
@@ -1080,7 +1081,7 @@ class TableUI:
     def __fn_create_initial_order(self, table_id: int, waiter_name: str, customer_name: str, treeview_children: tuple) -> None:
         try:
             waiter_id = None if waiter_name == "No waiter registered" else WaiterDb(self.__token).get_waiter_id_by_name(waiter_name)
-            customer_id = None if customer_name == "No customer registered" else CustomerDb(self.__token).get_customer_id_by_name(customer_name)
+            customer_id = None if customer_name == "No customer registered" or "Unregistered" else CustomerDb(self.__token).get_customer_id_by_name(customer_name)
             
             meals_ids : list[int] = [self.__meal_treeview.item(children)["values"][0] for children in treeview_children]
             

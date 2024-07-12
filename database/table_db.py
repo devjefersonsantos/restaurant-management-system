@@ -148,16 +148,16 @@ class TableDb(Database):
         if self.connect_to_database():
             try:
                 self.cursor.execute("""SELECT 
-                                        waiter.name,
-                                        customer.name,
+                                        waiter.name AS waiter_name,
+                                        customer.name AS customer_name,
                                         "order".order_id
                                     FROM 
                                         "table"
-                                    JOIN 
+                                    LEFT JOIN 
                                         "order" ON "table".order_order_id = "order".order_id
-                                    JOIN 
+                                    LEFT JOIN 
                                         waiter ON "order".waiter_waiter_id = waiter.waiter_id
-                                    JOIN 
+                                    LEFT JOIN 
                                         customer ON "order".customer_customer_id = customer.customer_id
                                     WHERE 
                                         "table".table_id = %s;""", (table_id,))
