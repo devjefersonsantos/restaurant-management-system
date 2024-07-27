@@ -16,7 +16,6 @@ from database import MealDb
 from database import TableDb
 from database import WaiterDb
 from database import OrderDb
-from logs import log_error
 from utils import clear_frames
 from utils import empty_entries
 from utils import find_tuple_by_name
@@ -30,6 +29,8 @@ class TableUI:
         self.__root = root
         self.__square_frame = square_frame
         self.__token = token
+
+        self.__window_icon_path = "./images/global_images/icon.ico" if os.name == "nt" else None
 
         clear_frames(self.__square_frame)
         self.__images_ui()
@@ -197,7 +198,7 @@ class TableUI:
 
         self.__table_toplevel = Toplevel(master=self.__root)
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
-        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("./images/global_images/icon.ico")) 
+        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap(self.__window_icon_path)) 
         self.__table_toplevel.title("Add Table")
         self.__table_toplevel.geometry("420x71+760+28")
         self.__table_toplevel.resizable(False, False)
@@ -272,7 +273,7 @@ class TableUI:
 
         self.__table_toplevel = tkinter.Toplevel(master=self.__root)
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
-        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("./images/global_images/icon.ico"))
+        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap(self.__window_icon_path))
         self.__table_toplevel.title("Open Table")
         self.__table_toplevel.geometry("300x250+815+390")
         self.__table_toplevel.resizable(False, False)
@@ -333,7 +334,7 @@ class TableUI:
 
         self.__table_toplevel = tkinter.Toplevel(master=self.__root)
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
-        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("./images/global_images/icon.ico")) 
+        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap(self.__window_icon_path)) 
         self.__table_toplevel.title("Initial Order")
         self.__table_toplevel.geometry("669x669+650+200")
         self.__table_toplevel.resizable(False, False)
@@ -563,7 +564,7 @@ class TableUI:
         self.__table_toplevel = Toplevel(master=self.__root)
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
         self.__table_toplevel.title("Orders")
-        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("./images/global_images/icon.ico"))
+        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap(self.__window_icon_path))
         self.__table_toplevel.geometry("669x895+625+50")
         self.__table_toplevel.resizable(False, False)
         self.__table_toplevel.focus()
@@ -898,7 +899,7 @@ class TableUI:
         self.__authorize_remove_toplevel = Toplevel(master=parent)
         self.__authorize_remove_toplevel.title("Authorize Remove")
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
-        self.__authorize_remove_toplevel.after(50, lambda: self.__authorize_remove_toplevel.iconbitmap("./images/global_images/icon.ico"))
+        self.__authorize_remove_toplevel.after(50, lambda: self.__authorize_remove_toplevel.iconbitmap(self.__window_icon_path))
         self.__authorize_remove_toplevel.geometry("460x340+735+290")
         self.__authorize_remove_toplevel.configure(background=WHITE_COLOR)
         self.__authorize_remove_toplevel.resizable(False, False)
@@ -973,7 +974,7 @@ class TableUI:
 
         self.__table_toplevel = Toplevel(master=self.__root)
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
-        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap("./images/global_images/icon.ico")) 
+        self.__table_toplevel.after(200, lambda: self.__table_toplevel.iconbitmap(self.__window_icon_path)) 
         self.__table_toplevel.title("Delete Table")
         self.__table_toplevel.geometry("426x54+760+35")
         self.__table_toplevel.resizable(False, False)

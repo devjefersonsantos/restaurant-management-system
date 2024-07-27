@@ -1,4 +1,5 @@
 import json
+import os
 from tkinter import messagebox
 
 from PIL import Image
@@ -15,7 +16,8 @@ class LoginUI(customtkinter.CTk):
     def __init__(self) -> None:
         super().__init__()
         # https://pixabay.com/vectors/icon-smile-smilie-feedback-logo-4399618/
-        self.iconbitmap("./images/global_images/icon.ico")
+        window_icon_path = "./images/global_images/icon.ico" if os.name == "nt" else None
+        self.iconbitmap(window_icon_path)
         self.title("Restaurant Management System")
         self.geometry("1050x625+425+199")
         self.resizable(False, False)
