@@ -126,3 +126,16 @@ class CategoryDb(Database):
             finally:
                 self.cursor.close()
                 self.connection.close()
+
+    def count_categories(self) -> int:
+        if self.connect_to_database():
+            try:
+                self.cursor.execute("SELECT COUNT(*) FROM category")
+                result = self.cursor.fetchone()
+                return result[0]
+            except Exception as error:
+                log_error(f"System user ID: {self.__account_id}. Count Categories Error.")
+                messagebox.showerror(title="Count Categories Error", message=error)
+            finally:
+                self.cursor.close()
+                self.connection.close()

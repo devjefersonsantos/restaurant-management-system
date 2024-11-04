@@ -1176,10 +1176,10 @@ class TableUI:
     def __finalize_table(self, table_id: int, order_id: int, total_price: float, payment: float, change: float) -> None:
         if self.__sale_price_stringvar.get() == "" or self.__change >= 0:
             remove_customer = TableDb(self.__token).remove_order_from_table(table_id=table_id,
-                                                                                 order_id=order_id, 
-                                                                                 total_price=float(total_price), 
-                                                                                 payment=float(payment), 
-                                                                                 change=float(change))
+                                                                            order_id=order_id, 
+                                                                            total_price=float(total_price), 
+                                                                            payment=float(payment), 
+                                                                            change=float(change))
             if remove_customer:
                 self.__table_toplevel.destroy()
                 messagebox.showinfo(title=None, message="Table closed successfully.")

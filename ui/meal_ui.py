@@ -73,6 +73,7 @@ class MealUI:
                                                     text=f"{MealDb(self.__token).count_meals_by_status(status="Enabled"):^26}")
         totalenabled_label.place(x=30, y=72)
 
+
         disabledmeals_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                      fg_color=RED_COLOR,
                                                      width=285, height=170,
@@ -88,6 +89,7 @@ class MealUI:
                                                      font=("arial black", 25),
                                                      text=f"{MealDb(self.__token).count_meals_by_status(status="Disabled"):^26}")
         totaldisabled_label.place(x=30, y=72)
+
 
         totalmeals_frame = customtkinter.CTkFrame(master=self.__square_frame,
                                                   width=285, height=170,
