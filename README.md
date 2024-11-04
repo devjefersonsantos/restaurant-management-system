@@ -2,7 +2,7 @@
 ![example in GIF](https://github.com/devjefersonsantos/restaurant-management-system/blob/main/images/restaurant-management-system.gif)
 
 ## Prerequisites
-- Python 3.10+
+- Python 3.12.3
 - PostgreSQL
 - Windows 10+
 - Display resolution 1920x1080+
