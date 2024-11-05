@@ -1,4 +1,5 @@
 from tkinter import messagebox
+from datetime import datetime
 
 from database import AccountDb
 from database import Database
@@ -110,10 +111,12 @@ class OrderDb(Database):
     def get_monthly_sales(self) -> list[int]:
         if self.connect_to_database():
             try:
+                current_year = datetime.now().year
                 monthly_sales = list()
                 for i in range(1, 13):
                     self.cursor.execute("""SELECT SUM(payment) FROM "order"
-                                        WHERE EXTRACT(MONTH FROM end_time) = %s;""", (i,))
+                                        WHERE EXTRACT(MONTH FROM end_time) = %s
+                                        AND EXTRACT(YEAR FROM end_time) = %s;""", (i, current_year))
                     result = self.cursor.fetchone()
                     monthly_sales.append(result[0] if result and result[0] != None else 0)
             except Exception as error:
