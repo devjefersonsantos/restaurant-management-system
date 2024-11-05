@@ -796,9 +796,9 @@ class TableUI:
         file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
         if file_path:
             text = (
-                f"TABLE: {table_id}\nWAITER: {waiter if waiter else "Unregistered"}\n\n"
+                f"TABLE: {table_id}\nWAITER: {waiter if waiter else 'Unregistered'}\n\n"
                 f"ORDER ID: {order_id}\n"
-                f"CUSTOMER: {customer if customer else "Unregistered"}\n\n"
+                f"CUSTOMER: {customer if customer else 'Unregistered'}\n\n"
                 "ID, MEAL NAME,  SALE PRICE,  CATEGORY,  STATUS:\n\n"
             )
             for item in self.__meal_treeview.get_children():
